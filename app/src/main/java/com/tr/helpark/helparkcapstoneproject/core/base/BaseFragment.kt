@@ -30,6 +30,8 @@ abstract class BaseFragment<VB : ViewBinding,VM>(
 
     protected abstract val viewModel : VM
 
+    protected open fun onViewReady() {}
+
     protected open fun initListeners() {}
 
     protected open fun observeEvents() {}
@@ -47,8 +49,9 @@ abstract class BaseFragment<VB : ViewBinding,VM>(
         return binding.root
     }
 
-    final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    final fun onViewReady(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        onViewReady()
         initListeners()
         observeEvents()
     }

@@ -1,5 +1,13 @@
 <resources>
     <string name="app_name">HelparkCapstoneProject</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="helpark">HELPARK</string>
+    <string name="enter_phone_number">Telefon Numaranız</string>
+    <string name="please_enter_your_registered_number_without_0_at_the_beginning">Kayıt olduğunuz numarayı başında 0 olmadan giriniz</string>
+    <string name="register"><u>Kayıt Ol</u></string>
+    <string name="resend_code"><u>Kodu Tekrar Gönder</u></string>
+    <string name="otp_second_format">%d Sn</string>
+    <string name="otp_authentication">Doğrulama Kodu</string>
+    <string name="verify">Doğrula</string>
+
 </resources>
