@@ -9,5 +9,13 @@
     <string name="otp_second_format">%d Sn</string>
     <string name="otp_authentication">Doğrulama Kodu</string>
     <string name="verify">Doğrula</string>
+    <string name="please_enter_the_verification_code_sent_to_your_number">Lütfen %s numaralı telefonunuza \n gönderilen doğrulama kodunu giriniz</string>
+
+    <string name="user_permission_mail">Helpark San. ve  Tic. A.Ş.’nin tarafıma E-posta ile ticari elektronik ileti göndermesine burada belirtilen izni veriyorum.</string>
+    <string name="user_permission_sms">Helpark San. ve  Tic. A.Ş.’nin tarafıma SMS ile ticari elektronik ileti göndermesine burada belirtilen izni veriyorum.</string>
+    <string name="spannable_text_here">burada</string>
+    <string name="name">İsim</string>
+    <string name="surname">Soyisim</string>
+    <string name="email">E-Posta</string>
 
 </resources>

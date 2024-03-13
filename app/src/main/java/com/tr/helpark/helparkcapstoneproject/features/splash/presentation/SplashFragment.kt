@@ -3,10 +3,14 @@ package com.tr.helpark.helparkcapstoneproject.features.splash.presentation
 import android.os.Handler
 import android.os.Looper
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.tr.helpark.helparkcapstoneproject.R
+import com.tr.helpark.helparkcapstoneproject.common.extensions.navigateWithAnimation
 import com.tr.helpark.helparkcapstoneproject.core.base.BaseFragment
 import com.tr.helpark.helparkcapstoneproject.databinding.FragmentSplashBinding
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class SplashFragment : BaseFragment<FragmentSplashBinding,SplashViewModel>(
     FragmentSplashBinding::inflate,
@@ -15,9 +19,11 @@ class SplashFragment : BaseFragment<FragmentSplashBinding,SplashViewModel>(
 
 
     override fun onViewReady() {
-       Handler(Looper.getMainLooper()).postDelayed({
-            findNavController().navigate(R.id.action_splashFragment_to_loginFragment)
-        }, 3000)
+        viewLifecycleOwner.lifecycleScope.launch {
+            delay(3000)
+            val action = SplashFragmentDirections.actionSplashFragmentToLoginFragment()
+            navigateWithAnimation(action)
+        }
     }
 
     override fun initListeners() {

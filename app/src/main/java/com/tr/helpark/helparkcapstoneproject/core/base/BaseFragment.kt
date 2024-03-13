@@ -1,11 +1,12 @@
 package com.tr.helpark.helparkcapstoneproject.core.base
 
 
-
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.viewbinding.ViewBinding
@@ -16,8 +17,8 @@ import androidx.viewbinding.ViewBinding
 
 typealias Inflater<T> = (LayoutInflater, ViewGroup?, Boolean) -> T
 
-abstract class BaseFragment<VB : ViewBinding,VM>(
-    private val inflater : Inflater<VB>
+abstract class BaseFragment<VB : ViewBinding, VM>(
+    private val inflater: Inflater<VB>
 ) : Fragment() where VM : ViewModel {
 
     // The TAG value to use in logs.
@@ -28,7 +29,7 @@ abstract class BaseFragment<VB : ViewBinding,VM>(
 
     protected val binding: VB get() = _binding as VB
 
-    protected abstract val viewModel : VM
+    protected abstract val viewModel: VM
 
     protected open fun onViewReady() {}
 
@@ -45,11 +46,11 @@ abstract class BaseFragment<VB : ViewBinding,VM>(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = this.inflater.invoke(inflater,container,false)
+        _binding = this.inflater.invoke(inflater, container, false)
         return binding.root
     }
 
-    final fun onViewReady(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         onViewReady()
         initListeners()
@@ -61,9 +62,15 @@ abstract class BaseFragment<VB : ViewBinding,VM>(
         _binding = null
     }
 
-    private fun sendPageEvent(){
+    private fun sendPageEvent() {
         TAG.let {
             // send firebase page event
         }
+    }
+
+    open fun hideKeyboard(){
+        val inputManager =
+            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputManager.hideSoftInputFromWindow(binding.root.windowToken, 0)
     }
 }

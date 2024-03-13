@@ -32,3 +32,19 @@ fun String.boldNumbersAndAsterisks(): SpannableString {
 
     return spannableString
 }
+
+fun String.formatAndInsertPhoneNumber(phoneNumber: String): String {
+    // Ensure the phone number is at least 4 characters long
+    if (phoneNumber.length < 4) return this
+
+    // Hide all but the last 4 digits of the phone number
+    val maskedNumber = phoneNumber.takeLast(4).padLeft(phoneNumber.length, '*')
+
+    // Replace the %s in the string with the masked number
+    return this.replace("%s", maskedNumber)
+}
+
+// Function to pad the beginning of a String with a specific character until a desired length is reached
+fun String.padLeft(length: Int, char: Char): String {
+    return char.toString().repeat(length - this.length) + this
+}
