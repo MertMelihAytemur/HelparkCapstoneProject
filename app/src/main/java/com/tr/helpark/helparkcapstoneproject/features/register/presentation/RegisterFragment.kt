@@ -2,6 +2,7 @@ package com.tr.helpark.helparkcapstoneproject.features.register.presentation
 
 import android.text.SpannableString
 import android.view.View
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.tr.helpark.helparkcapstoneproject.R
@@ -18,7 +19,7 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding, RegisterViewModel
     private var emailPermission = false
     private var smsPermission = false
     override fun onViewReady() {
-
+        setRegisterButtonStatus()
     }
     override fun initListeners() {
         with(binding){
@@ -70,13 +71,31 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding, RegisterViewModel
             binding.tiePhone.setPhoneMaskWithListener(
                 onPhoneCompleted = { isPhoneLength ->
                     if (isPhoneLength) hideKeyboard()
-                    //binding.btnLogin.isEnabled = isPhoneLength
+                    viewModel.updateFieldState(3, isPhoneLength)
                 }
             )
         }
     }
 
-    override fun observeEvents() {
+    private fun setRegisterButtonStatus(){
+        with(binding){
+            tieFirstName.doAfterTextChanged {
+                viewModel.updateFieldState(0, it?.isNotEmpty() ?: false)
+            }
 
+            tieSurname.doAfterTextChanged {
+                viewModel.updateFieldState(1, it?.isNotEmpty() ?: false)
+            }
+
+            tieEmail.doAfterTextChanged {
+                viewModel.updateFieldState(2, it?.isNotEmpty() ?: false)
+            }
+        }
+    }
+
+    override fun observeEvents() {
+        viewModel.onAllFieldFilledState.observe(viewLifecycleOwner) { isAllFieldFilled ->
+            binding.btnRegister.isEnabled = isAllFieldFilled
+        }
     }
 }
