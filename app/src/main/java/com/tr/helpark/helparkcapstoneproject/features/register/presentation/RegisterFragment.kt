@@ -2,11 +2,13 @@ package com.tr.helpark.helparkcapstoneproject.features.register.presentation
 
 import android.text.SpannableString
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.tr.helpark.helparkcapstoneproject.R
 import com.tr.helpark.helparkcapstoneproject.common.extensions.addClickableLink
+import com.tr.helpark.helparkcapstoneproject.common.extensions.navigateWithAnimation
 import com.tr.helpark.helparkcapstoneproject.common.extensions.setPhoneMaskWithListener
 import com.tr.helpark.helparkcapstoneproject.core.base.BaseFragment
 import com.tr.helpark.helparkcapstoneproject.databinding.FragmentRegisterBinding
@@ -19,17 +21,23 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding, RegisterViewModel
     private var emailPermission = false
     private var smsPermission = false
     override fun onViewReady() {
+        activity?.window?.statusBarColor =
+            ContextCompat.getColor(requireContext(), R.color.gray_soft_f8)
         setRegisterButtonStatus()
+        initUi()
     }
+
     override fun initListeners() {
-        with(binding){
+        with(binding) {
 
             ivClose.setOnClickListener {
                 findNavController().popBackStack()
             }
 
             val emailAndSmsClickListener = View.OnClickListener {
-
+                navigateWithAnimation(
+                    RegisterFragmentDirections.actionRegisterFragmentToSmsEmailWebViewFragment()
+                )
             }
 
             tvEmailPermission.addClickableLink(
@@ -77,8 +85,18 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding, RegisterViewModel
         }
     }
 
-    private fun setRegisterButtonStatus(){
-        with(binding){
+    private fun initUi(){
+        if(smsPermission){
+            binding.ivCheckBoxSmsPermission.setImageResource(R.drawable.rectangular_checkbox_checked)
+        }
+
+        if(emailPermission){
+            binding.ivCheckBoxEmailPermission.setImageResource(R.drawable.rectangular_checkbox_checked)
+        }
+    }
+
+    private fun setRegisterButtonStatus() {
+        with(binding) {
             tieFirstName.doAfterTextChanged {
                 viewModel.updateFieldState(0, it?.isNotEmpty() ?: false)
             }

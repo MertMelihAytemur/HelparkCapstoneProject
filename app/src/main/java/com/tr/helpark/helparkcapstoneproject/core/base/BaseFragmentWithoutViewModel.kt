@@ -27,8 +27,7 @@ abstract class BaseFragmentWithoutViewModel<VB : ViewBinding>(
 
     protected open fun initListeners() {}
 
-    protected open fun observeEvents() {}
-
+    protected open fun onViewReady() {}
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -44,8 +43,8 @@ abstract class BaseFragmentWithoutViewModel<VB : ViewBinding>(
 
     final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        onViewReady()
         initListeners()
-        observeEvents()
     }
 
     override fun onDestroyView() {

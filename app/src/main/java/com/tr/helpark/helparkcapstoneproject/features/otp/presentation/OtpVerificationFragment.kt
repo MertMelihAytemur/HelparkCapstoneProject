@@ -71,6 +71,7 @@ class OtpVerificationFragment :
         message: String,
         clickCommentAction: (() -> Any)? = null,
     ) {
+        binding.btnVerify.isEnabled = false
         binding.customErrorMessageView.apply {
             show()
             this.messageText = message
