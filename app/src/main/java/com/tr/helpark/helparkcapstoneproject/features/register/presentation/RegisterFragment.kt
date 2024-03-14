@@ -8,6 +8,8 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.tr.helpark.helparkcapstoneproject.R
 import com.tr.helpark.helparkcapstoneproject.common.extensions.addClickableLink
+import com.tr.helpark.helparkcapstoneproject.common.extensions.formatAndInsertPhoneNumber
+import com.tr.helpark.helparkcapstoneproject.common.extensions.formatPhoneNumber
 import com.tr.helpark.helparkcapstoneproject.common.extensions.isValidEmail
 import com.tr.helpark.helparkcapstoneproject.common.extensions.navigateWithAnimation
 import com.tr.helpark.helparkcapstoneproject.common.extensions.setPhoneMaskWithListener
@@ -38,7 +40,7 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding, RegisterViewModel
             btnRegister.setOnClickListener {
                 navigateWithAnimation(
                     RegisterFragmentDirections.actionRegisterFragmentToOtpVerificationFragment(
-                        binding.tiePhone.text.toString()
+                        binding.tiePhone.text.toString().formatPhoneNumber()
                     )
                 )
             }
@@ -85,7 +87,7 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding, RegisterViewModel
                 }
             }
 
-            binding.tiePhone.setPhoneMaskWithListener(
+            tiePhone.setPhoneMaskWithListener(
                 onPhoneCompleted = { isPhoneLength ->
                     if (isPhoneLength) hideKeyboard()
                     viewModel.updateFieldState(3, isPhoneLength)

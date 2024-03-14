@@ -41,8 +41,9 @@ class OtpVerificationFragment :
                 //gsmNo?.let { viewModel.getTokenWithOtpCode(gsm=it, otp = otpCode, nomuToken = nomuToken!!, partnerID = partnerId) }
             }
         }
+
         binding.otpTimerView.againTextClickListener {
-            //gsmNo?.let { viewModel.resendOtpCodeWithGsmUseCase(it,partnerId) }
+            binding.otpTimerView.startOtpTimer(60)
         }
 
         binding.btnBackOtp.setOnClickListener {

@@ -57,7 +57,7 @@ class OTPTimerView @JvmOverloads constructor(
     }
 
 
-    private fun setOtpTimerText(time: Int) {
+    fun setOtpTimerText(time: Int) {
         if (time <= 0) {
             binding.tvOtpTimer.visibility = View.INVISIBLE
             binding.tvOtpAgain.isOtpTextEnabledColor(isEnabled = true)
