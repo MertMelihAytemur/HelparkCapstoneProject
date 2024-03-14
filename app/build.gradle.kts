@@ -24,15 +24,6 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -42,7 +33,20 @@ android {
     }
 
     buildFeatures {
+        buildConfig = true
         viewBinding = true
+    }
+
+    buildTypes {
+        getByName("debug") {
+            isDebuggable = true
+            buildConfigField("String", "API_BASE_URL", "\"https://nomu-prod.appcent.mobi\"")
+        }
+        getByName("release") {
+            isMinifyEnabled = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            buildConfigField("String", "API_BASE_URL", "\"https://nomu-prod.appcent.mobi\"")
+        }
     }
 }
 
