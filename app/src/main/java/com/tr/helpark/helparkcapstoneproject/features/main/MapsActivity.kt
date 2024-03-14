@@ -10,6 +10,7 @@ import com.tr.helpark.helparkcapstoneproject.R
 import com.tr.helpark.helparkcapstoneproject.common.extensions.findNavController
 import com.tr.helpark.helparkcapstoneproject.features.home.presentation.HomeFragment
 import com.tr.helpark.helparkcapstoneproject.features.login.presentation.LoginFragment
+import com.tr.helpark.helparkcapstoneproject.features.otp.presentation.OtpVerificationFragment
 
 class MapsActivity : AppCompatActivity() {
 
@@ -24,12 +25,10 @@ class MapsActivity : AppCompatActivity() {
     private fun initOnBackPressedDispatcher() {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                val currentFragment = getCurrentFragment()
-                if (currentFragment is HomeFragment || currentFragment is LoginFragment) {
-                    moveTaskToBack(true)
-                }
-                else{
-                    navController.navigateUp()
+                when(getCurrentFragment()) {
+                    is HomeFragment, is LoginFragment -> moveTaskToBack(true)
+                    is OtpVerificationFragment -> findNavController(R.id.nav_host_fragment).popBackStack(R.id.loginFragment, false)
+                    else -> navController.navigateUp()
                 }
             }
         }
@@ -37,7 +36,8 @@ class MapsActivity : AppCompatActivity() {
     }
 
     private fun getCurrentFragment(): Fragment? {
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         return navHostFragment.childFragmentManager.primaryNavigationFragment
     }
 }

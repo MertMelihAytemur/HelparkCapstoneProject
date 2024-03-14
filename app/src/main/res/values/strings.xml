@@ -17,5 +17,6 @@
     <string name="name">İsim</string>
     <string name="surname">Soyisim</string>
     <string name="email">E-Posta</string>
+    <string name="invalid_email_address">Geçersiz e-posta adresi</string>
 
 </resources>

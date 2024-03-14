@@ -48,3 +48,8 @@ fun String.formatAndInsertPhoneNumber(phoneNumber: String): String {
 fun String.padLeft(length: Int, char: Char): String {
     return char.toString().repeat(length - this.length) + this
 }
+
+fun String.isValidEmail(): Boolean {
+    val emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$"
+    return this.matches(emailRegex.toRegex())
+}

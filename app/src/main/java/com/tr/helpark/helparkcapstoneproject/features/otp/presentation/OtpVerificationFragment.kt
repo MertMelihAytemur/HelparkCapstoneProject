@@ -44,8 +44,9 @@ class OtpVerificationFragment :
         binding.otpTimerView.againTextClickListener {
             //gsmNo?.let { viewModel.resendOtpCodeWithGsmUseCase(it,partnerId) }
         }
+
         binding.btnBackOtp.setOnClickListener {
-            findNavController().popBackStack()
+            findNavController().popBackStack(R.id.loginFragment,false)
         }
     }
 

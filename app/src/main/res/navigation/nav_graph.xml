@@ -44,7 +44,7 @@
 
             <argument
                 android:name="gsmNo"
-                app:argType="string"></argument>
+                app:argType="string" />
 
         </action>
         <action
@@ -63,16 +63,24 @@
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right" />
+            app:popExitAnim="@anim/slide_out_right">
+
+            <argument
+                android:name="gsmNo"
+                app:argType="string"/>
+
+        </action>
         <action
             android:id="@+id/action_registerFragment_to_smsEmailWebViewFragment"
             app:destination="@id/smsEmailWebViewFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/otpVerificationFragment"
         android:name="com.tr.helpark.helparkcapstoneproject.features.otp.presentation.OtpVerificationFragment"
         android:label="fragment_otp_verification"
         tools:layout="@layout/fragment_otp_verification">
+
         <action
             android:id="@+id/action_otpVerificationFragment_to_homeFragment"
             app:destination="@id/homeFragment"
@@ -84,16 +92,23 @@
         <argument
             android:name="gsmNo"
             android:defaultValue=""
-            app:argType="string"></argument>
+            app:argType="string"/>
+
     </fragment>
+
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.tr.helpark.helparkcapstoneproject.features.home.presentation.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" />
+
     <fragment
         android:id="@+id/smsEmailWebViewFragment"
         android:name="com.tr.helpark.helparkcapstoneproject.features.register.presentation.smsemailwebview.SmsEmailWebViewFragment"
         android:label="fragment_sms_email_web_view"
-        tools:layout="@layout/fragment_sms_email_web_view" />
+        tools:layout="@layout/fragment_sms_email_web_view" >
+        <action
+            android:id="@+id/action_smsEmailWebViewFragment_to_otpVerificationFragment"
+            app:destination="@id/otpVerificationFragment"/>
+    </fragment>
 </navigation>

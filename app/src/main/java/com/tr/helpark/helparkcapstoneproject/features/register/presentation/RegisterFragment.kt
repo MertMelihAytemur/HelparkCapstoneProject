@@ -8,6 +8,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.tr.helpark.helparkcapstoneproject.R
 import com.tr.helpark.helparkcapstoneproject.common.extensions.addClickableLink
+import com.tr.helpark.helparkcapstoneproject.common.extensions.isValidEmail
 import com.tr.helpark.helparkcapstoneproject.common.extensions.navigateWithAnimation
 import com.tr.helpark.helparkcapstoneproject.common.extensions.setPhoneMaskWithListener
 import com.tr.helpark.helparkcapstoneproject.core.base.BaseFragment
@@ -32,6 +33,14 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding, RegisterViewModel
 
             ivClose.setOnClickListener {
                 findNavController().popBackStack()
+            }
+
+            btnRegister.setOnClickListener {
+                navigateWithAnimation(
+                    RegisterFragmentDirections.actionRegisterFragmentToOtpVerificationFragment(
+                        binding.tiePhone.text.toString()
+                    )
+                )
             }
 
             val emailAndSmsClickListener = View.OnClickListener {
@@ -106,7 +115,16 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding, RegisterViewModel
             }
 
             tieEmail.doAfterTextChanged {
-                viewModel.updateFieldState(2, it?.isNotEmpty() ?: false)
+                val emailText = it?.toString() ?: ""
+                val isValidEmail = emailText.isValidEmail()
+                viewModel.updateFieldState(2, isValidEmail)
+
+                if (emailText.isEmpty() || isValidEmail) {
+                    tilEmail.error = null
+                    tilEmail.isErrorEnabled = false
+                } else {
+                    tilEmail.error = getString(R.string.invalid_email_address)
+                }
             }
         }
     }
