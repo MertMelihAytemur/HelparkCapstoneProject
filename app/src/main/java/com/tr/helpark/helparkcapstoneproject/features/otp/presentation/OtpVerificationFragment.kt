@@ -11,8 +11,10 @@ import com.tr.helpark.helparkcapstoneproject.common.extensions.boldNumbersAndAst
 import com.tr.helpark.helparkcapstoneproject.common.extensions.formatAndInsertPhoneNumber
 import com.tr.helpark.helparkcapstoneproject.core.base.BaseFragment
 import com.tr.helpark.helparkcapstoneproject.databinding.FragmentOtpVerificationBinding
+import dagger.hilt.android.AndroidEntryPoint
 
 
+@AndroidEntryPoint
 class OtpVerificationFragment :
     BaseFragment<FragmentOtpVerificationBinding, OtpVerificationViewModel>(
         FragmentOtpVerificationBinding::inflate,

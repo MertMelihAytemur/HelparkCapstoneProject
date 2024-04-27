@@ -10,7 +10,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.tr.helpark.helparkcapstoneproject.R
-import com.tr.helpark.helparkcapstoneproject.common.const.Constants.HELPARK_WEB_SITE_URL
+import com.tr.helpark.helparkcapstoneproject.common.util.Constants.HELPARK_WEB_SITE_URL
 import com.tr.helpark.helparkcapstoneproject.core.base.BaseFragmentWithoutViewModel
 import com.tr.helpark.helparkcapstoneproject.databinding.FragmentSmsEmailWebViewBinding
 

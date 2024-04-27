@@ -1,6 +1,24 @@
 package com.tr.helpark.helparkcapstoneproject.core
 
+import android.app.Application
+import com.tr.helpark.helparkcapstoneproject.BuildConfig
+import dagger.hilt.android.HiltAndroidApp
+import timber.log.Timber
+
 /**
 *Created by Mert Melih Aytemur on 1/23/2024.
-*/class Application {
+ */
+@HiltAndroidApp
+class Application : Application() {
+
+    override fun onCreate() {
+        super.onCreate()
+        initTimber()
+    }
+
+    private fun initTimber() {
+        if (BuildConfig.DEBUG) {
+            Timber.plant(Timber.DebugTree())
+        }
+    }
 }

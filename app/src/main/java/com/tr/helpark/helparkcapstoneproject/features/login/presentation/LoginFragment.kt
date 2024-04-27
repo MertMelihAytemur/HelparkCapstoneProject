@@ -7,8 +7,9 @@ import com.tr.helpark.helparkcapstoneproject.common.extensions.navigateWithAnima
 import com.tr.helpark.helparkcapstoneproject.common.extensions.setPhoneMaskWithListener
 import com.tr.helpark.helparkcapstoneproject.core.base.BaseFragment
 import com.tr.helpark.helparkcapstoneproject.databinding.FragmentLoginBinding
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class LoginFragment : BaseFragment<FragmentLoginBinding, LoginViewModel>(
     FragmentLoginBinding::inflate
 ) {

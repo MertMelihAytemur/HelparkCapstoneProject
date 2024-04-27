@@ -1,6 +1,7 @@
 package com.tr.helpark.helparkcapstoneproject.common.extensions
 
 import android.view.View
+import android.view.ViewGroup
 import com.tr.helpark.helparkcapstoneproject.common.customview.CustomToastMessageView
 
 /**
@@ -26,4 +27,11 @@ fun CustomToastMessageView.showCustomMessage(
         setToastMessageText(message)
         show(timeMillis)
     }
+}
+
+fun View.getChildAt(index: Int): View? {
+    return if (this is ViewGroup)
+        getChildAt(index)
+    else
+        null
 }

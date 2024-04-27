@@ -126,4 +126,10 @@ dependencies {
 
     val lottieVersion by extra("6.0.0")
     implementation("com.airbnb.android:lottie:$lottieVersion")
+
+    //Timber for logging
+    implementation("com.jakewharton.timber:timber:5.0.1")
+
+    //Dexter for Permission Handling
+    implementation("com.karumi:dexter:6.2.3")
 }

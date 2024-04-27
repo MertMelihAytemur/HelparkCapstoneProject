@@ -15,7 +15,9 @@ import com.tr.helpark.helparkcapstoneproject.common.extensions.navigateWithAnima
 import com.tr.helpark.helparkcapstoneproject.common.extensions.setPhoneMaskWithListener
 import com.tr.helpark.helparkcapstoneproject.core.base.BaseFragment
 import com.tr.helpark.helparkcapstoneproject.databinding.FragmentRegisterBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class RegisterFragment : BaseFragment<FragmentRegisterBinding, RegisterViewModel>(
     FragmentRegisterBinding::inflate,
 ) {
