@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="BlueGreenMaterialButton" parent="Helium.Material3.Button">
+        <item name="android:background">@drawable/bg_button_location_serice_dialog</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="textAllCaps">false</item>
+    </style>
+
+    <style name="BlueGreenMaterialButtonCancel" parent="Helium.Material3.Button">
+        <item name="android:background">@drawable/bg_button_cancel</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="textAllCaps">false</item>
+    </style>
+
+    <style name="BlueGreenMaterialButtonParkDetail" parent="Helium.Material3.Button">
+        <item name="android:background">@drawable/bg_button_cancel</item>
+        <item name="android:textSize">14sp</item>
+        <item name="textAllCaps">false</item>
+    </style>
+
+    <style name="BlueGreenMaterialButtonExit" parent="Helium.Material3.Button">
+        <item name="android:background">@drawable/bg_button_exit_app_dialog</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="textAllCaps">false</item>
+    </style>
+
+    <style name="Helium.Material3.Button" parent="ThemeOverlay.Material3.Button">
+        <item name="cornerRadius">12dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="fontFamily">sans-serif-medium</item>
+        <item name="android:padding">8dp</item>
+    </style>
+
+    <style name="BottomSheetDialogStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="background">@android:color/transparent</item>
+    </style>
+
+    <style name="BottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/BottomSheetDialogStyle</item>
+    </style>
+
+    <style name="Widget.AppTheme.MaterialButton.GreenFrameButton" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/white</item>
+        <item name="android:foreground">@drawable/bg_button_green_frame</item>
+        <item name="android:textColor">@color/map_ocean_blue</item>
+        <item name="textAllCaps">false</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="fontFamily">@font/montserrat_medium</item>
+        <item name="cornerRadius">8dp</item>
+    </style>
+</resources>

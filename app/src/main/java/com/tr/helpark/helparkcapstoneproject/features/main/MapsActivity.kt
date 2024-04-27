@@ -8,6 +8,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.tr.helpark.helparkcapstoneproject.R
 import com.tr.helpark.helparkcapstoneproject.common.extensions.findNavController
+import com.tr.helpark.helparkcapstoneproject.databinding.ActivityMapsBinding
 import com.tr.helpark.helparkcapstoneproject.features.home.presentation.HomeFragment
 import com.tr.helpark.helparkcapstoneproject.features.login.presentation.LoginFragment
 import com.tr.helpark.helparkcapstoneproject.features.otp.presentation.OtpVerificationFragment
@@ -15,9 +16,14 @@ import com.tr.helpark.helparkcapstoneproject.features.otp.presentation.OtpVerifi
 class MapsActivity : AppCompatActivity() {
 
     private lateinit var navController: NavController
+
+    private val binding : ActivityMapsBinding by lazy {
+        ActivityMapsBinding.inflate(layoutInflater)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(binding.root)
+
         navController = findNavController()
         initOnBackPressedDispatcher()
     }
