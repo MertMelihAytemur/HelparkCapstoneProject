@@ -1,11 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
+    <color name="line_color">#E8E9ED</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="green">#35009444</color>
+    <color name="light_blue">#F2F8FA</color>
 
-    <color name="green_primary_light">#EAFAF7</color>
-    <color name="orange_primary_light">#FFEFEC</color>
-    <color name="gray_primary_light">#ECECEC</color>
 
+    <color name="carrot_orange">#FFDAB9</color>
+    <color name="gable_green">#1C2C3C</color>
+    <color name="granny_smith">#889C98</color>
+
+    <color name="spotify_green">#1DB954</color>
+    <color name="coral_red">#FF4141</color>
+    <color name="spanish_pink">#FFBEBE</color>
+    <color name="yankees_blue">#1F2937</color>
+
+    <color name="blue_green">#04A7B5</color>
+    <color name="map_blue">#1a73e8</color>
+    <color name="map_ocean_blue">#1E90FF</color>
+
+    <color name="a1">#4395a1</color>
+    <color name="a2">#2c3e50</color>
+    <color name="a3">#102C36</color>
+    <color name="gray_soft_f8">#F8F8F8</color>
+    <color name="background_toolbar">#0F141E</color>
+    <color name="bg_chip">#F4EDED</color>
     <color name="text_color">#3D3D3D</color>
+    <color name="text_color_light">#767676</color>
+    <color name="gray_frame">#F2F2F6</color>
+    <color name="gray_primary_light">#ECECEC</color>
+    <color name="green_primary_light">#EAFAF7</color>
+    <color name="orange_primary_light">#ffefec</color>
+
+    <!-- General app colors -->
+    <color name="steel_blue">#4494a3</color>
+    <color name="japanese_indigo">#2b3c53</color>
+    <color name="deep_space_sparkle">#416464</color>
+    <color name="gray_asparagus">#475144</color>
+    <color name="ebony">#5e6644</color>
+    <color name="yankees_blue_light">#202c3c</color>
+    <color name="dark_gunmetal">#1b2a33</color>
+    <color name="axolot">#627e59</color>
+    <color name="teal_blue">#3c7484</color>
+    <color name="police_blue">#3c546c</color>
+
+
+    <color name="text_color_black">#162147</color>
+    <color name="blue">#80B7CB</color>
+    <color name="text_color_grey">#AEAEAE</color>
+    <color name="red">#FF2D2D</color>
+    <color name="eerie_black">#1C1C1C</color>
+    <color name="unbleached_silk">#FCE0C8</color>
+    <color name="light_red">#FFEAEA</color>
+    <color name="grey">#9499AA</color>
+    <color name="light_green">#FFCCEADA</color>
+    <color name="text_color_price">#B7BACA</color>
+    <color name="text_color_date">#636A84</color>
+    <color name="text_color_hint">#5B8290</color>
+    <color name="lightGrey">#D1D2CE</color>
 </resources>

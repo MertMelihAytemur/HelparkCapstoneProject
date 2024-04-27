@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1045597017451",
+    "project_id": "helpark-capstone-project",
+    "storage_bucket": "helpark-capstone-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1045597017451:android:73570fd9b240b99aa9282e",
+        "android_client_info": {
+          "package_name": "com.tr.helpark.helparkcapstoneproject"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_6k6CnhKnOaOinHCLRyBIez3copXDu5s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
