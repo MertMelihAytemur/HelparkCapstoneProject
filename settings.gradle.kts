@@ -16,3 +16,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "HelparkCapstoneProject"
 include(":app")
+include(":core")
