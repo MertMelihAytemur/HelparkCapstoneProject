@@ -3,8 +3,10 @@ package com.tr.helpark.helparkcapstoneproject.features.register.presentation
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
+@HiltViewModel
 class RegisterViewModel @Inject constructor() : ViewModel() {
 
     private val requiredFields = booleanArrayOf(false, false, false, false)

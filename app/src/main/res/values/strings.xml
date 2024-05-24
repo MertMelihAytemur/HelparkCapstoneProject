@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">HelparkCapstoneProject</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="helpark">HELPARK</string>
     <string name="enter_phone_number">Telefon Numaranız</string>
     <string name="please_enter_your_registered_number_without_0_at_the_beginning">Kayıt olduğunuz numarayı başında 0 olmadan giriniz</string>
@@ -18,5 +17,82 @@
     <string name="surname">Soyisim</string>
     <string name="email">E-Posta</string>
     <string name="invalid_email_address">Geçersiz e-posta adresi</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="general_error"><![CDATA[<string name=\"general_error\">An error occurred, please try again later.</string>]]></string>
+    <string name="price_schedule_and_details">Otopark Detay</string>
+    <string name="location_permission_not_granted">Konum İzni Verilmedi</string>
+    <string name="need_to_location_permission">Uygulamayı kullanabilmek için konum iznine ihtiyacımız var.</string>
+    <string name="go_to_settings">Ayarlara Git</string>
+    <string name="location_not_found">Konuma Erişilemedi!</string>
+    <string name="need_location_services">Servislerimizden faydalanabilmen için konumunu paylaşmana ihtiyacımız var.</string>
+    <string name="turn_on_location_services">Konumu Servislerini Aç</string>
+    <string name="car_park_not_found_near">Yakınlarda otopark bulunamadı!</string>
+    <string name="car_park_not_found_desc">Şu anda, HELPARK servisleri sadece İstanbul’da hizmet sunmaktadır. Diğer bölgeler için takipte kalınız.</string>
+    <string name="car_parks">Otoparklar</string>
+    <string name="exit">Çıkış Yap</string>
+    <string name="cancel">İptal</string>
+    <string name="are_you_sure_exit_application">Uygulamadan çıkmak istediğinize emin misiniz?</string>
+    <string name="park_open">AÇIK</string>
+    <string name="park_closed">KAPALI</string>
+    <string name="current_location_marker_title">Konumunuz</string>
+    <string name="monthly_subscription">Aylık Abonelik Ücreti</string>
+    <string name="work_hours">Çalışma Saatleri</string>
+    <string name="address_description">Adres Tarifi</string>
+    <string name="last_updated_date">Son Güncelleme Tarihi</string>
+    <string name="park_type">Park Tipi</string>
+    <string name="park_density">Doluluk Oranı</string>
+    <string name="loading">Yükleniyor...</string>
+    <string name="time">Saat</string>
+    <string name="fee">Ücret</string>
+    <string name="search">Ara</string>
+    <string name="park_detail">Otopark Bilgileri</string>
+    <string name="park_schedule">Otopark Tarifesi</string>
+    <string name="new_version_available">Yeni Versiyon Mevcut</string>
+    <string name="update_to_use_app">Uygulamayı kullanmaya devam edebilmek için yeni versiyona güncelleyin.</string>
+    <string name="update">GÜNCELLE</string>
+    <string name="menu_options_help">Yardım</string>
+
+    <!-- Settings Screen -->
+    <string name="settings_toolbar_title">Ayarlar</string>
+    <string name="settings_row_about">Hakkında</string>
+    <string name="rate_us">Helpark’ı Değerlendir</string>
+
+    <!-- About Screen -->
+    <string name="about_toolbar_title">Hakkında</string>
+    <string name="about_ispark_policy_text"><b>HELPARK,</b>\n\nkullanıcıların İstanbul’da bulunan İSPARK otoparklarını kolayca bulmalarına ve yönetmelerine yardımcı olan bir mobil uygulamadır.\n\nUygulama aracılığıyla, İSPARK otoparklarının konumları, doluluk oranları, isimleri, çalışma saatleri ve saatlik ücretleri gibi önemli bilgilere erişebilirsiniz.
+
+    Bu bilgileri sunarken, İstanbul Büyükşehir Belediyesi’nin sağladığı resmi verilere dayanmaktayız.\n\nUygulamamızın İSPARK otoparklarının bilgilerine erişimi İstanbul Büyükşehir Belediyesi ve İSPARK firmasının sağladığı API aracılığıyla gerçekleşmektedir. Bu sayede kullanıcılarımız, doğru ve güncel bilgilere ulaşarak otopark seçimlerini daha bilinçli bir şekilde yapabilirler.\n\n
+
+    HELPARK olarak, kullanıcılarımıza daha iyi bir deneyim sunabilmek adına İstanbul Büyükşehir Belediyesi ve İSPARK API’sini kullanmaktan gurur duyuyoruz. Sağladığımız bu bilgilerin güvenilirliğine ve kesinliğine olan taahhüdümüzü uygulamamızı kullanırken de sürdürmekteyiz.\n\n
+
+    Herhangi bir sorunuz veya geri bildiriminiz olduğunda lütfen bize ulaşmaktan çekinmeyin. Sizlerden gelen geri bildirimler, uygulamamızı daha da geliştirmemize yardımcı olacaktır. HELPARK’ı tercih ettiğiniz için teşekkür ederiz!\n\n\n<b>https://helpark.com.tr/</b>
+</string>
+    <string name="prices_and_detail">Fiyatlandırma ve Detay</string>
+    <string name="live_density">Canlı Doluluk Oranı</string>
+    <string name="helpark_onboarding_title">HELPARK\'a HOŞ GELDİN\n\nSenin için en uygun otoparkları buluyoruz!</string>
+    <string name="low_density">Az Yoğun</string>
+    <string name="mid_density">Orta Yoğunluk</string>
+    <string name="high_density">Dolmak Üzere</string>
+    <string name="btn_onboarding_text">Başla</string>
+    <string name="working_hours">Çalışma Saatleri</string>
+    <string name="address_directions">Adres Tarifi</string>
+    <string name="privacy_policy">Gizlilik Sözleşmesi ve Veri Kullanımı</string>
+    <string name="unexpected_state_occured">Beklenmeyen Bir Durum Oluştu</string>
+    <string name="title_activity_maps">MapsActivity</string>
+    <string name="location_not_found_message">Konum Bulunamadı</string>
+    <string name="related_location_not_found_message">%s Bulunamadı</string>
+    <string name="wish_good_journey">Helpark iyi yolculuklar diler</string>
+    <string name="car_park_saved_success">Otopark Başarıyla Kaydedildi</string>
+    <string name="saved_car_parks">Kayıtlı Otoparklar</string>
+    <string name="saved_car_park_not_found">Henüz kaydedilmiş otoparkınız yok.</string>
+    <string name="search_result_not_found">Aramanıza uygun sonuç bulunamadı</string>
+    <string name="show_on_map">Haritada Göster</string>
+    <string name="remove">Sil</string>
+    <string name="share_car_park_title">Helpark iyi yolculuklar diler</string>
+    <string name="share_car_park_link">%s %s</string>
+    <string name="toolbar_title_search_location">Konum Ara</string>
+    <string name="tv_search_results">Sonuçlar</string>
+    <string name="search_history">Geçmiş Aramalarım</string>
 
 </resources>

@@ -35,17 +35,24 @@ android {
     buildFeatures {
         buildConfig = true
         viewBinding = true
+        dataBinding = true
     }
 
     buildTypes {
         getByName("debug") {
             isDebuggable = true
             buildConfigField("String", "API_BASE_URL", "\"https://nomu-prod.appcent.mobi\"")
+            buildConfigField("String", "MAPS_API_KEY", project.properties["MAPS_API_KEY"].toString())
+
+            manifestPlaceholders["MAPS_API_KEY"] = project.properties["MAPS_API_KEY"].toString()
         }
         getByName("release") {
             isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             buildConfigField("String", "API_BASE_URL", "\"https://nomu-prod.appcent.mobi\"")
+            buildConfigField("String", "MAPS_API_KEY", project.properties["MAPS_API_KEY"].toString())
+
+            manifestPlaceholders["MAPS_API_KEY"] = project.properties["MAPS_API_KEY"].toString()
         }
     }
 }
@@ -106,4 +113,23 @@ dependencies {
     val retrofitVersion by extra("2.9.0") // Ensure to replace Your_Retrofit_Version_Here with your Retrofit version
     implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")
     implementation("com.squareup.retrofit2:converter-gson:$retrofitVersion")
+
+    // Google Maps
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
+    implementation("com.google.android.gms:play-services-location:21.2.0")
+    implementation("com.google.android.libraries.places:places:3.4.0")
+    implementation("com.google.android.gms:play-services-places:17.0.0")
+    implementation("com.google.maps:google-maps-services:0.15.0")
+
+    // Fused Location Provider
+    implementation("com.google.android.gms:play-services-location:21.2.0")
+
+    val lottieVersion by extra("6.0.0")
+    implementation("com.airbnb.android:lottie:$lottieVersion")
+
+    //Timber for logging
+    implementation("com.jakewharton.timber:timber:5.0.1")
+
+    //Dexter for Permission Handling
+    implementation("com.karumi:dexter:6.2.3")
 }
