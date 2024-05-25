@@ -2,30 +2,44 @@ package com.tr.helpark.helparkcapstoneproject.features.register.presentation.sms
 
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
+import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.tr.helpark.helparkcapstoneproject.R
 import com.tr.helpark.helparkcapstoneproject.common.util.Constants.HELPARK_WEB_SITE_URL
-import com.tr.helpark.helparkcapstoneproject.core.base.BaseFragmentWithoutViewModel
 import com.tr.helpark.helparkcapstoneproject.databinding.FragmentSmsEmailWebViewBinding
 
 
-class SmsEmailWebViewFragment : BaseFragmentWithoutViewModel<FragmentSmsEmailWebViewBinding>(
-    FragmentSmsEmailWebViewBinding::inflate
-) {
+class SmsEmailWebViewFragment : Fragment() {
 
-    override fun onViewReady() {
+    private lateinit var binding: FragmentSmsEmailWebViewBinding
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentSmsEmailWebViewBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         activity?.window?.statusBarColor =
             ContextCompat.getColor(requireContext(), R.color.white)
         setWebView()
+        initListeners()
     }
 
-    override fun initListeners() {
+    private fun initListeners() {
         with(binding){
             ivGoBack.setOnClickListener {
                 navigateBack()

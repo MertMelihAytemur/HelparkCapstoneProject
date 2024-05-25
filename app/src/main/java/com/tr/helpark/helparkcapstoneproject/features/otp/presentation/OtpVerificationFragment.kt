@@ -1,7 +1,8 @@
 package com.tr.helpark.helparkcapstoneproject.features.otp.presentation
 
 
-import android.util.Log
+import android.os.Bundle
+import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -16,7 +17,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class OtpVerificationFragment :
-    BaseFragment<FragmentOtpVerificationBinding, OtpVerificationViewModel>(
+    BaseFragment<OtpVerificationViewModel, FragmentOtpVerificationBinding>(
         FragmentOtpVerificationBinding::inflate,
     ) {
 
@@ -26,12 +27,13 @@ class OtpVerificationFragment :
     private var gsmNo: String? = null
     private var otpMessage: String? = null
 
-    override fun onViewReady() {
-        super.onViewReady()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setArguments()
+        initListeners()
     }
 
-    override fun initListeners() {
+    private fun initListeners() {
         binding.otpCodeView.isVerifyCodeLengthListener { isLength ->
             binding.btnVerify.isEnabled = isLength
         }

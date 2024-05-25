@@ -7,9 +7,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModel
 import androidx.viewbinding.ViewBinding
+import com.tr.helpark.helparkcapstoneproject.common.extensions.showToastMessage
+import com.tr.helpark.helparkcapstoneproject.common.util.ToastMessageType
+import com.tr.helpark.helparkcapstoneproject.core.model.ApiErrorModel
+import com.tr.helpark.helparkcapstoneproject.features.main.MapsActivity
+import com.vmlmedia.core.presentation.CoreFragment
+import com.vmlmedia.core.presentation.CoreViewModel
+import com.vmlmedia.core.presentation.LoadingInterface
+import tr.com.helpark.core.domain.UiError
 
 /**
  *Created by Mert Melih Aytemur on 1/19/2024.
@@ -17,44 +23,23 @@ import androidx.viewbinding.ViewBinding
 
 typealias Inflater<T> = (LayoutInflater, ViewGroup?, Boolean) -> T
 
-abstract class BaseFragment<VB : ViewBinding, VM>(
-    private val inflater: Inflater<VB>
-) : Fragment() where VM : ViewModel {
-
-    // The TAG value to use in logs.
-    @Suppress("PropertyName")
-    protected val TAG: String = javaClass.simpleName
+abstract class BaseFragment<VM : CoreViewModel, VB : ViewBinding>(
+    private val inflater: Inflater<VB>,
+) : CoreFragment<VM>() {
 
     private var _binding: VB? = null
+    protected val binding get() = _binding!!
 
-    protected val binding: VB get() = _binding as VB
+    override val loadingInterface: LoadingInterface
+        get() = (requireActivity() as MapsActivity).loadingDialog
 
-    protected abstract val viewModel: VM
-
-    protected open fun onViewReady() {}
-
-    protected open fun initListeners() {}
-
-    protected open fun observeEvents() {}
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
-    final override fun onCreateView(
+    override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+        savedInstanceState: Bundle?,
+    ): View? {
         _binding = this.inflater.invoke(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        onViewReady()
-        initListeners()
-        observeEvents()
+        return _binding?.root
     }
 
     override fun onDestroyView() {
@@ -62,9 +47,37 @@ abstract class BaseFragment<VB : ViewBinding, VM>(
         _binding = null
     }
 
-    private fun sendPageEvent() {
-        TAG.let {
-            // send firebase page event
+    fun handleNetworkError(
+        error: UiError<ApiErrorModel>,
+    ) {
+        when (error) {
+            is UiError.Authentication -> {
+                showToastMessage(
+                    "Authentication error",
+                    toastType = ToastMessageType.GENERAL_ERROR
+                )
+            }
+
+            is UiError.NoInternet -> {
+                showToastMessage(
+                    "No internet connection",
+                    toastType = ToastMessageType.GENERAL_ERROR
+                )
+            }
+
+            is UiError.Server -> {
+                showToastMessage(
+                    "Server error",
+                    toastType = ToastMessageType.GENERAL_ERROR
+                )
+            }
+
+            is UiError.IO -> {
+                showToastMessage(
+                    "IO error",
+                    toastType = ToastMessageType.GENERAL_ERROR
+                )
+            }
         }
     }
 

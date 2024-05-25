@@ -1,6 +1,6 @@
 package com.tr.helpark.helparkcapstoneproject.features.login.presentation
 
-import androidx.lifecycle.ViewModel
+import com.vmlmedia.core.presentation.CoreViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -9,5 +9,5 @@ import javax.inject.Inject
  */
 
 @HiltViewModel
-class LoginViewModel @Inject constructor() : ViewModel() {
+class LoginViewModel @Inject constructor() : CoreViewModel() {
 }

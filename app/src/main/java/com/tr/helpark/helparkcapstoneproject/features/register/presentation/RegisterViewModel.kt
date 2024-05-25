@@ -2,12 +2,12 @@ package com.tr.helpark.helparkcapstoneproject.features.register.presentation
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import com.vmlmedia.core.presentation.CoreViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class RegisterViewModel @Inject constructor() : ViewModel() {
+class RegisterViewModel @Inject constructor() : CoreViewModel() {
 
     private val requiredFields = booleanArrayOf(false, false, false, false)
 

@@ -1,36 +1,22 @@
-package com.tr.helpark.helparkcapstoneproject.core
+package com.tr.helpark.helparkcapstoneproject.core.di
 
-import android.content.Context
 import com.tr.helpark.helparkcapstoneproject.BuildConfig
-import com.tr.helpark.helparkcapstoneproject.common.ClientPreferences
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import okhttp3.CertificatePinner
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import tr.com.helpark.core.data.remote.OkHttpBuilder
+import tr.com.helpark.core.data.remote.RetrofitBuilder
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 class NetworkModule {
-
-    @Provides
-    @Singleton
-    fun provideTokenInterceptor(clientPreferences: ClientPreferences) : Interceptor {
-        return TokenInterceptor(clientPreferences)
-    }
-
-    @Provides
-    @Singleton
-    fun provideSharedPreferences(@ApplicationContext context: Context)  = ClientPreferences(context)
-
     @Provides
     @Singleton
     fun provideLoggingInterceptor(): HttpLoggingInterceptor {
@@ -41,24 +27,18 @@ class NetworkModule {
         }
         return logger
     }
-
     @Provides
     @Singleton
     fun provideOkHttpClient(
-        tokenInterceptor : Interceptor,
         httpLoggingInterceptor: HttpLoggingInterceptor,
-        certificatePinner: CertificatePinner
     ): OkHttpClient {
-        return OkHttpClient.Builder()
-            .certificatePinner(certificatePinner)
+        return OkHttpBuilder()
             .addInterceptor(httpLoggingInterceptor)
-            .addInterceptor(tokenInterceptor)
-            .readTimeout(90, TimeUnit.SECONDS)
-            .connectTimeout(90, TimeUnit.SECONDS)
+            .writeTimeOut(60,TimeUnit.SECONDS)
+            .readTimeOut(60, TimeUnit.SECONDS)
+            .connectTimeOut(60, TimeUnit.SECONDS)
             .build()
     }
-
-
     @Provides
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {

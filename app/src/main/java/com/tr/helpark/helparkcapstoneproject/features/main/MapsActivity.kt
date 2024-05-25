@@ -8,11 +8,11 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.location.LocationManagerCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
@@ -29,6 +29,7 @@ import com.tr.helpark.helparkcapstoneproject.common.extensions.requestTurnOnLoca
 import com.tr.helpark.helparkcapstoneproject.common.manager.PermissionManager
 import com.tr.helpark.helparkcapstoneproject.common.util.SystemBarWindowInsetListener
 import com.tr.helpark.helparkcapstoneproject.common.util.UiConstants
+import com.tr.helpark.helparkcapstoneproject.core.LoadingDialog
 import com.tr.helpark.helparkcapstoneproject.databinding.ActivityMapsBinding
 import com.tr.helpark.helparkcapstoneproject.features.home.presentation.HomeFragment
 import com.tr.helpark.helparkcapstoneproject.features.login.presentation.LoginFragment
@@ -40,6 +41,10 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MapsActivity : AppCompatActivity() {
+
+    val loadingDialog: LoadingDialog by lazy {
+        LoadingDialog(this)
+    }
 
     private lateinit var navController: NavController
 

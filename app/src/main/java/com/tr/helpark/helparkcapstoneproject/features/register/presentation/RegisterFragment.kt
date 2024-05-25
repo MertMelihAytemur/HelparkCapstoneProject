@@ -1,5 +1,6 @@
 package com.tr.helpark.helparkcapstoneproject.features.register.presentation
 
+import android.os.Bundle
 import android.text.SpannableString
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -8,7 +9,6 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.tr.helpark.helparkcapstoneproject.R
 import com.tr.helpark.helparkcapstoneproject.common.extensions.addClickableLink
-import com.tr.helpark.helparkcapstoneproject.common.extensions.formatAndInsertPhoneNumber
 import com.tr.helpark.helparkcapstoneproject.common.extensions.formatPhoneNumber
 import com.tr.helpark.helparkcapstoneproject.common.extensions.isValidEmail
 import com.tr.helpark.helparkcapstoneproject.common.extensions.navigateWithAnimation
@@ -18,21 +18,24 @@ import com.tr.helpark.helparkcapstoneproject.databinding.FragmentRegisterBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class RegisterFragment : BaseFragment<FragmentRegisterBinding, RegisterViewModel>(
+class RegisterFragment : BaseFragment<RegisterViewModel, FragmentRegisterBinding>(
     FragmentRegisterBinding::inflate,
 ) {
     override val viewModel: RegisterViewModel by viewModels()
 
     private var emailPermission = false
     private var smsPermission = false
-    override fun onViewReady() {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         activity?.window?.statusBarColor =
             ContextCompat.getColor(requireContext(), R.color.gray_soft_f8)
         setRegisterButtonStatus()
         initUi()
+        initListeners()
+        observeEvents()
     }
 
-    override fun initListeners() {
+    private fun initListeners() {
         with(binding) {
 
             ivClose.setOnClickListener {
@@ -133,7 +136,7 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding, RegisterViewModel
         }
     }
 
-    override fun observeEvents() {
+    private fun observeEvents() {
         viewModel.onAllFieldFilledState.observe(viewLifecycleOwner) { isAllFieldFilled ->
             binding.btnRegister.isEnabled = isAllFieldFilled
         }
