@@ -8,6 +8,8 @@ import android.widget.Toast
 import androidx.annotation.AnimRes
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.tr.helpark.helparkcapstoneproject.R
@@ -57,8 +59,29 @@ fun Fragment.showToastMessage(
             icon.setImageResource(R.drawable.ic_toast_message_failure)
         }
 
+        ToastMessageType.DIRECTION -> {
+            icon.setImageResource(R.drawable.ic_direction)
+        }
+
         else -> {}
     }
 
     toast.show()
+}
+
+/**
+ * Adds the given observer to the observers list within the lifespan of the given
+ * owner. The events are dispatched on the main thread. If LiveData already has data
+ * set, it will be delivered to the observer.
+ *
+ * @param liveData The liveData to observe.
+ * @param observer The observer that will receive the events.
+ * @see LiveData.observe
+ */
+fun <T> LifecycleOwner.observeLiveData(liveData: LiveData<T>, observer: (T) -> Unit) {
+    liveData.observe(
+        this
+    ) {
+        it?.let { t -> observer(t) }
+    }
 }

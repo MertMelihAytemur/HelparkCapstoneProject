@@ -1,10 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".features.home.presentation.HomeFragment">
+    android:fitsSystemWindows="true">
+
+    <include
+        android:id="@+id/tbHomePage"
+        layout="@layout/toolbar_home_page"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/clBottomSheet"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tbHomePage"
+        app:layout_constraintVertical_bias="1">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnSearch"
+            style="@style/FloatingActionButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:animateLayoutChanges="true"
+            android:backgroundTint="@color/white"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_search"
+            android:translationY="-36dp"
+            app:fabCustomSize="48dp"
+            app:layout_anchor="@id/btnCurrentLocation"
+            app:layout_anchorGravity="end"
+            app:tint="@color/gable_green" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnCurrentLocation"
+            style="@style/FloatingActionButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:animateLayoutChanges="true"
+            android:backgroundTint="@color/white"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_my_location"
+            android:translationY="-36dp"
+            app:fabCustomSize="48dp"
+            app:layout_anchor="@id/frameLayoutBottomSheet"
+            app:layout_anchorGravity="end"
+            app:tint="@color/gable_green" />
+
+        <FrameLayout
+            android:id="@+id/frameLayoutBottomSheet"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_bottom_sheet_rounded"
+            app:layout_anchorGravity="top"
+            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+            <include
+                android:id="@+id/layoutParkNotFound"
+                layout="@layout/layout_park_not_found"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top"
+                android:visibility="gone" />
+
+            <include
+                android:id="@+id/layoutParkInfo"
+                layout="@layout/layout_park_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|top"
+                android:visibility="visible" />
+
+        </FrameLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
 
 
-
-</FrameLayout>

@@ -22,8 +22,10 @@ class CustomSearchView @JvmOverloads constructor(
 
     private val binding = CustomSearchViewBinding.inflate(LayoutInflater.from(context), this, true)
 
+
     private var onSearchActionListener: ((text: String) -> Unit)? = null
     private var onCloseActionListener: (() -> Unit?)? = null
+    private var onTextChangeListener: ((text: String) -> Unit)? = null
 
     private val searchHandler = Handler(Looper.getMainLooper())
     private val searchRunnable = Runnable {
@@ -36,6 +38,10 @@ class CustomSearchView @JvmOverloads constructor(
 
     fun setCloseButtonActionListener(listener: () -> Unit) {
         this.onCloseActionListener = listener
+    }
+
+    fun setTextChangeListener(listener: (text: String) -> Unit) {
+        this.onTextChangeListener = listener
     }
 
     fun setQuerySearchView(query: String) {
@@ -78,10 +84,10 @@ class CustomSearchView @JvmOverloads constructor(
             onCloseActionListener?.invoke()
         }
 
+
         binding.ivSearch.setOnClickListener {
             onSearchActionListener?.invoke(binding.etSearch.text.toString())
         }
-
         binding.etSearch.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 onSearchActionListener?.invoke(binding.etSearch.text.toString())
@@ -97,14 +103,15 @@ class CustomSearchView @JvmOverloads constructor(
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 searchHandler.removeCallbacks(searchRunnable)
-                searchHandler.postDelayed(searchRunnable, 600)
+                searchHandler.postDelayed(searchRunnable, 1000)
+                onTextChangeListener?.invoke(s.toString())
             }
 
             override fun afterTextChanged(s: Editable?) {}
         })
     }
 
-    private fun hideKeyboard() {
+    fun hideKeyboard() {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(binding.etSearch.windowToken, 0)
         binding.etSearch.clearFocus()

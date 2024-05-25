@@ -1,8 +1,8 @@
 package com.tr.helpark.helparkcapstoneproject.common.extensions
 
 import android.util.Log
-import com.tr.helpark.helparkcapstoneproject.BuildConfig
-import timber.log.Timber
+import tr.com.helpark.core.BuildConfig
+import tr.com.helpark.core.util.logE
 
 /**
  * Wraps a result object and logs its exception if any failure happens.
@@ -13,7 +13,7 @@ import timber.log.Timber
 fun <T> Result<T>.logException(throwIfDebug: Boolean = false): Result<T> {
     return onFailure {
         val stackTrace = Log.getStackTraceString(it)
-        Timber.tag("Result").w("Exception while performing runCatching block.\n$stackTrace")
+        logE("Exception while performing runCatching block.\n$stackTrace")
         if (throwIfDebug && BuildConfig.DEBUG) {
             // Exit the task and make sure the program quits.
             Thread {

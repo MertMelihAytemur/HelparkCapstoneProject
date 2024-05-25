@@ -20,8 +20,8 @@ data class GetAllParksResponseDtoItem(
     val freeTime: Int?,
     @SerializedName("id")
     val id: Int?,
-    @SerializedName("isOpen")
-    val isOpen: String?,
+    @SerializedName("isOpened")
+    val isOpened: Boolean?,
     @SerializedName("lat")
     val lat: String?,
     @SerializedName("lng")
@@ -75,7 +75,7 @@ private fun GetAllParksResponseDtoItem.toDomain(): GetAllParksUiModelItem {
         emptyCapacity = this.emptyCapacity,
         freeTime = this.freeTime,
         id = this.id,
-        isOpen = this.isOpen,
+        isOpened = this.isOpened,
         lat = this.lat,
         lng = this.lng,
         parkDetail = this.parkDetail?.toDomain(),

@@ -3,9 +3,11 @@ package com.tr.helpark.helparkcapstoneproject.features.register.domain.uimodel
 import com.tr.helpark.helparkcapstoneproject.core.model.ApiErrorModel
 import tr.com.helpark.core.domain.UiError
 import tr.com.helpark.core.domain.UiModel
+import java.util.UUID
 
 data class RegisterUiModel(
-    val message : String?
+    val message : String?,
+    val uniqueId : String = UUID.randomUUID().toString()
 ) : UiModel
 
 
