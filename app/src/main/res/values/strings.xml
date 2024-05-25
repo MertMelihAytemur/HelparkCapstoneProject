@@ -94,5 +94,6 @@
     <string name="toolbar_title_search_location">Konum Ara</string>
     <string name="tv_search_results">Sonuçlar</string>
     <string name="search_history">Geçmiş Aramalarım</string>
+    <string name="register_success_message">Hesabınız Oluşturuldu</string>
 
 </resources>

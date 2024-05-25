@@ -13,8 +13,12 @@ import com.tr.helpark.helparkcapstoneproject.common.extensions.formatPhoneNumber
 import com.tr.helpark.helparkcapstoneproject.common.extensions.isValidEmail
 import com.tr.helpark.helparkcapstoneproject.common.extensions.navigateWithAnimation
 import com.tr.helpark.helparkcapstoneproject.common.extensions.setPhoneMaskWithListener
+import com.tr.helpark.helparkcapstoneproject.common.extensions.showToastMessage
+import com.tr.helpark.helparkcapstoneproject.common.util.ToastMessageType
 import com.tr.helpark.helparkcapstoneproject.core.base.BaseFragment
 import com.tr.helpark.helparkcapstoneproject.databinding.FragmentRegisterBinding
+import com.tr.helpark.helparkcapstoneproject.features.register.domain.uimodel.RegisterApiState
+import com.tr.helpark.helparkcapstoneproject.features.register.domain.uimodel.RegisterUiModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -33,6 +37,46 @@ class RegisterFragment : BaseFragment<RegisterViewModel, FragmentRegisterBinding
         initUi()
         initListeners()
         observeEvents()
+
+        collectPageState(viewModel.pageStateFlow) { state ->
+            when (state.pageEvent) {
+
+                RegisterViewModel.PageEvent.INITIAL -> {
+
+                }
+
+                RegisterViewModel.PageEvent.REGISTER_RESPONSE_RECEIVED -> {
+                    onRegisterResponseReceived(state.registerApiState)
+                }
+            }
+        }
+    }
+
+    private fun onRegisterResponseReceived(registerApiState: RegisterApiState) {
+        when (registerApiState) {
+            RegisterApiState.Initial -> {}
+
+            is RegisterApiState.Success -> {
+                onRegisterSuccess(registerApiState.uiModel)
+            }
+
+            is RegisterApiState.Error -> {
+                handleNetworkError(registerApiState.error)
+            }
+        }
+    }
+
+    private fun onRegisterSuccess(uiModel: RegisterUiModel?) {
+        showToastMessage(
+            uiModel?.message ?: getString(R.string.register_success_message),
+            toastType = ToastMessageType.GENERAL_SUCCESS
+        )
+
+        navigateWithAnimation(
+            RegisterFragmentDirections.actionRegisterFragmentToOtpVerificationFragment(
+                binding.tiePhone.text.toString().formatPhoneNumber()
+            )
+        )
     }
 
     private fun initListeners() {
@@ -101,12 +145,12 @@ class RegisterFragment : BaseFragment<RegisterViewModel, FragmentRegisterBinding
         }
     }
 
-    private fun initUi(){
-        if(smsPermission){
+    private fun initUi() {
+        if (smsPermission) {
             binding.ivCheckBoxSmsPermission.setImageResource(R.drawable.rectangular_checkbox_checked)
         }
 
-        if(emailPermission){
+        if (emailPermission) {
             binding.ivCheckBoxEmailPermission.setImageResource(R.drawable.rectangular_checkbox_checked)
         }
     }
@@ -141,4 +185,6 @@ class RegisterFragment : BaseFragment<RegisterViewModel, FragmentRegisterBinding
             binding.btnRegister.isEnabled = isAllFieldFilled
         }
     }
+
+
 }
