@@ -41,7 +41,7 @@ android {
     buildTypes {
         getByName("debug") {
             isDebuggable = true
-            buildConfigField("String", "API_BASE_URL", "\"https://nomu-prod.appcent.mobi\"")
+            buildConfigField("String", "API_BASE_URL", "\"http://212.20.147.23/\"")
             buildConfigField("String", "MAPS_API_KEY", project.properties["MAPS_API_KEY"].toString())
 
             manifestPlaceholders["MAPS_API_KEY"] = project.properties["MAPS_API_KEY"].toString()
@@ -49,7 +49,7 @@ android {
         getByName("release") {
             isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            buildConfigField("String", "API_BASE_URL", "\"https://nomu-prod.appcent.mobi\"")
+            buildConfigField("String", "API_BASE_URL", "\"http://212.20.147.23/\"")
             buildConfigField("String", "MAPS_API_KEY", project.properties["MAPS_API_KEY"].toString())
 
             manifestPlaceholders["MAPS_API_KEY"] = project.properties["MAPS_API_KEY"].toString()
@@ -132,4 +132,7 @@ dependencies {
 
     //Dexter for Permission Handling
     implementation("com.karumi:dexter:6.2.3")
+
+    //Core module
+    implementation(project(":core"))
 }

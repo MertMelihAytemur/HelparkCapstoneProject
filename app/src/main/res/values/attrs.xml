@@ -7,4 +7,12 @@
         </attr>
         <attr name="message" format="string" />
     </declare-styleable>
+
+    <declare-styleable name="CustomSearchView">
+        <attr name="searchHint" format="string"/>
+    </declare-styleable>
 </resources>
+
+
+
+
