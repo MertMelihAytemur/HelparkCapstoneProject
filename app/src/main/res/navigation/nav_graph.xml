@@ -42,10 +42,6 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right">
 
-            <argument
-                android:name="gsmNo"
-                app:argType="string" />
-
         </action>
         <action
             android:id="@+id/action_loginFragment_to_registerFragment"
@@ -64,10 +60,6 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right">
-
-            <argument
-                android:name="gsmNo"
-                app:argType="string"/>
 
         </action>
         <action
@@ -88,12 +80,6 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
-
-        <argument
-            android:name="gsmNo"
-            android:defaultValue=""
-            app:argType="string"/>
-
     </fragment>
 
     <fragment
@@ -106,9 +92,9 @@
         android:id="@+id/smsEmailWebViewFragment"
         android:name="com.tr.helpark.helparkcapstoneproject.features.register.presentation.smsemailwebview.SmsEmailWebViewFragment"
         android:label="fragment_sms_email_web_view"
-        tools:layout="@layout/fragment_sms_email_web_view" >
+        tools:layout="@layout/fragment_sms_email_web_view">
         <action
             android:id="@+id/action_smsEmailWebViewFragment_to_otpVerificationFragment"
-            app:destination="@id/otpVerificationFragment"/>
+            app:destination="@id/otpVerificationFragment" />
     </fragment>
 </navigation>

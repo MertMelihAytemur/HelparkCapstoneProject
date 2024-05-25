@@ -13,8 +13,14 @@ import com.tr.helpark.helparkcapstoneproject.common.extensions.formatPhoneNumber
 import com.tr.helpark.helparkcapstoneproject.common.extensions.isValidEmail
 import com.tr.helpark.helparkcapstoneproject.common.extensions.navigateWithAnimation
 import com.tr.helpark.helparkcapstoneproject.common.extensions.setPhoneMaskWithListener
+import com.tr.helpark.helparkcapstoneproject.common.extensions.showToastMessage
+import com.tr.helpark.helparkcapstoneproject.common.util.ToastMessageType
 import com.tr.helpark.helparkcapstoneproject.core.base.BaseFragment
 import com.tr.helpark.helparkcapstoneproject.databinding.FragmentRegisterBinding
+import com.tr.helpark.helparkcapstoneproject.features.otp.presentation.OtpVerificationFragment.Companion.KEY_ARGUMENT_GSM_NO
+import com.tr.helpark.helparkcapstoneproject.features.register.data.dto.request.RegisterRequestDto
+import com.tr.helpark.helparkcapstoneproject.features.register.domain.uimodel.RegisterApiState
+import com.tr.helpark.helparkcapstoneproject.features.register.domain.uimodel.RegisterUiModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -33,6 +39,49 @@ class RegisterFragment : BaseFragment<RegisterViewModel, FragmentRegisterBinding
         initUi()
         initListeners()
         observeEvents()
+
+        collectPageState(viewModel.pageStateFlow) { state ->
+            when (state.pageEvent) {
+
+                RegisterViewModel.PageEvent.INITIAL -> {
+
+                }
+
+                RegisterViewModel.PageEvent.REGISTER_RESPONSE_RECEIVED -> {
+                    onRegisterResponseReceived(state.registerApiState)
+                }
+            }
+        }
+    }
+
+    private fun onRegisterResponseReceived(registerApiState: RegisterApiState) {
+        when (registerApiState) {
+            RegisterApiState.Initial -> {}
+
+            is RegisterApiState.Success -> {
+                onRegisterSuccess(registerApiState.uiModel)
+            }
+
+            is RegisterApiState.Error -> {
+                handleNetworkError(registerApiState.error)
+            }
+        }
+    }
+
+    private fun onRegisterSuccess(uiModel: RegisterUiModel?) {
+        showToastMessage(
+            uiModel?.message ?: getString(R.string.register_success_message),
+            toastType = ToastMessageType.GENERAL_SUCCESS
+        )
+
+        val bundle = Bundle().apply {
+            putString(KEY_ARGUMENT_GSM_NO, binding.tiePhone.text.toString().formatPhoneNumber())
+        }
+
+        navigateWithAnimation(
+            R.id.action_registerFragment_to_otpVerificationFragment,
+            bundle
+        )
     }
 
     private fun initListeners() {
@@ -43,16 +92,19 @@ class RegisterFragment : BaseFragment<RegisterViewModel, FragmentRegisterBinding
             }
 
             btnRegister.setOnClickListener {
-                navigateWithAnimation(
-                    RegisterFragmentDirections.actionRegisterFragmentToOtpVerificationFragment(
-                        binding.tiePhone.text.toString().formatPhoneNumber()
-                    )
-                )
+                viewModel.register(RegisterRequestDto(
+                    name = tieFirstName.text.toString(),
+                    surname = tieSurname.text.toString(),
+                    email = tieEmail.text.toString(),
+                    phoneNumber = tiePhone.text.toString().formatPhoneNumber(),
+                    //emailPermission = emailPermission,
+                    //smsPermission = smsPermission
+                ))
             }
 
             val emailAndSmsClickListener = View.OnClickListener {
                 navigateWithAnimation(
-                    RegisterFragmentDirections.actionRegisterFragmentToSmsEmailWebViewFragment()
+                    R.id.action_registerFragment_to_smsEmailWebViewFragment
                 )
             }
 
@@ -101,12 +153,12 @@ class RegisterFragment : BaseFragment<RegisterViewModel, FragmentRegisterBinding
         }
     }
 
-    private fun initUi(){
-        if(smsPermission){
+    private fun initUi() {
+        if (smsPermission) {
             binding.ivCheckBoxSmsPermission.setImageResource(R.drawable.rectangular_checkbox_checked)
         }
 
-        if(emailPermission){
+        if (emailPermission) {
             binding.ivCheckBoxEmailPermission.setImageResource(R.drawable.rectangular_checkbox_checked)
         }
     }
@@ -141,4 +193,6 @@ class RegisterFragment : BaseFragment<RegisterViewModel, FragmentRegisterBinding
             binding.btnRegister.isEnabled = isAllFieldFilled
         }
     }
+
+
 }

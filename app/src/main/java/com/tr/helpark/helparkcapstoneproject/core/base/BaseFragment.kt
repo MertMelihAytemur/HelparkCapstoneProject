@@ -53,7 +53,7 @@ abstract class BaseFragment<VM : CoreViewModel, VB : ViewBinding>(
         when (error) {
             is UiError.Authentication -> {
                 showToastMessage(
-                    "Authentication error",
+                    error.errorBody?.message ?: "Authentication error",
                     toastType = ToastMessageType.GENERAL_ERROR
                 )
             }
@@ -67,14 +67,14 @@ abstract class BaseFragment<VM : CoreViewModel, VB : ViewBinding>(
 
             is UiError.Server -> {
                 showToastMessage(
-                    "Server error",
+                    error.errorBody?.message ?: "Server error",
                     toastType = ToastMessageType.GENERAL_ERROR
                 )
             }
 
             is UiError.IO -> {
                 showToastMessage(
-                    "IO error",
+                    error.message ?: "IO error",
                     toastType = ToastMessageType.GENERAL_ERROR
                 )
             }

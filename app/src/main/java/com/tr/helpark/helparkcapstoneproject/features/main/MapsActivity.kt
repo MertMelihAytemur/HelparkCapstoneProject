@@ -14,21 +14,17 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.location.LocationManagerCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.tr.helpark.helparkcapstoneproject.R
 import com.tr.helpark.helparkcapstoneproject.common.extensions.findNavController
-import com.tr.helpark.helparkcapstoneproject.common.extensions.getChildAt
 import com.tr.helpark.helparkcapstoneproject.common.extensions.logException
 import com.tr.helpark.helparkcapstoneproject.common.extensions.openApplicationDetailSettings
 import com.tr.helpark.helparkcapstoneproject.common.extensions.postValueIfDifferent
 import com.tr.helpark.helparkcapstoneproject.common.extensions.requestTurnOnLocationServices
 import com.tr.helpark.helparkcapstoneproject.common.manager.PermissionManager
-import com.tr.helpark.helparkcapstoneproject.common.util.SystemBarWindowInsetListener
-import com.tr.helpark.helparkcapstoneproject.common.util.UiConstants
 import com.tr.helpark.helparkcapstoneproject.core.LoadingDialog
 import com.tr.helpark.helparkcapstoneproject.databinding.ActivityMapsBinding
 import com.tr.helpark.helparkcapstoneproject.features.home.presentation.HomeFragment
@@ -64,13 +60,6 @@ class MapsActivity : AppCompatActivity() {
         // no-op
     }
 
-    /**
-     * The livedata that holds status bar height. The fragments
-     * can observe to adjust views if necessary.
-     */
-    private val _statusBarHeightLiveData: MutableLiveData<Int> = MutableLiveData()
-    val statusBarHeightLiveData: LiveData<Int> = _statusBarHeightLiveData
-
     private val gpsReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             intent?.let { itIntent ->
@@ -93,14 +82,13 @@ class MapsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-
         navController = findNavController()
+        setGoogleMapsVisibility()
         initOnBackPressedDispatcher()
         observeLiveData()
         registerForGpsReceiver()
         initDialogs()
         askNotificationPermission()
-        handleStatusBar()
     }
 
     private fun initOnBackPressedDispatcher() {
@@ -227,35 +215,10 @@ class MapsActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * Prepares the status bar system view to have 0dp margin.
-     */
-    private fun handleStatusBar() {
-        if (UiConstants.DRAW_UNDER_STATUS_BAR) {
-            val listener =
-                object : SystemBarWindowInsetListener(true) {
-                    override fun onSystemBarHeight(
-                        statusBarHeight: Int
-                    ) {
-                        if (_statusBarHeightLiveData.value != statusBarHeight)
-                            _statusBarHeightLiveData.value = statusBarHeight
-                    }
-                }
-            window?.decorView
-                ?.setOnApplyWindowInsetsListener(listener)
-        } else {
-            val listener =
-                object : SystemBarWindowInsetListener(false) {
-                    override fun onSystemBarHeight(
-                        statusBarHeight: Int
-                    ) {
-                        if (_statusBarHeightLiveData.value != statusBarHeight)
-                            _statusBarHeightLiveData.value = statusBarHeight
-                    }
-                }
-            window?.decorView
-                ?.getChildAt(0)
-                ?.setOnApplyWindowInsetsListener(listener)
+    private fun setGoogleMapsVisibility() {
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            binding.map.isVisible =
+                (destination.id == R.id.homeFragment)
         }
     }
 }

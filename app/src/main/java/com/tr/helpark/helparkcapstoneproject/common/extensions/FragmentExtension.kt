@@ -1,19 +1,21 @@
 package com.tr.helpark.helparkcapstoneproject.common.extensions
 
+import android.os.Bundle
 import android.view.Gravity
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.AnimRes
+import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
-import androidx.navigation.NavDirections
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.tr.helpark.helparkcapstoneproject.R
 import com.tr.helpark.helparkcapstoneproject.common.util.ToastMessageType
 
 fun Fragment.navigateWithAnimation(
-    direction: NavDirections,
+    @IdRes destinationId: Int,
+    bundle : Bundle? = null,
     @AnimRes enterAnim: Int = R.anim.slide_in_right,
     @AnimRes exitAnim: Int = R.anim.slide_out_left,
     @AnimRes popEnterAnim: Int = R.anim.slide_in_left,
@@ -25,7 +27,7 @@ fun Fragment.navigateWithAnimation(
         .setPopEnterAnim(popEnterAnim)
         .setPopExitAnim(popExitAnim)
         .build()
-    findNavController().navigate(direction, navOptions)
+    findNavController().navigate(destinationId, bundle, navOptions)
 }
 
 

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import com.tr.helpark.helparkcapstoneproject.R
 import com.tr.helpark.helparkcapstoneproject.common.extensions.navigateWithAnimation
 import com.tr.helpark.helparkcapstoneproject.core.base.BaseFragment
 import com.tr.helpark.helparkcapstoneproject.databinding.FragmentSplashBinding
@@ -23,8 +24,7 @@ class SplashFragment : BaseFragment<CoreViewModel,FragmentSplashBinding>(
         super.onViewCreated(view, savedInstanceState)
         viewLifecycleOwner.lifecycleScope.launch {
             delay(3000)
-            val action = SplashFragmentDirections.actionSplashFragmentToLoginFragment()
-            navigateWithAnimation(action)
+            navigateWithAnimation(R.id.action_splashFragment_to_loginFragment)
         }
     }
 }

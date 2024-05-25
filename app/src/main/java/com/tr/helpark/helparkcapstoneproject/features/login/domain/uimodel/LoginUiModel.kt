@@ -1,0 +1,15 @@
+package com.tr.helpark.helparkcapstoneproject.features.login.domain.uimodel
+
+import com.tr.helpark.helparkcapstoneproject.core.model.ApiErrorModel
+import tr.com.helpark.core.domain.UiError
+import tr.com.helpark.core.domain.UiModel
+
+data class LoginUiModel(
+    val message: String?
+) : UiModel
+
+sealed interface LoginApiState {
+    object Initial : LoginApiState
+    data class Success(val uiModel: LoginUiModel?) : LoginApiState
+    data class Error(val error: UiError<ApiErrorModel>) : LoginApiState
+}
