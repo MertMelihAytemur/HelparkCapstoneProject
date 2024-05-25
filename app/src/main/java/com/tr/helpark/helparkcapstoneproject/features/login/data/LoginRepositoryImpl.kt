@@ -17,7 +17,7 @@ class LoginRepositoryImpl @Inject constructor(
 ) : LoginRepository, ApiExecutor{
     override suspend fun login(loginResponseDto: LoginRequestDto): UiResult<LoginUiModel, ApiErrorModel> {
         val apiResult = execute {
-            loginService.login(loginResponseDto)
+            loginService.login(phoneNumber = loginResponseDto.phoneNumber)
         }
 
         return when(apiResult){

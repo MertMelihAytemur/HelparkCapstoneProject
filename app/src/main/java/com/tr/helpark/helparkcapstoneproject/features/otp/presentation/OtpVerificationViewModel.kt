@@ -22,10 +22,10 @@ class OtpVerificationViewModel @Inject constructor(
         MutableStateFlow(PageState())
     val pageStateFlow: StateFlow<PageState> = _pageStateFlow.asStateFlow()
 
-    fun sendOtp(sendOtpUseCase: SendOtpRequestDto){
+    fun sendOtp(sendOtpRequestDto: SendOtpRequestDto){
         launchRequest(
             requestBody = {
-                sendOtpUseCase(sendOtpUseCase)
+                sendOtpUseCase(sendOtpRequestDto)
             },
             onSuccess = {uiModel ->
                 val apiState = SendOtpApiState.Success(uiModel)

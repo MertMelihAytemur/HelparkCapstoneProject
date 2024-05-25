@@ -4,16 +4,16 @@ package com.tr.helpark.helparkcapstoneproject.features.login.presentation
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
+import com.tr.helpark.helparkcapstoneproject.R
 import com.tr.helpark.helparkcapstoneproject.common.extensions.formatPhoneNumber
 import com.tr.helpark.helparkcapstoneproject.common.extensions.navigateWithAnimation
 import com.tr.helpark.helparkcapstoneproject.common.extensions.setPhoneMaskWithListener
-import com.tr.helpark.helparkcapstoneproject.common.extensions.showToastMessage
-import com.tr.helpark.helparkcapstoneproject.common.util.ToastMessageType
 import com.tr.helpark.helparkcapstoneproject.core.base.BaseFragment
 import com.tr.helpark.helparkcapstoneproject.databinding.FragmentLoginBinding
 import com.tr.helpark.helparkcapstoneproject.features.login.data.dto.request.LoginRequestDto
 import com.tr.helpark.helparkcapstoneproject.features.login.domain.uimodel.LoginApiState
 import com.tr.helpark.helparkcapstoneproject.features.login.domain.uimodel.LoginUiModel
+import com.tr.helpark.helparkcapstoneproject.features.otp.presentation.OtpVerificationFragment.Companion.KEY_ARGUMENT_GSM_NO
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -59,18 +59,13 @@ class LoginFragment : BaseFragment<LoginViewModel, FragmentLoginBinding>(
     }
 
     private fun onLoginSuccess(uiModel: LoginUiModel?) {
-        showToastMessage(
-            uiModel?.message ?: "Login success",
-            toastType = ToastMessageType.GENERAL_SUCCESS
-        )
-
         val phoneNumber = binding.tieNumberText.text.toString().formatPhoneNumber()
 
-        val action = LoginFragmentDirections.actionLoginFragmentToOtpVerificationFragment(
-            phoneNumber
-        )
-        navigateWithAnimation(action)
+        val bundle = Bundle().apply {
+            putString(KEY_ARGUMENT_GSM_NO, phoneNumber)
+        }
 
+        navigateWithAnimation(R.id.action_loginFragment_to_otpVerificationFragment,bundle)
     }
 
     private fun initListeners() {
@@ -86,7 +81,7 @@ class LoginFragment : BaseFragment<LoginViewModel, FragmentLoginBinding>(
             }
 
             btnRegister.setOnClickListener {
-                navigateWithAnimation(LoginFragmentDirections.actionLoginFragmentToRegisterFragment())
+                navigateWithAnimation(R.id.action_loginFragment_to_registerFragment)
             }
         }
     }

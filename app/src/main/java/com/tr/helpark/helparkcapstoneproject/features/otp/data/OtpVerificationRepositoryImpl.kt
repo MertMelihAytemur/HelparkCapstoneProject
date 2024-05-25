@@ -36,7 +36,10 @@ class OtpVerificationRepositoryImpl @Inject constructor(
 
     override suspend fun verifyOtp(verifyOtpRequestDto: VerifyOtpRequestDto): UiResult<VerifyOtpUiModel, ApiErrorModel> {
         val apiResult = execute {
-            otpVerificationService.verifyOtp(verifyOtpRequestDto)
+            otpVerificationService.verifyOtp(
+                phoneNumber = verifyOtpRequestDto.phoneNumber,
+                otp = verifyOtpRequestDto.otp
+            )
         }
 
         return when(apiResult){

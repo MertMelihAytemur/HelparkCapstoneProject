@@ -5,12 +5,13 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.tr.helpark.helparkcapstoneproject.R
 import com.tr.helpark.helparkcapstoneproject.common.customview.MessageType
 import com.tr.helpark.helparkcapstoneproject.common.extensions.boldNumbersAndAsterisks
 import com.tr.helpark.helparkcapstoneproject.common.extensions.formatAndInsertPhoneNumber
 import com.tr.helpark.helparkcapstoneproject.common.extensions.navigateWithAnimation
+import com.tr.helpark.helparkcapstoneproject.common.extensions.showToastMessage
+import com.tr.helpark.helparkcapstoneproject.common.util.ToastMessageType
 import com.tr.helpark.helparkcapstoneproject.core.base.BaseFragment
 import com.tr.helpark.helparkcapstoneproject.databinding.FragmentOtpVerificationBinding
 import com.tr.helpark.helparkcapstoneproject.features.otp.data.dto.request.SendOtpRequestDto
@@ -27,7 +28,6 @@ class OtpVerificationFragment :
     ) {
 
     override val viewModel: OtpVerificationViewModel by viewModels()
-    private val args by navArgs<OtpVerificationFragmentArgs>()
 
     private var gsmNo: String? = null
     private var otpMessage: String? = null
@@ -40,7 +40,7 @@ class OtpVerificationFragment :
         collectPageState(viewModel.pageStateFlow) { state ->
             when (state.pageEvent) {
                 OtpVerificationViewModel.PageEvent.INITIAL -> {
-                    gsmNo?.let { viewModel.sendOtp(SendOtpRequestDto(phoneNumber = it)) }
+
                 }
 
                 OtpVerificationViewModel.PageEvent.SEND_OTP_RESPONSE_RECEIVED -> {
@@ -61,7 +61,7 @@ class OtpVerificationFragment :
             }
 
             is SendOtpApiState.Success -> {
-                showTopAlertMessage("Doğrulama Kodu Gönderildi.")
+                showToastMessage("Doğrulama Kodu Gönderildi.", toastType = ToastMessageType.GENERAL_SUCCESS)
             }
 
             is SendOtpApiState.Error -> {
@@ -72,17 +72,15 @@ class OtpVerificationFragment :
 
     private fun onVerifyOtpResponseReceived(verifyOtpApiState: VerifyOtpApiState) {
         when (verifyOtpApiState) {
-            is VerifyOtpApiState.Initial -> {
-
-            }
+            is VerifyOtpApiState.Initial -> {}
 
             is VerifyOtpApiState.Success -> {
-                showTopAlertMessage("Doğrulama Başarılı.")
-                navigateWithAnimation(OtpVerificationFragmentDirections.actionOtpVerificationFragmentToHomeFragment())
+                showToastMessage("Doğrulama Başarılı.", toastType = ToastMessageType.GENERAL_SUCCESS)
+                navigateWithAnimation(R.id.action_otpVerificationFragment_to_homeFragment)
             }
 
             is VerifyOtpApiState.Error -> {
-                handleNetworkError(verifyOtpApiState.error)
+                showTopAlertMessage("Doğrulama Kodu Hatalı.")
             }
         }
     }
@@ -116,11 +114,17 @@ class OtpVerificationFragment :
     }
 
     private fun setArguments() {
-        gsmNo = args.gsmNo
+        gsmNo = arguments?.getString(KEY_ARGUMENT_GSM_NO)
+        sendOtpRequest()
         setTimerView(60)
         setOtpMessage()
     }
 
+    private fun sendOtpRequest(){
+        gsmNo?.let { phoneNumber ->
+            viewModel.sendOtp(SendOtpRequestDto(phoneNumber))
+        }
+    }
     private fun setOtpMessage() {
         gsmNo?.let {
             otpMessage = getString(
@@ -151,5 +155,10 @@ class OtpVerificationFragment :
         otpTimeSec?.let {
             binding.otpTimerView.startOtpTimer(it)
         }
+    }
+
+
+    companion object{
+        const val KEY_ARGUMENT_GSM_NO = "gsmNo"
     }
 }

@@ -4,7 +4,6 @@ buildscript {
         classpath("com.google.gms:google-services:4.4.1")
         classpath("com.google.firebase:firebase-crashlytics-gradle:2.9.9")
         classpath("com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:2.0.1")
-        classpath("androidx.navigation:navigation-safe-args-gradle-plugin:2.7.7")
     }
 }
 // Top-level build file where you can add configuration options common to all sub-projects/modules.

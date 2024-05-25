@@ -3,7 +3,7 @@ package  tr.com.helpark.core.util
 import android.util.Log
 import tr.com.helpark.core.BuildConfig
 
-private const val DEFAULT_LOG_TAG = "vl_media_logger"
+private const val DEFAULT_LOG_TAG = "helpark_logger"
 
 fun logD(message: String,tag: String= DEFAULT_LOG_TAG) {
     log { Log.d(tag, message) }
