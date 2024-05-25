@@ -3,6 +3,7 @@ package com.tr.helpark.helparkcapstoneproject.features.main
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.maps.model.LatLng
 import com.vmlmedia.core.presentation.CoreViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -22,6 +23,8 @@ class MainViewModel @Inject constructor() : CoreViewModel() {
 
     private val _networkStateLiveData = MutableSharedFlow<Boolean>()
     val networkStateLiveData: SharedFlow<Boolean> = _networkStateLiveData
+
+    var userLocation: LatLng? = null
 
     init {
         // Add the LiveData sources to the MediatorLiveData

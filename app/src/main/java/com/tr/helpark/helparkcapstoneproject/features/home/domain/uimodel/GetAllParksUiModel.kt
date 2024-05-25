@@ -1,9 +1,13 @@
 package com.tr.helpark.helparkcapstoneproject.features.home.domain.uimodel
 
+import com.tr.helpark.helparkcapstoneproject.core.model.ApiErrorModel
+import tr.com.helpark.core.domain.UiError
 import tr.com.helpark.core.domain.UiModel
+import java.util.UUID
 
 data class GetAllParksUiModel(
-    val parks: List<GetAllParksUiModelItem>
+    val parks: List<GetAllParksUiModelItem>,
+    val uniqueId : String = UUID.randomUUID().toString()
 ) : UiModel
 
 data class GetAllParksUiModelItem(
@@ -12,7 +16,7 @@ data class GetAllParksUiModelItem(
     val emptyCapacity: Int?,
     val freeTime: Int?,
     val id: Int?,
-    val isOpen: String?,
+    val isOpened : Boolean?,
     val lat: String?,
     val lng: String?,
     val parkDetail: ParkDetailUiModel?,
@@ -34,3 +38,9 @@ data class ParkDetailUiModel(
     val updateDate: String?,
     val workHours: String?
 )
+
+sealed interface GetAllParksApiState {
+    object Initial : GetAllParksApiState
+    data class Success(val uiModel: GetAllParksUiModel?) : GetAllParksApiState
+    data class Error(val error: UiError<ApiErrorModel>) : GetAllParksApiState
+}
