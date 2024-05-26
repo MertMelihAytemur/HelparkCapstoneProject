@@ -95,5 +95,6 @@
     <string name="tv_search_results">Sonuçlar</string>
     <string name="search_history">Geçmiş Aramalarım</string>
     <string name="register_success_message">Hesabınız Oluşturuldu</string>
+    <string name="show_detail"><u>Detay Gör</u></string>
 
 </resources>

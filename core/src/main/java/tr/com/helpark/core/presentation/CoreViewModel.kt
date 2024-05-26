@@ -60,12 +60,12 @@ abstract class CoreViewModel : ViewModel() {
 
             when (val result = requestBody.invoke()) {
                 is UiResult.Success -> {
-                    changeLoadingState(LoadingState(Visibility.HIDE))
+                    if(showLoading) changeLoadingState(LoadingState(Visibility.HIDE))
                     onSuccess?.invoke(result.response)
                 }
 
                 is UiResult.Error -> {
-                    changeLoadingState(LoadingState(Visibility.HIDE))
+                    if(showLoading) changeLoadingState(LoadingState(Visibility.HIDE))
                     onError?.invoke(result.error)
                 }
             }

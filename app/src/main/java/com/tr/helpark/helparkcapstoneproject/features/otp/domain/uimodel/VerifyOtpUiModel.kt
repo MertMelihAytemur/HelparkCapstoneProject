@@ -6,7 +6,7 @@ import tr.com.helpark.core.domain.UiModel
 import java.util.UUID
 
 data class VerifyOtpUiModel(
-    val message : String?,
+    val userId : String?,
     val uniqueId : String = UUID.randomUUID().toString()
 ) : UiModel
 

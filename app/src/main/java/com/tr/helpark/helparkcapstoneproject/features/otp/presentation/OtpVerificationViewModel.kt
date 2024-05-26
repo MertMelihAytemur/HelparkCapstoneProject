@@ -39,7 +39,8 @@ class OtpVerificationViewModel @Inject constructor(
                     pageEvent = PageEvent.SEND_OTP_RESPONSE_RECEIVED,
                     sendOtpApiState = SendOtpApiState.Error(it)
                 )
-            }
+            },
+            showLoading = false
         )
     }
 

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.helpark.helpark.common.utils.preferences.PreferencesKeys.KEY_USER_ID
 import com.tr.helpark.helparkcapstoneproject.R
 import com.tr.helpark.helparkcapstoneproject.common.customview.MessageType
 import com.tr.helpark.helparkcapstoneproject.common.extensions.boldNumbersAndAsterisks
@@ -12,6 +13,7 @@ import com.tr.helpark.helparkcapstoneproject.common.extensions.formatAndInsertPh
 import com.tr.helpark.helparkcapstoneproject.common.extensions.navigateWithAnimation
 import com.tr.helpark.helparkcapstoneproject.common.extensions.showToastMessage
 import com.tr.helpark.helparkcapstoneproject.common.util.ToastMessageType
+import com.tr.helpark.helparkcapstoneproject.common.util.preferences.PreferencesManager
 import com.tr.helpark.helparkcapstoneproject.core.base.BaseFragment
 import com.tr.helpark.helparkcapstoneproject.databinding.FragmentOtpVerificationBinding
 import com.tr.helpark.helparkcapstoneproject.features.otp.data.dto.request.SendOtpRequestDto
@@ -19,6 +21,7 @@ import com.tr.helpark.helparkcapstoneproject.features.otp.data.dto.request.Verif
 import com.tr.helpark.helparkcapstoneproject.features.otp.domain.uimodel.SendOtpApiState
 import com.tr.helpark.helparkcapstoneproject.features.otp.domain.uimodel.VerifyOtpApiState
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
@@ -31,6 +34,9 @@ class OtpVerificationFragment :
 
     private var gsmNo: String? = null
     private var otpMessage: String? = null
+
+    @Inject
+    lateinit var preferencesManager: PreferencesManager
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -75,6 +81,8 @@ class OtpVerificationFragment :
             is VerifyOtpApiState.Initial -> {}
 
             is VerifyOtpApiState.Success -> {
+                preferencesManager.putString(KEY_USER_ID, verifyOtpApiState.uiModel?.userId.orEmpty())
+
                 showToastMessage("Doğrulama Başarılı.", toastType = ToastMessageType.GENERAL_SUCCESS)
                 navigateWithAnimation(R.id.action_otpVerificationFragment_to_homeFragment)
             }
