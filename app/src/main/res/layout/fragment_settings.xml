@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/light_blue"
+    android:orientation="vertical">
+
+    <View
+        android:id="@+id/viewStatusBar"
+        android:layout_width="0dp"
+        android:layout_height="0dp" />
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar_navigate_back_with_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/rvSavedCarParks"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/bg_button_cancel"
+        android:drawableStart="@drawable/ic_car_park_saved"
+        android:drawableEnd="@drawable/ic_right_arrow"
+        android:drawablePadding="12dp"
+        android:elevation="3dp"
+        android:fontFamily="@font/montserrat_medium"
+        android:gravity="center_vertical"
+        android:padding="12dp"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp"
+        android:text="@string/saved_car_parks"
+        android:textColor="@color/black" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tvPrivacyPolicy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/bg_button_cancel"
+        android:drawableStart="@drawable/ic_privacy_policy"
+        android:drawableEnd="@drawable/ic_right_arrow"
+        android:drawablePadding="12dp"
+        android:elevation="3dp"
+        android:fontFamily="@font/montserrat_medium"
+        android:gravity="center_vertical"
+        android:padding="12dp"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp"
+        android:text="@string/privacy_policy"
+        android:textColor="@color/black" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/textViewAbout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/bg_button_cancel"
+        android:drawableStart="@drawable/ic_help"
+        android:drawableEnd="@drawable/ic_right_arrow"
+        android:drawablePadding="12dp"
+        android:elevation="3dp"
+        android:fontFamily="@font/montserrat_medium"
+        android:gravity="center_vertical"
+        android:padding="12dp"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp"
+        android:text="@string/settings_row_about"
+        android:textColor="@color/black" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tvRateUs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/bg_button_cancel"
+        android:drawableStart="@drawable/ic_rate_us"
+        android:drawableEnd="@drawable/ic_right_arrow"
+        android:drawablePadding="12dp"
+        android:elevation="3dp"
+        android:fontFamily="@font/montserrat_medium"
+        android:gravity="center_vertical"
+        android:padding="12dp"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp"
+        android:text="@string/rate_us"
+        android:textColor="@color/black" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

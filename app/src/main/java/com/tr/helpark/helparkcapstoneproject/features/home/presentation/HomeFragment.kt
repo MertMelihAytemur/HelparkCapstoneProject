@@ -12,9 +12,11 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.helpark.helpark.common.utils.preferences.PreferencesKeys.KEY_USER_ID
 import com.tr.helpark.helparkcapstoneproject.R
 import com.tr.helpark.helparkcapstoneproject.common.extensions.handleViewVisibilityWithTranslationXEnd
 import com.tr.helpark.helparkcapstoneproject.common.extensions.handleViewVisibilityWithTranslationYTop
+import com.tr.helpark.helparkcapstoneproject.common.extensions.navigateWithAnimation
 import com.tr.helpark.helparkcapstoneproject.common.extensions.redirectUserToGoogleMaps
 import com.tr.helpark.helparkcapstoneproject.common.extensions.setParkDensityStatus
 import com.tr.helpark.helparkcapstoneproject.common.extensions.setParkIsOpenStatus
@@ -24,16 +26,20 @@ import com.tr.helpark.helparkcapstoneproject.common.util.MapActions
 import com.tr.helpark.helparkcapstoneproject.common.util.MapUtils
 import com.tr.helpark.helparkcapstoneproject.common.util.ToastMessageType
 import com.tr.helpark.helparkcapstoneproject.common.util.UiActions
+import com.tr.helpark.helparkcapstoneproject.common.util.preferences.PreferencesManager
 import com.tr.helpark.helparkcapstoneproject.core.base.BaseFragment
 import com.tr.helpark.helparkcapstoneproject.databinding.FragmentHomeBinding
 import com.tr.helpark.helparkcapstoneproject.features.home.domain.uimodel.GetAllParksApiState
 import com.tr.helpark.helparkcapstoneproject.features.home.domain.uimodel.GetAllParksUiModel
 import com.tr.helpark.helparkcapstoneproject.features.home.domain.uimodel.GetAllParksUiModelItem
 import com.tr.helpark.helparkcapstoneproject.features.main.MapsActivity
+import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.GetProfileApiState
+import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.GetProfileUiModel
 import com.tr.helpark.helparkcapstoneproject.features.search.presentation.SearchBottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
@@ -49,6 +55,8 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
 
     private lateinit var mapActions: MapActions
 
+    @Inject
+    lateinit var preferencesManager: PreferencesManager
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -59,6 +67,10 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
 
         observeMarkerPosition()
 
+        preferencesManager.getString(KEY_USER_ID)?.let { userId ->
+            viewModel.getProfile(userId)
+        }
+
         collectPageState(viewModel.pageStateFlow) {
             when (it.pageEvent) {
                 HomeViewModel.PageEvent.INITIAL -> {
@@ -68,15 +80,21 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
                 HomeViewModel.PageEvent.GET_ALL_PARKS_RESPONSE_RECEIVED -> {
                     onGetAllParksResponseReceived(it.registerApiState)
                 }
+
+                HomeViewModel.PageEvent.GET_PROFILE_RESPONSE_RECEIVED -> {
+                    onGetProfileResponseReceived(it.getProfileApiState)
+                }
+
+                HomeViewModel.PageEvent.NAVIGATE_TO_NEXT_SCREEN -> {
+                    onGetProfileResponseReceived(it.getProfileApiState)
+                }
             }
         }
     }
 
     private fun onGetAllParksResponseReceived(getAllParksApiState: GetAllParksApiState) {
         when (getAllParksApiState) {
-            is GetAllParksApiState.Initial -> {
-                // Handle initial state
-            }
+            is GetAllParksApiState.Initial -> {}
 
             is GetAllParksApiState.Success -> {
                 onGetAllParksSuccess(getAllParksApiState.uiModel)
@@ -84,6 +102,20 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
 
             is GetAllParksApiState.Error -> {
                 handleNetworkError(getAllParksApiState.error)
+            }
+        }
+    }
+
+    private fun onGetProfileResponseReceived(getProfileApiState: GetProfileApiState) {
+        when (getProfileApiState) {
+            is GetProfileApiState.Initial -> {}
+
+            is GetProfileApiState.Success -> {
+                onGetProfileSuccess(getProfileApiState.uiModel)
+            }
+
+            is GetProfileApiState.Error -> {
+                handleNetworkError(getProfileApiState.error)
             }
         }
     }
@@ -100,12 +132,19 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
         }
     }
 
+    private fun onGetProfileSuccess(uiModel: GetProfileUiModel?) {
+        uiModel?.let {
+            binding.tbHomePage.tvName.text = it.name.toString()
+        }
+    }
+
     private fun initListeners() {
         with(binding) {
             layoutParkInfo.layoutPark.tvParkName.isSelected = true
 
             tbHomePage.btnSettings.setOnClickListener {
-
+                viewModel.navigateToNextScreen()
+                navigateWithAnimation(R.id.action_homeFragment_to_settingsFragment)
             }
 
             btnCurrentLocation.setOnClickListener {
@@ -114,11 +153,15 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
                 viewModel.getAllParks()
             }
 
-            binding.btnSearch.setOnClickListener {
+            btnSearch.setOnClickListener {
                 SearchBottomSheetDialogFragment().show(
                     childFragmentManager,
                     "SearchBottomSheetDialogFragment"
                 )
+            }
+
+            tbHomePage.ivProfile.setOnClickListener {
+                navigateWithAnimation(R.id.action_homeFragment_to_profileFragment)
             }
         }
     }

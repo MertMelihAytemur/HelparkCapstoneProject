@@ -2,18 +2,20 @@ package com.tr.helpark.helparkcapstoneproject.common.util.preferences
 
 import android.content.Context
 import com.google.gson.Gson
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.lang.Double.doubleToRawLongBits
 import java.lang.Double.longBitsToDouble
+import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.reflect.KType
 import kotlin.reflect.javaType
 
 
-class PreferencesManager(
-    context: Context,
+class PreferencesManager @Inject constructor(
+    @ApplicationContext context: Context,
     private val gsonProvider: Provider<Gson>
 ) : IPreferencesManager {
 

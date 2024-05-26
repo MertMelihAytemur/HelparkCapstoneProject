@@ -53,3 +53,13 @@ fun String.isValidEmail(): Boolean {
     val emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$"
     return this.matches(emailRegex.toRegex())
 }
+
+fun String.toPhoneNumberFormat(): String {
+    val cleaned = this.filter { it.isDigit() }
+
+    return if (cleaned.length == 10) {
+        "+90 ${cleaned.substring(0, 3)} ${cleaned.substring(3, 6)} ${cleaned.substring(6, 8)} ${cleaned.substring(8, 10)}"
+    } else {
+        this
+    }
+}
