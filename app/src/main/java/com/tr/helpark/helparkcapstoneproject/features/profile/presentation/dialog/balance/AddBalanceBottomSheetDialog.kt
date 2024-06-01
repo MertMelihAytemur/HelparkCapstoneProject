@@ -5,23 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tr.helpark.helparkcapstoneproject.R
-import com.tr.helpark.helparkcapstoneproject.common.extensions.showToastMessage
-import com.tr.helpark.helparkcapstoneproject.common.util.ToastMessageType
 import com.tr.helpark.helparkcapstoneproject.databinding.DialogBottomSheetAddBalanceBinding
 import com.tr.helpark.helparkcapstoneproject.features.profile.data.dto.request.AddBalanceRequestDto
-import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.AddBalanceApiState
-import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.AddBalanceUiModel
-import com.tr.helpark.helparkcapstoneproject.features.profile.presentation.ProfileFragment
 import com.tr.helpark.helparkcapstoneproject.features.profile.presentation.dialog.IAddBalanceActions
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class AddBalanceBottomSheetDialog(
@@ -54,7 +46,6 @@ class AddBalanceBottomSheetDialog(
         (dialog as? BottomSheetDialog)?.setCanceledOnTouchOutside(false)
 
         initListeners()
-        observeEvents()
     }
 
     private fun initListeners() {
@@ -78,48 +69,5 @@ class AddBalanceBottomSheetDialog(
                 }
             }
         }
-    }
-
-    private fun observeEvents() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.pageStateFlow.collect { pageState ->
-                when (pageState.pageEvent) {
-                    AddBalanceViewModel.PageEvent.INITIAL -> {}
-
-                    AddBalanceViewModel.PageEvent.ADD_BALANCE_RESPONSE_RECEIVED -> {
-                        addBalanceResponseReceived(pageState.addBalanceApiState)
-                    }
-                }
-            }
-        }
-    }
-
-    private fun addBalanceResponseReceived(addBalanceApiState: AddBalanceApiState) {
-        when (addBalanceApiState) {
-            is AddBalanceApiState.Initial -> {}
-            is AddBalanceApiState.Success -> {
-                onAddBalanceSuccess(addBalanceApiState.uiModel)
-            }
-
-            is AddBalanceApiState.Error -> {
-                showToastMessage(
-                    addBalanceApiState.error.toString() ?: "Bir hata oluştu",
-                    toastType = ToastMessageType.GENERAL_ERROR
-                )
-            }
-        }
-    }
-
-    private fun onAddBalanceSuccess(uiModel: AddBalanceUiModel?) {
-        uiModel?.let {
-            showToastMessage(
-                "Bakiye Hesabınıza Yüklendi",
-                toastType = ToastMessageType.GENERAL_SUCCESS
-            )
-        }
-        setFragmentResult(ProfileFragment.KEY_SHOULD_REFRESH, Bundle().apply {
-            putBoolean(ProfileFragment.KEY_SHOULD_REFRESH, true)
-        })
-        dismiss()
     }
 }

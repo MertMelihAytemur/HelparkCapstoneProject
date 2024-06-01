@@ -4,17 +4,18 @@ import com.helpark.helpark.common.utils.preferences.PreferencesKeys.KEY_USER_PRO
 import com.tr.helpark.helparkcapstoneproject.common.util.preferences.PreferencesManager
 import com.tr.helpark.helparkcapstoneproject.core.model.ApiErrorModel
 import com.tr.helpark.helparkcapstoneproject.features.profile.data.dto.request.AddBalanceRequestDto
+import com.tr.helpark.helparkcapstoneproject.features.profile.data.dto.request.DeleteUserAccountRequestDto
 import com.tr.helpark.helparkcapstoneproject.features.profile.data.dto.request.GetProfileRequestDto
 import com.tr.helpark.helparkcapstoneproject.features.profile.data.dto.response.toDomain
 import com.tr.helpark.helparkcapstoneproject.features.profile.data.remote.ProfileService
 import com.tr.helpark.helparkcapstoneproject.features.profile.domain.ProfileRepository
 import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.AddBalanceUiModel
+import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.DeleteUserAccountUiModel
 import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.GetProfileUiModel
 import tr.com.helpark.core.data.ApiExecutor
 import tr.com.helpark.core.data.remote.ApiResult
 import tr.com.helpark.core.domain.UiResult
 import tr.com.helpark.core.domain.parseError
-import tr.com.helpark.core.util.logD
 import javax.inject.Inject
 
 class GetProfileRepositoryImpl @Inject constructor(
@@ -45,7 +46,6 @@ class GetProfileRepositoryImpl @Inject constructor(
 
     override suspend fun addBalance(addBalanceRequestDto: AddBalanceRequestDto): UiResult<AddBalanceUiModel, ApiErrorModel> {
         val apiResult = execute {
-            logD("addBalanceUseCase 5")
             profileService.addBalance(
                 id = addBalanceRequestDto.id,
                 balance = addBalanceRequestDto.balance
@@ -54,12 +54,28 @@ class GetProfileRepositoryImpl @Inject constructor(
 
         return when (apiResult) {
             is ApiResult.Success -> {
-                logD("addBalanceUseCase 6")
                 UiResult.Success(apiResult.response?.toDomain())
             }
 
             is ApiResult.Error -> {
-                logD("addBalanceUseCase 7")
+                UiResult.Error(parseError<ApiErrorModel>(apiResult).error)
+            }
+        }
+    }
+
+    override suspend fun deleteUserAccount(deleteUserAccountRequestDto: DeleteUserAccountRequestDto): UiResult<DeleteUserAccountUiModel, ApiErrorModel> {
+        val apiResult = execute {
+            profileService.deleteUserAccount(
+                userId = deleteUserAccountRequestDto.userId
+            )
+        }
+
+        return when (apiResult) {
+            is ApiResult.Success -> {
+                UiResult.Success(apiResult.response?.toDomain())
+            }
+
+            is ApiResult.Error -> {
                 UiResult.Error(parseError<ApiErrorModel>(apiResult).error)
             }
         }

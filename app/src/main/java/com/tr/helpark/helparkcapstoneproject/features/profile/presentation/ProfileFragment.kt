@@ -17,9 +17,12 @@ import com.tr.helpark.helparkcapstoneproject.common.util.ToastMessageType
 import com.tr.helpark.helparkcapstoneproject.common.util.preferences.PreferencesManager
 import com.tr.helpark.helparkcapstoneproject.core.base.BaseFragment
 import com.tr.helpark.helparkcapstoneproject.databinding.FragmentProfileBinding
+import com.tr.helpark.helparkcapstoneproject.features.mycards.presentation.dialog.RemoveOptionBottomSheetDialog
 import com.tr.helpark.helparkcapstoneproject.features.profile.data.dto.request.AddBalanceRequestDto
+import com.tr.helpark.helparkcapstoneproject.features.profile.data.dto.request.DeleteUserAccountRequestDto
 import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.AddBalanceApiState
 import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.AddBalanceUiModel
+import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.DeleteUserAccountApiState
 import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.GetProfileApiState
 import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.GetProfileUiModel
 import com.tr.helpark.helparkcapstoneproject.features.profile.presentation.dialog.IAddBalanceActions
@@ -65,6 +68,10 @@ class ProfileFragment : BaseFragment<ProfileViewModel, FragmentProfileBinding>(
                 ProfileViewModel.PageEvent.GET_PROFILE_RESPONSE_RECEIVED -> {
                     onGetProfileResponseReceived(it.getProfileApiState)
                 }
+
+                ProfileViewModel.PageEvent.DELETE_USER_ACCOUNT_RESPONSE_RECEIVED -> {
+                    onDeleteUserAccountResponseReceived(it.deleteUserAccountApiState)
+                }
             }
         }
     }
@@ -95,6 +102,30 @@ class ProfileFragment : BaseFragment<ProfileViewModel, FragmentProfileBinding>(
 
             is GetProfileApiState.Error -> {
                 handleNetworkError(getProfileApiState.error)
+            }
+        }
+    }
+
+    private fun onDeleteUserAccountResponseReceived(deleteUserAccountApiState: DeleteUserAccountApiState) {
+        when (deleteUserAccountApiState) {
+            is DeleteUserAccountApiState.Initial -> {}
+
+            is DeleteUserAccountApiState.Success -> {
+                showToastMessage(
+                    getString(R.string.account_deleted),
+                    toastType = ToastMessageType.GENERAL_SUCCESS
+                )
+                preferencesManager.clear()
+                findNavController().navigate(R.id.loginFragment, null,
+                    navOptions {
+                        popUpTo(R.id.nav_graph) {
+                            inclusive = true
+                        }
+                    })
+            }
+
+            is DeleteUserAccountApiState.Error -> {
+                handleNetworkError(deleteUserAccountApiState.error)
             }
         }
     }
@@ -153,6 +184,16 @@ class ProfileFragment : BaseFragment<ProfileViewModel, FragmentProfileBinding>(
                     )
                 }
             }
+
+            cvDeleteAccount.setOnClickListener {
+                RemoveOptionBottomSheetDialog(
+                    RemoveOptionBottomSheetDialog.OPERATION_REMOVE_ACCOUNT,
+                    onRemoveClick = {
+                        preferencesManager.getString(PreferencesKeys.KEY_USER_ID)?.let { userId ->
+                            viewModel.deleteUserAccount(DeleteUserAccountRequestDto(userId.toInt()))
+                        }
+                    }).show(childFragmentManager, "SavedCardsOptionBottomSheetDialog")
+            }
         }
     }
 
@@ -183,10 +224,5 @@ class ProfileFragment : BaseFragment<ProfileViewModel, FragmentProfileBinding>(
                 viewModel.addBalance(addBalanceRequestDto)
             }
         }
-    }
-
-    companion object {
-        const val KEY_SHOULD_REFRESH = "KEY_SHOULD_REFRESH"
-        const val KEY_ADD_BALANCE_REQUEST = "KEY_ADD_BALANCE_REQUEST"
     }
 }

@@ -10,7 +10,7 @@ data class AddBalanceUiModel(
 ) : UiModel
 
 
-sealed interface AddBalanceApiState : UiModel {
+sealed interface AddBalanceApiState {
     object Initial : AddBalanceApiState
     data class Success(val uiModel : AddBalanceUiModel?) : AddBalanceApiState
     data class Error(val error : UiError<ApiErrorModel>) : AddBalanceApiState

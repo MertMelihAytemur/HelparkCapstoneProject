@@ -9,13 +9,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.tr.helpark.helparkcapstoneproject.R
+import com.tr.helpark.helparkcapstoneproject.common.extensions.navigateWithAnimation
 import com.tr.helpark.helparkcapstoneproject.common.util.Constants
 import com.tr.helpark.helparkcapstoneproject.databinding.FragmentSettingsBinding
 
-
 class SettingsFragment : Fragment() {
 
-    private lateinit var binding : FragmentSettingsBinding
+    private lateinit var binding: FragmentSettingsBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,12 +34,11 @@ class SettingsFragment : Fragment() {
 
     private fun initListeners() {
         binding.apply {
-            textViewAbout.setOnClickListener {
-                //val action = SettingsFragmentDirections.actionSettingsFragmentToAboutFragment()
-                //navigateWithAnimation(action)
+            cvProfile.setOnClickListener {
+                navigateWithAnimation(R.id.action_settingsFragment_to_profileFragment)
             }
 
-            rvSavedCarParks.setOnClickListener {
+            cvSavedCarParks.setOnClickListener {
                 //val action = SettingsFragmentDirections.actionSettingsFragmentToSavedCarParksFragment()
                 //navigateWithAnimation(action)
             }
@@ -48,12 +47,12 @@ class SettingsFragment : Fragment() {
                 findNavController().navigateUp()
             }
 
-            tvPrivacyPolicy.setOnClickListener {
+            cvAboutUs.setOnClickListener {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(Constants.PRIVACY_POLICY))
                 startActivity(intent)
             }
 
-            tvRateUs.setOnClickListener {
+            cvReservationHistory.setOnClickListener {
                 //redirectStore(STORE_URL)
             }
         }

@@ -5,10 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import androidx.core.view.isVisible
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tr.helpark.helparkcapstoneproject.R
+import com.tr.helpark.helparkcapstoneproject.common.extensions.navigateWithAnimation
 import com.tr.helpark.helparkcapstoneproject.databinding.DialogBottomSheetSelectCardBinding
 import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.CardUiModel
 import com.tr.helpark.helparkcapstoneproject.features.profile.presentation.dialog.IAddBalanceActions
@@ -50,8 +52,17 @@ class SelectCardBottomSheetDialog(
         (dialog as? BottomSheetDialog)?.setCanceledOnTouchOutside(false)
         binding.rvSavedCards.adapter = adapter
 
+        initUi()
         setAdapter()
         initListener()
+    }
+
+    private fun initUi() {
+        binding.rvSavedCards.isVisible = userCardList.isNotEmpty()
+        binding.tvNoCardFound.isVisible = userCardList.isEmpty()
+        binding.btnContinue.text =
+            if (userCardList.isEmpty()) getString(R.string.add_card)
+            else getString(R.string.btn_continue)
     }
 
     private fun setAdapter() {
@@ -65,9 +76,13 @@ class SelectCardBottomSheetDialog(
             }
 
             btnContinue.setOnClickListener {
-                AddBalanceBottomSheetDialog(
-                    iAddBalanceActions
-                ).show(parentFragmentManager, "AddBalanceBottomSheetDialog.TAG")
+                if (userCardList.isNotEmpty()) {
+                    AddBalanceBottomSheetDialog(
+                        iAddBalanceActions
+                    ).show(parentFragmentManager, "AddBalanceBottomSheetDialog.TAG")
+                } else {
+                    navigateWithAnimation(R.id.myCardsFragment)
+                }
                 dismiss()
             }
         }

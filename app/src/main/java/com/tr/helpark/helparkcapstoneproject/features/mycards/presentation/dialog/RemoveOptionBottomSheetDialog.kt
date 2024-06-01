@@ -10,7 +10,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tr.helpark.helparkcapstoneproject.R
 import com.tr.helpark.helparkcapstoneproject.databinding.DialogBottomSheetSavedCardOptionsBinding
 
-class SavedCardsOptionBottomSheetDialog(
+class RemoveOptionBottomSheetDialog(
     private val operationId : Int,
     private val onRemoveClick : () -> Unit,
 ) : BottomSheetDialogFragment(){
@@ -37,10 +37,16 @@ class SavedCardsOptionBottomSheetDialog(
         (dialog as? BottomSheetDialog)?.behavior?.state = BottomSheetBehavior.STATE_EXPANDED
         (dialog as? BottomSheetDialog)?.setCanceledOnTouchOutside(true)
 
-        if(operationId == OPERATION_CARD) {
-            binding.tvTitle.text = getString(R.string.remove_card)
-        } else if(operationId == OPERATION_CAR) {
-            binding.tvTitle.text = getString(R.string.remove_car)
+        when(operationId){
+            OPERATION_REMOVE_CARD -> {
+                binding.tvTitle.text = getString(R.string.remove_card)
+            }
+            OPERATION_REMOVE_CAR -> {
+                binding.tvTitle.text = getString(R.string.remove_car)
+            }
+            OPERATION_REMOVE_ACCOUNT -> {
+                binding.tvTitle.text = getString(R.string.remove_account)
+            }
         }
     }
 
@@ -52,7 +58,8 @@ class SavedCardsOptionBottomSheetDialog(
     }
 
     companion object{
-        const val OPERATION_CARD = 1
-        const val OPERATION_CAR = 2
+        const val OPERATION_REMOVE_CARD = 1
+        const val OPERATION_REMOVE_CAR = 2
+        const val OPERATION_REMOVE_ACCOUNT = 3
     }
 }

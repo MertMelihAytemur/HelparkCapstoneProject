@@ -18,6 +18,7 @@ import com.tr.helpark.helparkcapstoneproject.common.extensions.handleViewVisibil
 import com.tr.helpark.helparkcapstoneproject.common.extensions.handleViewVisibilityWithTranslationYTop
 import com.tr.helpark.helparkcapstoneproject.common.extensions.navigateWithAnimation
 import com.tr.helpark.helparkcapstoneproject.common.extensions.redirectUserToGoogleMaps
+import com.tr.helpark.helparkcapstoneproject.common.extensions.setCarParkSavedStatus
 import com.tr.helpark.helparkcapstoneproject.common.extensions.setParkDensityStatus
 import com.tr.helpark.helparkcapstoneproject.common.extensions.setParkIsOpenStatus
 import com.tr.helpark.helparkcapstoneproject.common.extensions.setTextViewAlphaAnimation
@@ -29,10 +30,14 @@ import com.tr.helpark.helparkcapstoneproject.common.util.UiActions
 import com.tr.helpark.helparkcapstoneproject.common.util.preferences.PreferencesManager
 import com.tr.helpark.helparkcapstoneproject.core.base.BaseFragment
 import com.tr.helpark.helparkcapstoneproject.databinding.FragmentHomeBinding
+import com.tr.helpark.helparkcapstoneproject.features.home.data.dto.request.ToggleFavoriteParkRequestDto
 import com.tr.helpark.helparkcapstoneproject.features.home.domain.uimodel.GetAllParksApiState
 import com.tr.helpark.helparkcapstoneproject.features.home.domain.uimodel.GetAllParksUiModel
 import com.tr.helpark.helparkcapstoneproject.features.home.domain.uimodel.GetAllParksUiModelItem
+import com.tr.helpark.helparkcapstoneproject.features.home.domain.uimodel.ToggleFavoriteApiState
+import com.tr.helpark.helparkcapstoneproject.features.home.domain.uimodel.ToggleFavoriteUiModel
 import com.tr.helpark.helparkcapstoneproject.features.main.MapsActivity
+import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.FavouriteUiModel
 import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.GetProfileApiState
 import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.GetProfileUiModel
 import com.tr.helpark.helparkcapstoneproject.features.search.presentation.SearchBottomSheetDialogFragment
@@ -58,14 +63,21 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
     @Inject
     lateinit var preferencesManager: PreferencesManager
 
+    private var userId = -1
+
+    private var favoriteParkList = listOf<FavouriteUiModel>()
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setMapActions()
         setBottomSheetBehaviour()
         overrideHomeUiActions()
         initListeners()
+        setUserId()
 
         observeMarkerPosition()
+        observeLiveData()
 
         preferencesManager.getString(KEY_USER_ID)?.let { userId ->
             viewModel.getProfile(userId)
@@ -85,9 +97,21 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
                     onGetProfileResponseReceived(it.getProfileApiState)
                 }
 
+                HomeViewModel.PageEvent.TOGGLE_FAVORITE_RESPONSE_RECEIVED -> {
+                    onToggleFavoriteResponseReceived(it.toggleFavoriteApiState)
+                }
+
                 HomeViewModel.PageEvent.NAVIGATE_TO_NEXT_SCREEN -> {
                     onGetProfileResponseReceived(it.getProfileApiState)
                 }
+            }
+        }
+    }
+
+    private fun observeLiveData(){
+        viewModel.favoriteParkList.observe(viewLifecycleOwner){ favoriteParks ->
+            favoriteParks?.let {
+                favoriteParkList = it
             }
         }
     }
@@ -120,6 +144,30 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
         }
     }
 
+    private fun onToggleFavoriteResponseReceived(toggleFavoriteApiState: ToggleFavoriteApiState) {
+        when (toggleFavoriteApiState) {
+            is ToggleFavoriteApiState.Initial -> {}
+
+            is ToggleFavoriteApiState.Success -> {
+                onToggleFavoriteSuccess(toggleFavoriteApiState.uiModel)
+            }
+
+            is ToggleFavoriteApiState.Error -> {
+                handleNetworkError(toggleFavoriteApiState.error)
+            }
+        }
+    }
+
+    private fun onToggleFavoriteSuccess(uiModel: ToggleFavoriteUiModel?) {
+        uiModel?.let {
+            binding.layoutParkInfo.ivSaveCarPark.setCarParkSavedStatus(it.isFavorite)
+
+            preferencesManager.getString(KEY_USER_ID)?.let { userId ->
+                viewModel.getProfile(userId)
+            }
+        }
+    }
+
     private fun onGetAllParksSuccess(uiModel: GetAllParksUiModel?) {
         uiModel.let {
             it?.parks.let { parkList ->
@@ -136,6 +184,7 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
         uiModel?.let {
             binding.tbHomePage.tvName.text = it.name.toString()
         }
+        viewModel.getFavoriteParks()
     }
 
     private fun initListeners() {
@@ -210,9 +259,9 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
 
     private fun showCarParkDetail(park: GetAllParksUiModelItem) {
         with(binding) {
-            //var isSaved = isCarParkSaved(isparkDetail.parkID)
+            var isSaved = isCarParkSaved(park.id)
             layoutParkInfo.apply {
-                //ivSaveCarPark.setCarParkSavedStatus(isSaved)
+                ivSaveCarPark.setCarParkSavedStatus(isSaved)
                 tvTransactionAmount.setParkDensityStatus(park)
                 layoutPark.tvParkName.text = park.parkName
                 tvUpdatedTime.text = park.parkDetail?.updateDate
@@ -234,18 +283,20 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
                 }
 
                 ivSaveCarPark.setOnClickListener {
-                    /*isSaved = if (isSaved) {
-                        viewModel.removeCarParkFromSavings(isparkDetail.parkID)
+                    isSaved = if (isSaved) {
+                        viewModel.toggleFavorite(ToggleFavoriteParkRequestDto(userId, park.id!!))
                         false
                     } else {
-                        viewModel.saveCarPark(isparkDetail)
                         showToastMessage(
                             getString(R.string.car_park_saved_success),
                             toastType = ToastMessageType.GENERAL_SUCCESS
                         )
+
+                        viewModel.toggleFavorite(ToggleFavoriteParkRequestDto(userId, park.id!!))
                         true
                     }
-                    ivSaveCarPark.setCarParkSavedStatus(isSaved)*/
+
+                    ivSaveCarPark.setCarParkSavedStatus(isSaved)
                 }
             }
             //setParkSchedule(parkDetail, parkDetail.parkDetail?.workHours)
@@ -361,6 +412,20 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
                     }
                 }
             })
+        }
+    }
+
+    private fun isCarParkSaved(carParkId: Int?): Boolean {
+        return carParkId?.let {
+            favoriteParkList.any {
+                it.parkId == carParkId
+            }
+        } ?: false
+    }
+
+    private fun setUserId() {
+        preferencesManager.getString(KEY_USER_ID)?.let { userId ->
+            this.userId = userId.toInt()
         }
     }
 

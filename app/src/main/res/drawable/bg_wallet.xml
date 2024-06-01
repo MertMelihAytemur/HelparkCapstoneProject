@@ -4,5 +4,5 @@
     <corners
         android:bottomLeftRadius="12dp"
         android:bottomRightRadius="12dp" />
-    <solid android:color="@color/spotify_green" />
+    <solid android:color="@color/map_ocean_blue" />
 </shape>

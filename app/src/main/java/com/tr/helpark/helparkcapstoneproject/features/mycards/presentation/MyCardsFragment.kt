@@ -2,6 +2,7 @@ package com.tr.helpark.helparkcapstoneproject.features.mycards.presentation
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.helpark.helpark.common.utils.preferences.PreferencesKeys
@@ -15,8 +16,8 @@ import com.tr.helpark.helparkcapstoneproject.features.mycards.domain.uimodel.Add
 import com.tr.helpark.helparkcapstoneproject.features.mycards.domain.uimodel.RemoveCardApiState
 import com.tr.helpark.helparkcapstoneproject.features.mycards.presentation.adapter.MyCardsListAdapter
 import com.tr.helpark.helparkcapstoneproject.features.mycards.presentation.dialog.AddNewCardBottomSheetDialog
-import com.tr.helpark.helparkcapstoneproject.features.mycards.presentation.dialog.SavedCardsOptionBottomSheetDialog
-import com.tr.helpark.helparkcapstoneproject.features.mycards.presentation.dialog.SavedCardsOptionBottomSheetDialog.Companion.OPERATION_CARD
+import com.tr.helpark.helparkcapstoneproject.features.mycards.presentation.dialog.RemoveOptionBottomSheetDialog
+import com.tr.helpark.helparkcapstoneproject.features.mycards.presentation.dialog.RemoveOptionBottomSheetDialog.Companion.OPERATION_REMOVE_CARD
 import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.GetProfileApiState
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -129,7 +130,7 @@ class MyCardsFragment : BaseFragment<MyCardsViewModel, FragmentMyCardsBinding>(
     }
 
     private fun onDeleteCardClickAction(id: Int) {
-        SavedCardsOptionBottomSheetDialog(OPERATION_CARD,onRemoveClick = {
+        RemoveOptionBottomSheetDialog(OPERATION_REMOVE_CARD,onRemoveClick = {
             preferencesManager.getString(PreferencesKeys.KEY_USER_ID)?.let { userId ->
                 viewModel.removeCard(RemoveCardRequestDto(userId.toInt(), id))
             }
@@ -138,6 +139,8 @@ class MyCardsFragment : BaseFragment<MyCardsViewModel, FragmentMyCardsBinding>(
 
     private fun observeLiveData() {
         viewModel.cardList.observe(viewLifecycleOwner) {
+            binding.rvMyCards.isVisible = it.isNotEmpty()
+            binding.clEmptyState.isVisible = it.isEmpty()
             adapter.submitList(it)
         }
     }

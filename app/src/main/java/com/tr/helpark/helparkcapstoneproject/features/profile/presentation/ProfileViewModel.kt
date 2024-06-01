@@ -6,12 +6,15 @@ import androidx.lifecycle.viewModelScope
 import com.helpark.helpark.common.utils.preferences.PreferencesKeys
 import com.tr.helpark.helparkcapstoneproject.common.util.preferences.PreferencesManager
 import com.tr.helpark.helparkcapstoneproject.features.profile.data.dto.request.AddBalanceRequestDto
+import com.tr.helpark.helparkcapstoneproject.features.profile.data.dto.request.DeleteUserAccountRequestDto
 import com.tr.helpark.helparkcapstoneproject.features.profile.data.dto.request.GetProfileRequestDto
 import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.AddBalanceApiState
 import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.CardUiModel
+import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.DeleteUserAccountApiState
 import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.GetProfileApiState
 import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.GetProfileUiModel
 import com.tr.helpark.helparkcapstoneproject.features.profile.domain.usecase.AddBalanceUseCase
+import com.tr.helpark.helparkcapstoneproject.features.profile.domain.usecase.DeleteUserAccountUseCase
 import com.tr.helpark.helparkcapstoneproject.features.profile.domain.usecase.GetProfileUseCase
 import com.vmlmedia.core.presentation.CoreViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,7 +23,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import tr.com.helpark.core.util.logD
 import javax.inject.Inject
 import kotlin.reflect.typeOf
 
@@ -28,7 +30,8 @@ import kotlin.reflect.typeOf
 class ProfileViewModel @Inject constructor(
     private val preferencesManager: PreferencesManager,
     private val addBalanceUseCase: AddBalanceUseCase,
-    private val getProfileUseCase: GetProfileUseCase
+    private val getProfileUseCase: GetProfileUseCase,
+    private val deleteUserAccountUseCase: DeleteUserAccountUseCase
 ) : CoreViewModel() {
 
     private var _cardList: MutableLiveData<List<CardUiModel>> = MutableLiveData()
@@ -51,14 +54,12 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun addBalance(addBalanceRequestDto: AddBalanceRequestDto){
+    fun addBalance(addBalanceRequestDto: AddBalanceRequestDto) {
         launchRequest(
             requestBody = {
-                logD("addBalanceUseCase 1")
                 addBalanceUseCase(addBalanceRequestDto)
             },
-            onSuccess = {uiModel ->
-                logD("addBalanceUseCase 2")
+            onSuccess = { uiModel ->
                 _pageStateFlow.update {
                     it.copy(
                         pageEvent = PageEvent.ADD_BALANCE_RESPONSE_RECEIVED,
@@ -66,8 +67,7 @@ class ProfileViewModel @Inject constructor(
                     )
                 }
             },
-            onError = {error ->
-                logD("addBalanceUseCase 3")
+            onError = { error ->
                 _pageStateFlow.update {
                     it.copy(
                         pageEvent = PageEvent.ADD_BALANCE_RESPONSE_RECEIVED,
@@ -78,7 +78,7 @@ class ProfileViewModel @Inject constructor(
         )
     }
 
-    fun getProfile(userId : String){
+    fun getProfile(userId: String) {
         launchRequest(
             requestBody = {
                 getProfileUseCase(GetProfileRequestDto(userId))
@@ -99,15 +99,41 @@ class ProfileViewModel @Inject constructor(
         )
     }
 
-    enum class PageEvent{
+    fun deleteUserAccount(deleteUserAccountRequestDto: DeleteUserAccountRequestDto) {
+        launchRequest(
+            requestBody = {
+                deleteUserAccountUseCase(deleteUserAccountRequestDto)
+            },
+            onSuccess = { uiModel ->
+                _pageStateFlow.update {
+                    it.copy(
+                        pageEvent = PageEvent.DELETE_USER_ACCOUNT_RESPONSE_RECEIVED,
+                        deleteUserAccountApiState = DeleteUserAccountApiState.Success(uiModel)
+                    )
+                }
+            },
+            onError = { error ->
+                _pageStateFlow.update {
+                    it.copy(
+                        pageEvent = PageEvent.DELETE_USER_ACCOUNT_RESPONSE_RECEIVED,
+                        deleteUserAccountApiState = DeleteUserAccountApiState.Error(error)
+                    )
+                }
+            }
+        )
+    }
+
+    enum class PageEvent {
         INITIAL,
         ADD_BALANCE_RESPONSE_RECEIVED,
-        GET_PROFILE_RESPONSE_RECEIVED
+        GET_PROFILE_RESPONSE_RECEIVED,
+        DELETE_USER_ACCOUNT_RESPONSE_RECEIVED
     }
 
     data class PageState(
         val pageEvent: PageEvent = PageEvent.INITIAL,
-        val addBalanceApiState : AddBalanceApiState = AddBalanceApiState.Initial,
-        val getProfileApiState: GetProfileApiState = GetProfileApiState.Initial
+        val addBalanceApiState: AddBalanceApiState = AddBalanceApiState.Initial,
+        val getProfileApiState: GetProfileApiState = GetProfileApiState.Initial,
+        val deleteUserAccountApiState: DeleteUserAccountApiState = DeleteUserAccountApiState.Initial
     )
 }

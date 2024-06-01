@@ -1,10 +1,12 @@
 package com.tr.helpark.helparkcapstoneproject.features.home.data
 
 import com.tr.helpark.helparkcapstoneproject.core.model.ApiErrorModel
+import com.tr.helpark.helparkcapstoneproject.features.home.data.dto.request.ToggleFavoriteParkRequestDto
 import com.tr.helpark.helparkcapstoneproject.features.home.data.dto.response.toDomain
 import com.tr.helpark.helparkcapstoneproject.features.home.data.remote.HomeService
 import com.tr.helpark.helparkcapstoneproject.features.home.domain.HomeRepository
 import com.tr.helpark.helparkcapstoneproject.features.home.domain.uimodel.GetAllParksUiModel
+import com.tr.helpark.helparkcapstoneproject.features.home.domain.uimodel.ToggleFavoriteUiModel
 import tr.com.helpark.core.data.ApiExecutor
 import tr.com.helpark.core.data.remote.ApiResult
 import tr.com.helpark.core.domain.UiResult
@@ -24,6 +26,21 @@ class HomeRepositoryImpl @Inject constructor(
                 UiResult.Success(apiResult.response?.toDomain())
             }
 
+            is ApiResult.Error -> {
+                UiResult.Error(parseError<ApiErrorModel>(apiResult).error)
+            }
+        }
+    }
+
+    override suspend fun toggleFavoritePark(toggleFavoriteParkRequestDto: ToggleFavoriteParkRequestDto): UiResult<ToggleFavoriteUiModel, ApiErrorModel> {
+        val apiResult = execute {
+            homeService.toggleFavoritePark(toggleFavoriteParkRequestDto)
+        }
+
+        return when(apiResult){
+            is ApiResult.Success -> {
+                UiResult.Success(apiResult.response?.toDomain())
+            }
             is ApiResult.Error -> {
                 UiResult.Error(parseError<ApiErrorModel>(apiResult).error)
             }

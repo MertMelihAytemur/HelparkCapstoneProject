@@ -102,5 +102,10 @@
     <string name="remove_car">Aracı Sil</string>
     <string name="profile_info">Profil Bilgilerim</string>
     <string name="balance_added">Bakiye Hesabınıza Yüklendi</string>
+    <string name="account_deleted">Hesabınız Silindi</string>
+    <string name="remove_account">Hesabınızı silmek istediğinizden emin misiniz?</string>
+    <string name="add_card">Kart Ekle</string>
+    <string name="btn_continue">Devam Et</string>
+    <string name="saved_card_not_found">Kayıtlı Kartınız Bulunmamaktadır</string>
 
 </resources>
