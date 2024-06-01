@@ -63,3 +63,28 @@ fun String.toPhoneNumberFormat(): String {
         this
     }
 }
+
+fun String.addSpacesBetweenLettersAndDigits(): String {
+    val stringBuilder = StringBuilder()
+    for (i in this.indices) {
+        val currentChar = this[i]
+        if (i > 0) {
+            val previousChar = this[i - 1]
+            if (currentChar.isDigit() && previousChar.isLetter() || currentChar.isLetter() && previousChar.isDigit()) {
+                stringBuilder.append(' ')
+            }
+        }
+        stringBuilder.append(currentChar)
+    }
+    return stringBuilder.toString()
+}
+
+fun String.toMaskedCardNumber(): String {
+    if (this.length != 16) return this // Eğer gelen string 16 karakter değilse, olduğu gibi döndür.
+
+    val firstPart = this.substring(0, 6)
+    val maskedPart = "**** ****"
+    val lastPart = this.substring(14, 16)
+
+    return "$firstPart $maskedPart $lastPart"
+}

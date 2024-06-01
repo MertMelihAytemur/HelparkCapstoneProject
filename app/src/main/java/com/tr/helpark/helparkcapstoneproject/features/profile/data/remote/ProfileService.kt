@@ -13,6 +13,6 @@ interface ProfileService {
     ) : Response<GetProfileResponseDto>
 
     private companion object{
-        const val END_POINT_GET_PROFILE = "/api/User/GetAllDataFromUser/{userId}"
+        const val END_POINT_GET_PROFILE = "/User/GetAllDataFromUser/{userId}"
     }
 }

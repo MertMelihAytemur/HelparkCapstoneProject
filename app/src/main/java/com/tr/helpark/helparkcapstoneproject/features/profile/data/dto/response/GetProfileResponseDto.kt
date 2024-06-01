@@ -12,9 +12,9 @@ data class GetProfileResponseDto(
     @SerializedName("balance")
     val balance: Int?,
     @SerializedName("carPlates")
-    val carPlates: List<CarPlate?>?,
+    val carPlates: List<CarPlate>?,
     @SerializedName("card")
-    val card: List<Card?>?,
+    val card: List<Card>?,
     @SerializedName("debt")
     val debt: Int?,
     @SerializedName("email")
@@ -74,8 +74,8 @@ fun GetProfileResponseDto.toDomain(): GetProfileUiModel {
     return GetProfileUiModel(
         active = this.active,
         balance = this.balance,
-        carPlates = this.carPlates?.map { it?.toDomain() },
-        card = this.card?.map { it?.toDomain() },
+        carPlates = this.carPlates?.map { it.toDomain() },
+        card = this.card?.map { it.toDomain() },
         debt = this.debt,
         email = this.email,
         id = this.id,

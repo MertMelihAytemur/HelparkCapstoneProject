@@ -22,6 +22,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.navOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.LocationRequest
@@ -148,7 +149,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             }
 
             override fun setParksToMap(parkList: List<GetAllParksUiModelItem>) {
-                if(::mapManager.isInitialized) {
+                if (::mapManager.isInitialized) {
                     mapManager.setNearestMaviShops(ArrayList(parkList))
                 }
             }
@@ -168,7 +169,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap = googleMap
         mMap.setInfoWindowAdapter(MapInfoWindowAdapter(this))
 
-        mapManager = MapManager.MapManagerFactory.create(this,mMap, locationHelper)
+        mapManager = MapManager.MapManagerFactory.create(this, mMap, locationHelper)
         // map style
         val styleResource = if (Constants.isDay) R.raw.map_style_day else R.raw.map_style_day
         val mapStyle = MapStyleOptions.loadRawResourceStyle(this, styleResource)
@@ -238,10 +239,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             override fun handleOnBackPressed() {
                 when (getCurrentFragment()) {
                     is HomeFragment, is LoginFragment -> moveTaskToBack(true)
-                    is OtpVerificationFragment -> findNavController(R.id.nav_host_fragment).popBackStack(
-                        R.id.loginFragment,
-                        false
-                    )
+                    is OtpVerificationFragment -> findNavController().navigate(R.id.loginFragment,
+                        null,
+                        navOptions {
+                            popUpTo(R.id.nav_graph) {
+                                inclusive = true
+                            }
+                        })
 
                     else -> navController.navigateUp()
                 }
@@ -283,7 +287,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         turnOnLocationServicesDialog = TurnOnLocationServicesDialog(this) {
-            requestTurnOnLocationServices{ viewModel.isLocationServicesEnabled.value = true }
+            requestTurnOnLocationServices { viewModel.isLocationServicesEnabled.value = true }
         }
 
         exitApplicationDialog = ExitApplicationDialog(this) {

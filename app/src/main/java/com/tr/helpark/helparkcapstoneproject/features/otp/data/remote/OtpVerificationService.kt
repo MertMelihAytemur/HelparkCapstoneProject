@@ -22,7 +22,7 @@ interface OtpVerificationService {
     ): Response<SendOtpResponseDto>
 
     private companion object {
-        const val END_POINT_VERIFY_OTP = "/api/OTPVerification/Verify"
-        const val END_POINT_SEND_OTP = "/api/GenerateOtp"
+        const val END_POINT_VERIFY_OTP = "/OTPVerification/Verify"
+        const val END_POINT_SEND_OTP = "/GenerateOtp"
     }
 }

@@ -96,5 +96,9 @@
     <string name="search_history">Geçmiş Aramalarım</string>
     <string name="register_success_message">Hesabınız Oluşturuldu</string>
     <string name="show_detail"><u>Detay Gör</u></string>
+    <string name="saved_cars">Kayıtlı Araçlarınız</string>
+    <string name="saved_cards">Kayıtlı Kartlarım</string>
+    <string name="remove_card">Kartı Sil</string>
+    <string name="remove_car">Aracı Sil</string>
 
 </resources>
