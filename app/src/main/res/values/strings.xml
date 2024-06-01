@@ -100,5 +100,7 @@
     <string name="saved_cards">Kayıtlı Kartlarım</string>
     <string name="remove_card">Kartı Sil</string>
     <string name="remove_car">Aracı Sil</string>
+    <string name="profile_info">Profil Bilgilerim</string>
+    <string name="balance_added">Bakiye Hesabınıza Yüklendi</string>
 
 </resources>

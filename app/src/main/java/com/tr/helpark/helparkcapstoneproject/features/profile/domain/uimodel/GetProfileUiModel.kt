@@ -9,10 +9,10 @@ import tr.com.helpark.core.domain.UiModel
 @Parcelize
 data class GetProfileUiModel(
     val active: Int?,
-    val balance: Int?,
+    val balance: Float?,
     val carPlates: List<CarPlateUiModel>?,
     val card: List<CardUiModel>?,
-    val debt: Int?,
+    val debt: Float?,
     val email: String?,
     val id: Int?,
     val name: String?,

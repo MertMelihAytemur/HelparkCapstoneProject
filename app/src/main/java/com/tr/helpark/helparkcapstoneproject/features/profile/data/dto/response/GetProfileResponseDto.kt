@@ -10,13 +10,13 @@ data class GetProfileResponseDto(
     @SerializedName("active")
     val active: Int?,
     @SerializedName("balance")
-    val balance: Int?,
+    val balance: Float?,
     @SerializedName("carPlates")
     val carPlates: List<CarPlate>?,
     @SerializedName("card")
     val card: List<Card>?,
     @SerializedName("debt")
-    val debt: Int?,
+    val debt: Float?,
     @SerializedName("email")
     val email: String?,
     @SerializedName("id")

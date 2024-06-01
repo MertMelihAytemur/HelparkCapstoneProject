@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:cardCornerRadius="4dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginVertical="8dp"
+    android:layout_marginHorizontal="4dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingVertical="6dp">
+
+        <androidx.appcompat.widget.AppCompatRadioButton
+            android:id="@+id/rbSelectedCard"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="12dp"
+            android:button="@drawable/check_box_button"
+            android:clickable="false"
+            android:gravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="RtlSymmetry" />
+
+
+        <TextView
+            android:id="@+id/tvCardAlies"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Mert İş"
+            android:fontFamily="@font/montserrat_medium"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="6dp"
+            app:layout_constraintStart_toEndOf="@id/rbSelectedCard"
+            android:textSize="14sp"
+            android:textColor="@color/text_color_black"
+            android:layout_marginStart="8dp" />
+
+        <TextView
+            android:id="@+id/tvCardNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="4543 14*** **** **45"
+            app:layout_constraintTop_toBottomOf="@id/tvCardAlies"
+            android:layout_marginTop="4dp"
+            android:fontFamily="@font/montserrat"
+            android:textSize="13sp"
+            app:layout_constraintStart_toStartOf="@id/tvCardAlies"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <ImageView
+            android:id="@+id/ivMasterPass"
+            android:layout_width="70dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="12dp"
+            android:src="@drawable/master_pass"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.cardview.widget.CardView>

@@ -25,25 +25,12 @@
             android:textAlignment="textStart"
             android:textColor="@color/black"
             android:textSize="14sp"
-            app:layout_constraintEnd_toStartOf="@id/tvDetail"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/tvDetail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="12dp"
-            android:fontFamily="@font/montserrat_medium"
-            android:text="@string/show_detail"
-            android:textColor="@color/spotify_green"
-            android:textSize="11sp"
-            app:layout_constraintBottom_toBottomOf="@id/tvTitleAmount"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tvTitleAmount" />
-
-
-        <TextView
+            android:id="@+id/tvAmount"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -59,7 +46,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/clReminder"
+        android:id="@+id/clAddBalance"
         android:layout_width="match_parent"
         android:layout_height="36dp"
         android:layout_marginStart="1dp"
@@ -75,10 +62,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
+            android:src="@drawable/ic_add"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/tvReminder"
-            app:layout_constraintTop_toTopOf="parent"
-            android:src="@drawable/ic_add" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tvReminder"

@@ -6,14 +6,24 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
+import com.helpark.helpark.common.utils.preferences.PreferencesKeys
 import com.helpark.helpark.common.utils.preferences.PreferencesKeys.KEY_USER_PROFILE
 import com.tr.helpark.helparkcapstoneproject.R
 import com.tr.helpark.helparkcapstoneproject.common.extensions.navigateWithAnimation
+import com.tr.helpark.helparkcapstoneproject.common.extensions.showToastMessage
+import com.tr.helpark.helparkcapstoneproject.common.extensions.toCurrencyString
 import com.tr.helpark.helparkcapstoneproject.common.extensions.toPhoneNumberFormat
+import com.tr.helpark.helparkcapstoneproject.common.util.ToastMessageType
 import com.tr.helpark.helparkcapstoneproject.common.util.preferences.PreferencesManager
 import com.tr.helpark.helparkcapstoneproject.core.base.BaseFragment
 import com.tr.helpark.helparkcapstoneproject.databinding.FragmentProfileBinding
+import com.tr.helpark.helparkcapstoneproject.features.profile.data.dto.request.AddBalanceRequestDto
+import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.AddBalanceApiState
+import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.AddBalanceUiModel
+import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.GetProfileApiState
 import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.GetProfileUiModel
+import com.tr.helpark.helparkcapstoneproject.features.profile.presentation.dialog.IAddBalanceActions
+import com.tr.helpark.helparkcapstoneproject.features.reservation.presentation.dialog.selectcard.SelectCardBottomSheetDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -30,14 +40,84 @@ class ProfileFragment : BaseFragment<ProfileViewModel, FragmentProfileBinding>(
 
     private var profile: GetProfileUiModel? = null
 
+    private lateinit var iAddBalanceActions: IAddBalanceActions
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewLifecycleOwner.lifecycleScope.launch {
             setProfile()
         }
 
+        viewModel.getUserCards()
+        overrideAddBalanceActions()
         initListeners()
+
+        collectPageState(viewModel.pageStateFlow) {
+            when (it.pageEvent) {
+                ProfileViewModel.PageEvent.INITIAL -> {
+
+                }
+
+                ProfileViewModel.PageEvent.ADD_BALANCE_RESPONSE_RECEIVED -> {
+                    onAddBalanceResponseReceived(it.addBalanceApiState)
+                }
+
+                ProfileViewModel.PageEvent.GET_PROFILE_RESPONSE_RECEIVED -> {
+                    onGetProfileResponseReceived(it.getProfileApiState)
+                }
+            }
+        }
     }
+
+    private fun onAddBalanceResponseReceived(addBalanceApiState: AddBalanceApiState) {
+        when (addBalanceApiState) {
+            is AddBalanceApiState.Initial -> {
+
+            }
+
+            is AddBalanceApiState.Success -> {
+                onAddBalanceSuccess(addBalanceApiState.uiModel)
+            }
+
+            is AddBalanceApiState.Error -> {
+                handleNetworkError(addBalanceApiState.error)
+            }
+        }
+    }
+
+    private fun onGetProfileResponseReceived(getProfileApiState: GetProfileApiState) {
+        when (getProfileApiState) {
+            is GetProfileApiState.Initial -> {}
+
+            is GetProfileApiState.Success -> {
+                onGetProfileSuccess(getProfileApiState.uiModel)
+            }
+
+            is GetProfileApiState.Error -> {
+                handleNetworkError(getProfileApiState.error)
+            }
+        }
+    }
+
+    private fun onAddBalanceSuccess(uiModel: AddBalanceUiModel?) {
+        uiModel?.let {
+            showToastMessage(
+                getString(R.string.balance_added),
+                toastType = ToastMessageType.GENERAL_SUCCESS
+            )
+        }
+
+        preferencesManager.getString(PreferencesKeys.KEY_USER_ID)?.let { userId ->
+            viewModel.getProfile(userId)
+        }
+    }
+
+    private fun onGetProfileSuccess(uiModel: GetProfileUiModel?) {
+        uiModel?.let {
+            updateProfile(it)
+        }
+    }
+
 
     private fun initListeners() {
         with(binding) {
@@ -45,7 +125,7 @@ class ProfileFragment : BaseFragment<ProfileViewModel, FragmentProfileBinding>(
                 findNavController().popBackStack()
             }
 
-            toolbar.tvToolbarTitle.text = "Profil Bilgilerim"
+            toolbar.tvToolbarTitle.text = getString(R.string.profile_info)
 
             cvMyCars.setOnClickListener {
                 navigateWithAnimation(R.id.action_profileFragment_to_myCarsFragment)
@@ -64,6 +144,15 @@ class ProfileFragment : BaseFragment<ProfileViewModel, FragmentProfileBinding>(
                         }
                     })
             }
+
+            clWallet.clAddBalance.setOnClickListener {
+                viewModel.cardList.value?.let {
+                    SelectCardBottomSheetDialog(iAddBalanceActions, it).show(
+                        childFragmentManager,
+                        "SelectCardBottomSheetDialog.TAG"
+                    )
+                }
+            }
         }
     }
 
@@ -72,12 +161,32 @@ class ProfileFragment : BaseFragment<ProfileViewModel, FragmentProfileBinding>(
             profile = preferencesManager.getModel(KEY_USER_PROFILE, typeOf<GetProfileUiModel>())
 
             profile?.let {
-                with(binding) {
-                    "${it.name} ${it.surname}".also { tvName.text = it }
-                    tvEmail.text = it.email
-                    tvPhoneNumber.text = it.phoneNumber?.toPhoneNumberFormat()
-                }
+                updateProfile(it)
             }
         }.join()
+    }
+
+    private fun updateProfile(getProfileUiModel: GetProfileUiModel) {
+        profile = getProfileUiModel
+        with(binding) {
+            "${getProfileUiModel.name} ${getProfileUiModel.surname}".also { tvName.text = it }
+            tvEmail.text = getProfileUiModel.email
+            tvPhoneNumber.text = getProfileUiModel.phoneNumber?.toPhoneNumberFormat()
+
+            clWallet.tvAmount.text = getProfileUiModel.balance?.toCurrencyString()
+        }
+    }
+
+    private fun overrideAddBalanceActions() {
+        iAddBalanceActions = object : IAddBalanceActions {
+            override fun onBalanceAdded(addBalanceRequestDto: AddBalanceRequestDto) {
+                viewModel.addBalance(addBalanceRequestDto)
+            }
+        }
+    }
+
+    companion object {
+        const val KEY_SHOULD_REFRESH = "KEY_SHOULD_REFRESH"
+        const val KEY_ADD_BALANCE_REQUEST = "KEY_ADD_BALANCE_REQUEST"
     }
 }
