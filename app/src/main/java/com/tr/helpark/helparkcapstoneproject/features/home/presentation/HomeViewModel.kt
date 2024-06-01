@@ -102,7 +102,7 @@ class HomeViewModel @Inject constructor(
                     pageEvent = PageEvent.TOGGLE_FAVORITE_RESPONSE_RECEIVED,
                     toggleFavoriteApiState = ToggleFavoriteApiState.Error(it)
                 )
-            }
+            },showLoading = false
         )
     }
 

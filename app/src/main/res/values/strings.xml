@@ -107,5 +107,6 @@
     <string name="add_card">Kart Ekle</string>
     <string name="btn_continue">Devam Et</string>
     <string name="saved_card_not_found">Kayıtlı Kartınız Bulunmamaktadır</string>
+    <string name="favorites">Favori Otoparklar</string>
 
 </resources>

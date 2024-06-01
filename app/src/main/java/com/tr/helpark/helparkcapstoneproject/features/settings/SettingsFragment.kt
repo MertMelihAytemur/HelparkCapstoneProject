@@ -39,8 +39,7 @@ class SettingsFragment : Fragment() {
             }
 
             cvSavedCarParks.setOnClickListener {
-                //val action = SettingsFragmentDirections.actionSettingsFragmentToSavedCarParksFragment()
-                //navigateWithAnimation(action)
+                navigateWithAnimation(R.id.action_settingsFragment_to_favoritesFragment)
             }
 
             toolbar.icBack.setOnClickListener {

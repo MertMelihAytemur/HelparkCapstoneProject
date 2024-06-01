@@ -82,9 +82,9 @@ fun String.addSpacesBetweenLettersAndDigits(): String {
 fun String.toMaskedCardNumber(): String {
     if (this.length != 16) return this // Eğer gelen string 16 karakter değilse, olduğu gibi döndür.
 
-    val firstPart = this.substring(0, 6)
+    val firstPart = this.substring(0, 4)
     val maskedPart = "**** ****"
-    val lastPart = this.substring(14, 16)
+    val lastPart = this.substring(12, 16)
 
     return "$firstPart $maskedPart $lastPart"
 }

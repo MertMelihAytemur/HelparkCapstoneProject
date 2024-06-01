@@ -31,6 +31,6 @@ interface ProfileService {
     private companion object{
         const val END_POINT_GET_PROFILE = "/User/GetAllDataFromUser/{userId}"
         const val END_POINT_ADD_BALANCE = "/User/AddBalance"
-        const val END_POINT_DELETE_USER_ACCOUNT = "/User/DeactiveUserFromUserId"
+        const val END_POINT_DELETE_USER_ACCOUNT = "/User/DeleteUserFromUserId"
     }
 }
