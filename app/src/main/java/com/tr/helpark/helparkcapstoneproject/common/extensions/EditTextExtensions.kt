@@ -1,8 +1,16 @@
 package com.tr.helpark.helparkcapstoneproject.common.extensions
 
+import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
+import android.widget.TextView
 import androidx.appcompat.widget.AppCompatEditText
+import com.tr.helpark.helparkcapstoneproject.R
 
 fun AppCompatEditText.setPhoneMaskWithListener(
     onPhoneCompleted: (Boolean) -> Unit,
@@ -66,3 +74,55 @@ fun AppCompatEditText.setPhoneMaskWithListener(
         }
     })
 }
+
+/**
+ * Move cursor to end of the edit text
+ */
+fun EditText.moveCursorToEnd() {
+    Handler(Looper.getMainLooper()).postDelayed(
+        {
+            setSelection(text.length)
+        },
+        50
+    )
+}
+
+/**
+ * Request focus and show Keyboard
+ */
+fun EditText.showKeyboard() {
+    post {
+        requestFocus()
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
+    }
+}
+
+/**
+ * Set editText empty
+ */
+fun EditText.clear() {
+    setText("")
+}
+
+/**
+ * Change background of editText to error state whenever format validation failed
+ */
+fun EditText.setErrorState(errorMessage: String, tvError: TextView) {
+    tag = "error"
+    setBackgroundResource(R.drawable.et_error_background)
+    tvError.visibility = View.VISIBLE
+    tvError.text = errorMessage
+}
+
+/**
+ * Change background of editText to normal state from error state
+ */
+fun EditText.inactiveErrorState(tvError: TextView) {
+    tag = ""
+    setBackgroundResource(R.drawable.rounded_rectangle_card_view_background)
+    tvError.visibility = View.GONE
+}
+
+val EditText.isErrorStateActive
+    get() = tag == "error"

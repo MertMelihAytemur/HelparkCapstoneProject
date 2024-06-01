@@ -11,6 +11,17 @@
     <declare-styleable name="CustomSearchView">
         <attr name="searchHint" format="string"/>
     </declare-styleable>
+
+
+    <declare-styleable name="ApEditText">
+        <attr name="android:text" format="string"/>
+        <attr name="errorText" format="string" />
+        <attr name="editTextTitle" format="string" />
+        <attr name="hintText" format="string" />
+        <attr name="android:maxLength"/>
+        <attr name="android:inputType" />
+    </declare-styleable>
+
 </resources>
 
 

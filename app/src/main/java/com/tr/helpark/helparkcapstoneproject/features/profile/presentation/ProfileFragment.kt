@@ -5,7 +5,10 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
 import com.helpark.helpark.common.utils.preferences.PreferencesKeys.KEY_USER_PROFILE
+import com.tr.helpark.helparkcapstoneproject.R
+import com.tr.helpark.helparkcapstoneproject.common.extensions.navigateWithAnimation
 import com.tr.helpark.helparkcapstoneproject.common.extensions.toPhoneNumberFormat
 import com.tr.helpark.helparkcapstoneproject.common.util.preferences.PreferencesManager
 import com.tr.helpark.helparkcapstoneproject.core.base.BaseFragment
@@ -43,6 +46,24 @@ class ProfileFragment : BaseFragment<ProfileViewModel, FragmentProfileBinding>(
             }
 
             toolbar.tvToolbarTitle.text = "Profil Bilgilerim"
+
+            cvMyCars.setOnClickListener {
+                navigateWithAnimation(R.id.action_profileFragment_to_myCarsFragment)
+            }
+
+            cvMyCards.setOnClickListener {
+                navigateWithAnimation(R.id.action_profileFragment_to_myCardsFragment)
+            }
+
+            cvLogout.setOnClickListener {
+                preferencesManager.clear()
+                findNavController().navigate(R.id.loginFragment, null,
+                    navOptions {
+                        popUpTo(R.id.nav_graph) {
+                            inclusive = true
+                        }
+                    })
+            }
         }
     }
 

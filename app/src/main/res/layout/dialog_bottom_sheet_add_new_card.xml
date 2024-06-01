@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:masterpass="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray_soft_f8">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="24dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/ivMasterPass"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="12dp"
+                android:src="@drawable/master_pass"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_medium"
+                android:text="Kart Ekle"
+                android:textColor="@color/text_color"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@id/ivMasterPass"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/ivMasterPass" />
+
+            <ImageView
+                android:id="@+id/ivCloseDialog"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:src="@drawable/ic_dialog_close"
+                app:layout_constraintBottom_toBottomOf="@id/tvTitle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tvTitle" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.tr.helpark.helparkcapstoneproject.common.customview.ApEditText
+            android:id="@+id/etMpCardName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            android:importantForAutofill="no"
+            android:inputType="text"
+            android:maxLength="20"
+            app:hintText="Kart İsmi"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/clToolbar"
+            tools:ignore="LabelFor" />
+
+        <com.tr.helpark.helparkcapstoneproject.common.customview.ApEditText
+            android:id="@+id/etCardOwner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="20dp"
+            android:inputType="text"
+            app:hintText="Kart üzerindeki isim"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/etMpCardName" />
+
+        <LinearLayout
+            android:id="@+id/llCardNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="20dp"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/etCardOwner">
+
+            <com.tr.helpark.helparkcapstoneproject.common.customview.ApEditTextCreditCard
+                android:id="@+id/etCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:digits="01234 56789"
+                android:imeOptions="actionNext"
+                android:inputType="numberDecimal"
+                android:maxLength="19"
+                android:textSize="14sp"
+                app:hintText="Kart Numarası"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/etCardOwner" />
+
+
+            <ImageView
+                android:id="@+id/ivCardNoError"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="1dp"
+                android:layout_marginTop="5dp"
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_error"
+                tools:ignore="ContentDescription" />
+
+
+        </LinearLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/view1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rounded_rectangle_12"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/llCardNumber">
+
+            <Spinner
+                android:id="@+id/spMonth"
+                android:layout_width="109dp"
+                android:layout_height="44dp"
+                android:background="@drawable/arrow_down_spinner_layer"
+                android:fontFamily="@font/montserrat"
+                android:inputType="none"
+                android:paddingStart="12dp"
+                android:textSize="14sp"
+                tools:ignore="RtlSymmetry" />
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/view2"
+            android:layout_width="109dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/rounded_rectangle_12"
+            app:layout_constraintEnd_toStartOf="@id/llCvv"
+            app:layout_constraintStart_toEndOf="@id/view1"
+            app:layout_constraintTop_toBottomOf="@+id/llCardNumber">
+
+            <Spinner
+                android:id="@+id/spYear"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:background="@drawable/arrow_down_spinner_layer"
+                android:fontFamily="@font/montserrat"
+                android:inputType="none"
+                android:paddingStart="12dp"
+                android:textSize="14sp"
+                tools:ignore="RtlSymmetry" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/llCvv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="20dp"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/llCardNumber">
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/etCvv"
+                android:layout_width="97dp"
+                android:layout_height="44dp"
+                android:background="@drawable/rounded_rectangle_12"
+                android:digits="0123456789"
+                android:fontFamily="@font/montserrat"
+                android:hint="Cvv"
+                android:importantForAutofill="no"
+                android:inputType="numberPassword"
+                android:maxLength="3"
+                android:padding="12dp"
+                android:textSize="13sp" />
+
+
+            <ImageView
+                android:id="@+id/ivCvvError"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="1dp"
+                android:layout_marginTop="5dp"
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_error"
+                tools:ignore="ContentDescription" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnSave"
+            style="@style/Widget.AppTheme.MaterialButton.GreenFrameButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="20dp"
+            android:text="Kart Ekle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/llCvv" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+

@@ -16,7 +16,7 @@
         android:id="@+id/toolbar"
         layout="@layout/toolbar_navigate_back_with_title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="?attr/actionBarSize" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/rvSavedCarParks"

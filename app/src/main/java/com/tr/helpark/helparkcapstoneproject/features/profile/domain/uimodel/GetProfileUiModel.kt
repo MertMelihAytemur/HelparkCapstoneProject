@@ -10,8 +10,8 @@ import tr.com.helpark.core.domain.UiModel
 data class GetProfileUiModel(
     val active: Int?,
     val balance: Int?,
-    val carPlates: List<CarPlateUiModel?>?,
-    val card: List<CardUiModel?>?,
+    val carPlates: List<CarPlateUiModel>?,
+    val card: List<CardUiModel>?,
     val debt: Int?,
     val email: String?,
     val id: Int?,
