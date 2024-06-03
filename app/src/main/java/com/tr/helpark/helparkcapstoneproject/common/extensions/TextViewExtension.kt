@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.tr.helpark.helparkcapstoneproject.R
 import com.tr.helpark.helparkcapstoneproject.common.util.calculateDensity
+import com.tr.helpark.helparkcapstoneproject.features.favorites.domain.uimodel.GetFavoritesUiModelItem
 import com.tr.helpark.helparkcapstoneproject.features.home.domain.uimodel.GetAllParksUiModelItem
 
 fun TextView.addClickableLink(
@@ -88,6 +89,33 @@ fun TextView.setTextViewAlphaAnimation() {
 }
 
 fun TextView.setParkDensityStatus(park: GetAllParksUiModelItem) {
+    with(this) {
+        park.let {
+            val density = calculateDensity(
+                ((park.capacity ?: 0) - (park.emptyCapacity ?: 0)).toDouble(),
+                park.capacity?.toDouble() ?: 0.0
+            )
+
+            text = "${(park.capacity ?: 0) - (park.emptyCapacity ?: 0)} / ${park.capacity}"
+
+            density.let {
+                when (it) {
+                    in 0.0..33.3 -> {
+                        setBackgroundResource(R.drawable.bg_button_selector_green)
+                    }
+
+                    in 33.3..66.6 -> {
+                        setBackgroundResource(R.drawable.bg_button_selector_orange)
+                    }
+
+                    in 66.6..100.0 -> {
+                        setBackgroundResource(R.drawable.bg_button_selector_red)
+                    }
+                }
+            }
+        }
+    }
+}fun TextView.setParkDensityStatus(park: GetFavoritesUiModelItem) {
     with(this) {
         park.let {
             val density = calculateDensity(

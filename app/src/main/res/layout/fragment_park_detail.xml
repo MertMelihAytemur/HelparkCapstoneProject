@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/light_blue">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar_navigate_back_with_title"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize" />
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/gray_soft_f8"
+        android:fillViewport="true"
+        android:fitsSystemWindows="true"
+        android:paddingBottom="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:context=".ui.features.parkdetail.ParkDetailFragment">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardMap"
+                android:layout_width="match_parent"
+                android:layout_height="220dp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical"
+                app:cardCornerRadius="8dp"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <FrameLayout
+                        android:id="@+id/frameLayoutMap"
+                        android:layout_width="match_parent"
+                        android:layout_height="220dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <fragment
+                            android:id="@+id/fParkMapLocation"
+                            android:name="com.google.android.gms.maps.SupportMapFragment"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                    </FrameLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDirections"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:elevation="3dp"
+                android:backgroundTint="@color/white"
+                android:fontFamily="@font/montserrat"
+                android:layout_marginTop="12dp"
+                android:text="@string/show_on_map"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:stateListAnimator="@null"
+                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:textColor="@color/map_blue"
+                android:textSize="16sp"
+                app:cornerRadius="8dp"
+                app:icon="@drawable/ic_direction"
+                app:iconGravity="textStart"
+                app:iconTint="@color/map_blue"
+                app:layout_constraintEnd_toEndOf="@id/cardMap"
+                app:layout_constraintStart_toStartOf="@id/cardMap"
+                app:layout_constraintTop_toBottomOf="@id/cardMap" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardParkDensity"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="10dp"
+                app:cardCornerRadius="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btnDirections">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/tvPaidPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_medium"
+                        android:text="Doluluk Oranı"
+                        android:textColor="@color/black"
+                        android:textSize="13sp"
+                        app:layout_constraintEnd_toStartOf="@id/viewLine"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/viewLine" />
+
+
+                    <TextView
+                        android:id="@+id/tvTransactionAmount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:fontFamily="@font/montserrat"
+                        android:paddingVertical="6dp"
+                        android:paddingHorizontal="12dp"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="@id/viewLine"
+                        app:layout_constraintEnd_toStartOf="@id/viewLine"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tvPaidPrice" />
+
+                    <View
+                        android:id="@+id/viewLine"
+                        android:layout_width="2dp"
+                        android:layout_height="50dp"
+                        android:layout_marginVertical="20dp"
+                        android:background="@drawable/vertical_line"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                    <TextView
+                        android:id="@+id/tvTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_medium"
+                        android:text="Son Güncelleme"
+                        android:textColor="@color/black"
+                        android:textSize="13sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@id/viewLine"
+                        app:layout_constraintTop_toTopOf="@id/viewLine" />
+
+                    <TextView
+                        android:id="@+id/tvUpdatedTime"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="12dp"
+                        android:layout_marginTop="8dp"
+                        android:fontFamily="@font/montserrat"
+                        android:singleLine="true"
+                        android:textAlignment="center"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="@id/viewLine"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@id/viewLine"
+                        app:layout_constraintTop_toBottomOf="@id/tvTime"
+                        tools:text="28.08.2023 23.:52:54" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardParkDetail"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                app:cardCornerRadius="8dp"
+                app:layout_constraintEnd_toEndOf="@id/cardParkDensity"
+                app:layout_constraintStart_toStartOf="@id/cardParkDensity"
+                app:layout_constraintTop_toBottomOf="@id/cardParkDensity">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingVertical="16dp">
+
+                    <TextView
+                        android:id="@+id/tvWorkHours"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:fontFamily="@font/montserrat_medium"
+                        android:text="@string/working_hours"
+                        android:textColor="@color/black"
+                        android:textSize="13sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tvIsOpen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:fontFamily="@font/montserrat"
+                        android:textColor="@color/purple_500"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="@id/tvWorkHours"
+                        app:layout_constraintStart_toStartOf="@id/tvWorkHours"
+                        app:layout_constraintTop_toBottomOf="@id/tvWorkHours" />
+
+                    <TextView
+                        android:id="@+id/tvWorkHours2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:fontFamily="@font/montserrat"
+                        android:textSize="11sp"
+                        app:layout_constraintEnd_toEndOf="@id/tvWorkHours"
+                        app:layout_constraintStart_toStartOf="@id/tvWorkHours"
+                        app:layout_constraintTop_toBottomOf="@id/tvIsOpen" />
+
+
+                    <View
+                        android:id="@+id/viewLine2"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginHorizontal="25dp"
+                        android:layout_marginTop="16dp"
+                        android:background="@drawable/horizontal_line"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tvWorkHours2" />
+
+
+                    <TextView
+                        android:id="@+id/tvAddressDirection"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:fontFamily="@font/montserrat_medium"
+                        android:text="@string/address_directions"
+                        android:textColor="@color/black"
+                        android:textSize="13sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/viewLine2" />
+
+
+                    <TextView
+                        android:id="@+id/tvAddress"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:fontFamily="@font/montserrat"
+                        android:textAlignment="center"
+                        android:textSize="11sp"
+                        app:layout_constraintEnd_toEndOf="@id/viewLine2"
+                        app:layout_constraintStart_toStartOf="@id/viewLine2"
+                        app:layout_constraintTop_toBottomOf="@id/tvAddressDirection" />
+
+                    <View
+                        android:id="@+id/viewLine3"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginHorizontal="25dp"
+                        android:layout_marginTop="16dp"
+                        android:background="@drawable/horizontal_line"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tvAddress" />
+
+
+                    <TextView
+                        android:id="@+id/tvType"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:fontFamily="@font/montserrat_medium"
+                        android:text="@string/park_type"
+                        android:textColor="@color/black"
+                        android:textSize="13sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/viewLine3" />
+
+                    <TextView
+                        android:id="@+id/tvParkType"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:fontFamily="@font/montserrat"
+                        android:textSize="11sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tvType" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardParkSchedule"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_cell_shape"
+                android:orientation="vertical"
+                app:cardCornerRadius="0dp"
+                app:layout_constraintTop_toBottomOf="@id/cardParkDetail">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/tvParkSchedule"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginTop="8dp"
+                        android:fontFamily="@font/montserrat_medium"
+                        android:text="@string/park_schedule"
+                        android:textColor="@color/black"
+                        android:textSize="13sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TableLayout
+                        android:id="@+id/tableLayoutSchedule"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="12dp"
+                        android:background="@color/white"
+                        android:stretchColumns="*"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tvParkSchedule">
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/map_ocean_blue">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_weight="4"
+                                android:fontFamily="@font/montserrat"
+                                android:padding="11sp"
+                                android:text="@string/time"
+                                android:textColor="@color/white"
+                                android:textAlignment="center"
+                                android:textSize="11sp" />
+
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="end"
+                                android:layout_weight="4"
+                                android:textColor="@color/white"
+                                android:fontFamily="@font/montserrat"
+                                android:gravity="center_horizontal"
+                                android:padding="11sp"
+                                android:text="@string/fee"
+                                android:textAlignment="center"
+                                android:textSize="11sp" />
+                        </TableRow>
+
+                    </TableLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

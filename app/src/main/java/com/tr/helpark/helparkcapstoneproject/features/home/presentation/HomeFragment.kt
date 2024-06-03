@@ -200,6 +200,8 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
                 handleParksNotFoundViewState(isParkNotFoundState)
                 (activity as? MapsActivity)?.getCurrentLocationAndMoveCamera()
                 viewModel.getAllParks()
+
+                (activity as MapsActivity).startTimer(20000)
             }
 
             btnSearch.setOnClickListener {

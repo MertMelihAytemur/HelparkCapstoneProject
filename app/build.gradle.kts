@@ -131,6 +131,9 @@ dependencies {
     //Dexter for Permission Handling
     implementation("com.karumi:dexter:6.2.3")
 
+    //Work Manager
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
+
     //Core module
     implementation(project(":core"))
 }

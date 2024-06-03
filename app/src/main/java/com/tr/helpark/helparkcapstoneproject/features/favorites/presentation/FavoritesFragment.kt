@@ -8,6 +8,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.maps.model.LatLng
 import com.helpark.helpark.common.utils.preferences.PreferencesKeys
 import com.tr.helpark.helparkcapstoneproject.R
+import com.tr.helpark.helparkcapstoneproject.common.extensions.navigateWithAnimation
 import com.tr.helpark.helparkcapstoneproject.common.extensions.redirectUserToGoogleMaps
 import com.tr.helpark.helparkcapstoneproject.common.extensions.showToastMessage
 import com.tr.helpark.helparkcapstoneproject.common.util.ToastMessageType
@@ -22,6 +23,7 @@ import com.tr.helpark.helparkcapstoneproject.features.favorites.presentation.ada
 import com.tr.helpark.helparkcapstoneproject.features.favorites.presentation.dialog.FavoriteCarParkOptionBottomSheetDialog
 import com.tr.helpark.helparkcapstoneproject.features.home.data.dto.request.ToggleFavoriteParkRequestDto
 import com.tr.helpark.helparkcapstoneproject.features.home.domain.uimodel.ToggleFavoriteApiState
+import com.tr.helpark.helparkcapstoneproject.features.parkdetail.presentation.ParkDetailFragment.Companion.KEY_ARGUMENT_PARK_DETAIL_ITEM
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -119,7 +121,11 @@ class FavoritesFragment : BaseFragment<FavoritesViewModel,FragmentFavoritesBindi
     }
 
     private fun onShowDetailClick(item: GetFavoritesUiModelItem) {
-        //Navigate to detail
+        val bundle = Bundle().apply {
+            putParcelable(KEY_ARGUMENT_PARK_DETAIL_ITEM, item)
+        }
+
+        navigateWithAnimation(R.id.action_favoritesFragment_to_parkDetailFragment, bundle)
     }
 
     private fun onOptionsClick(item: GetFavoritesUiModelItem) {

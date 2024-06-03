@@ -1,6 +1,8 @@
 package com.tr.helpark.helparkcapstoneproject.features.favorites.domain.uimodel
 
+import android.os.Parcelable
 import com.tr.helpark.helparkcapstoneproject.core.model.ApiErrorModel
+import kotlinx.parcelize.Parcelize
 import tr.com.helpark.core.domain.UiError
 import tr.com.helpark.core.domain.UiModel
 import java.util.UUID
@@ -11,6 +13,7 @@ data class GetFavoritesUiModel(
 ): UiModel
 
 
+@Parcelize
 data class GetFavoritesUiModelItem(
     val capacity: Int?,
     val district: String?,
@@ -26,8 +29,9 @@ data class GetFavoritesUiModelItem(
     val parkType: String?,
     val state: Int?,
     val workHours: String?
-)
+) : Parcelable
 
+@Parcelize
 data class ParkDetailUiModel(
     val address: String?,
     val areaPolygon: String?,
@@ -38,7 +42,7 @@ data class ParkDetailUiModel(
     val tariff: String?,
     val updateDate: String?,
     val workHours: String?
-)
+) : Parcelable
 
 sealed interface GetFavoritesApiState{
     object Initial : GetFavoritesApiState

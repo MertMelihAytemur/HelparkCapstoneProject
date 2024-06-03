@@ -149,5 +149,13 @@
         android:id="@+id/favoritesFragment"
         android:name="com.tr.helpark.helparkcapstoneproject.features.favorites.presentation.FavoritesFragment"
         android:label="fragment_favorites"
-        tools:layout="@layout/fragment_favorites" />
+        tools:layout="@layout/fragment_favorites" >
+        <action
+            android:id="@+id/action_favoritesFragment_to_parkDetailFragment"
+            app:destination="@id/parkDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/parkDetailFragment"
+        android:name="com.tr.helpark.helparkcapstoneproject.features.parkdetail.presentation.ParkDetailFragment"
+        android:label="ParkDetailFragment" />
 </navigation>

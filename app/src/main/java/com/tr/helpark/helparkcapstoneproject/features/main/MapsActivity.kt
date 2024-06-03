@@ -23,6 +23,9 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.navOptions
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.LocationRequest
@@ -49,6 +52,7 @@ import com.tr.helpark.helparkcapstoneproject.common.util.MapActions
 import com.tr.helpark.helparkcapstoneproject.common.util.MapManager
 import com.tr.helpark.helparkcapstoneproject.common.util.MapUtils
 import com.tr.helpark.helparkcapstoneproject.common.util.UiActions
+import com.tr.helpark.helparkcapstoneproject.common.worker.TimerWorker
 import com.tr.helpark.helparkcapstoneproject.core.LoadingDialog
 import com.tr.helpark.helparkcapstoneproject.databinding.ActivityMapsBinding
 import com.tr.helpark.helparkcapstoneproject.features.home.domain.uimodel.GetAllParksUiModelItem
@@ -59,6 +63,7 @@ import com.tr.helpark.helparkcapstoneproject.features.main.dialog.LocationPermis
 import com.tr.helpark.helparkcapstoneproject.features.main.dialog.TurnOnLocationServicesDialog
 import com.tr.helpark.helparkcapstoneproject.features.otp.presentation.OtpVerificationFragment
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -403,6 +408,20 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mapManager.moveCameraToLocation(location)
         uiActions?.collapseBottomSheet()
         MapUtils.markerLocation.tryEmit(location)
+    }
+
+    fun startTimer(minutes: Int) {
+        val durationInMillis = TimeUnit.MINUTES.toMillis(minutes.toLong())
+
+        val data = Data.Builder()
+            .putLong("duration", durationInMillis)
+            .build()
+
+        val timerWorkRequest = OneTimeWorkRequest.Builder(TimerWorker::class.java)
+            .setInputData(data)
+            .build()
+
+        WorkManager.getInstance(this).enqueue(timerWorkRequest)
     }
 
     override fun onResume() {
