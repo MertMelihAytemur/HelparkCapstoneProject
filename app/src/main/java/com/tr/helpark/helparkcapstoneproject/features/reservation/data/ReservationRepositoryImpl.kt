@@ -2,10 +2,12 @@ package com.tr.helpark.helparkcapstoneproject.features.reservation.data
 
 import com.tr.helpark.helparkcapstoneproject.core.model.ApiErrorModel
 import com.tr.helpark.helparkcapstoneproject.features.reservation.data.dto.request.AddReservationRequestDto
+import com.tr.helpark.helparkcapstoneproject.features.reservation.data.dto.request.CancelReservationRequestDto
 import com.tr.helpark.helparkcapstoneproject.features.reservation.data.dto.response.toDomain
 import com.tr.helpark.helparkcapstoneproject.features.reservation.data.remote.ReservationService
 import com.tr.helpark.helparkcapstoneproject.features.reservation.domain.ReservationRepository
 import com.tr.helpark.helparkcapstoneproject.features.reservation.domain.uimodel.AddReservationUiModel
+import com.tr.helpark.helparkcapstoneproject.features.reservation.domain.uimodel.CancelReservationUiModel
 import tr.com.helpark.core.data.ApiExecutor
 import tr.com.helpark.core.data.remote.ApiResult
 import tr.com.helpark.core.domain.UiResult
@@ -21,6 +23,24 @@ class ReservationRepositoryImpl @Inject constructor(
         }
 
         return when (apiResult) {
+            is ApiResult.Success -> {
+                UiResult.Success(apiResult.response?.toDomain())
+            }
+
+            is ApiResult.Error -> {
+                UiResult.Error(parseError<ApiErrorModel>(apiResult).error)
+            }
+        }
+    }
+
+    override suspend fun cancelReservation(cancelReservationResponseDto: CancelReservationRequestDto): UiResult<CancelReservationUiModel, ApiErrorModel> {
+        val apiResult = execute {
+            reservationService.cancelReservation(
+                rezId = cancelReservationResponseDto.resId
+            )
+        }
+
+        return when(apiResult){
             is ApiResult.Success -> {
                 UiResult.Success(apiResult.response?.toDomain())
             }

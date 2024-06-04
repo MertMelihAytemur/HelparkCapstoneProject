@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.TableRow
 import android.widget.TextView
 import androidx.collection.ArrayMap
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -17,8 +18,8 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.helpark.helpark.common.utils.preferences.PreferencesKeys.KEY_USER_ID
+import com.helpark.helpark.common.utils.preferences.PreferencesKeys.KEY_USER_RESERVATION_ID
 import com.tr.helpark.helparkcapstoneproject.R
-import com.tr.helpark.helparkcapstoneproject.common.customview.ReservationType
 import com.tr.helpark.helparkcapstoneproject.common.extensions.animateAlpha
 import com.tr.helpark.helparkcapstoneproject.common.extensions.handleViewVisibilityWithTranslationXEnd
 import com.tr.helpark.helparkcapstoneproject.common.extensions.handleViewVisibilityWithTranslationYTop
@@ -50,6 +51,7 @@ import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.Get
 import com.tr.helpark.helparkcapstoneproject.features.reservation.data.dto.request.AddReservationRequestDto
 import com.tr.helpark.helparkcapstoneproject.features.reservation.domain.uimodel.AddReservationApiState
 import com.tr.helpark.helparkcapstoneproject.features.reservation.domain.uimodel.AddReservationUiModel
+import com.tr.helpark.helparkcapstoneproject.features.reservation.domain.uimodel.CancelReservationApiState
 import com.tr.helpark.helparkcapstoneproject.features.reservation.presentation.dialog.IAddReservationAction
 import com.tr.helpark.helparkcapstoneproject.features.reservation.presentation.dialog.selectcard.SelectCarBottomSheetDialog
 import com.tr.helpark.helparkcapstoneproject.features.reservation.presentation.model.ReservationModel
@@ -85,6 +87,9 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
     private var favoriteParkList = listOf<FavouriteUiModel>()
 
     private lateinit var iAddReservationAction: IAddReservationAction
+
+    private var shouldCancelReservation = false
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -128,6 +133,10 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
 
                 HomeViewModel.PageEvent.RESERVATION_ADDED_RESPONSE_RECEIVED -> {
                     onReservationAddedResponseReceived(it.addReservationApiState)
+                }
+
+                HomeViewModel.PageEvent.CANCEL_RESERVATION_RESPONSE_RECEIVED -> {
+                    onReservationCancelResponseReceived(it.cancelReservationApiState)
                 }
             }
         }
@@ -197,7 +206,30 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
         }
     }
 
+    private fun onReservationCancelResponseReceived(cancelReservationApiState: CancelReservationApiState) {
+        when (cancelReservationApiState) {
+            is CancelReservationApiState.Initial -> {}
+
+            is CancelReservationApiState.Success -> {
+                collapseBottomSheetDialog()
+                showToastMessage(
+                    getString(R.string.reservation_cancelled_success),
+                    toastType = ToastMessageType.GENERAL_SUCCESS
+                )
+                (activity as MapsActivity).viewModel.cancelReservation()
+            }
+
+            is CancelReservationApiState.Error -> {
+                handleNetworkError(cancelReservationApiState.error)
+            }
+        }
+    }
+
     private fun onReservationAddedSuccess(uiModel: AddReservationUiModel?) {
+        uiModel?.let {
+            preferencesManager.putString(KEY_USER_RESERVATION_ID, it.resId.toString())
+        }
+
         (activity as? MapsActivity)?.viewModel?.createReservation()
     }
 
@@ -259,20 +291,37 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
             }
 
             layoutParkInfo.btnAddReservation.setOnClickListener {
-                lifecycleScope.launch {
-                    collapseBottomSheetDialog()
+                if (shouldCancelReservation) {
+                    preferencesManager.getString(KEY_USER_RESERVATION_ID)?.let { resId ->
+                        viewModel.cancelReservation(resId.toInt())
+                    }
+                } else {
+                    lifecycleScope.launch {
+                        collapseBottomSheetDialog()
 
-                    delay(350)
-                    viewModel.carList.value?.let { carList ->
-                        SelectCarBottomSheetDialog(
-                            iAddReservationAction,
-                            carList
-                        ).show(
-                            childFragmentManager,
-                            "SelectCarBottomSheetDialog"
-                        )
+                        delay(350)
+                        viewModel.carList.value?.let { carList ->
+                            SelectCarBottomSheetDialog(
+                                iAddReservationAction,
+                                carList
+                            ).show(
+                                childFragmentManager,
+                                "SelectCarBottomSheetDialog"
+                            )
+                        }
                     }
                 }
+            }
+
+            reservationStatusView.setCancelOrCompletedCallBack {
+                (activity as MapsActivity).viewModel.removeReservationReference()
+            }
+
+            reservationStatusView.setPendingOrApprovedCallBack {
+                showToastMessage(
+                    "Open Detail Bottom Sheet",
+                    toastType = ToastMessageType.GENERAL_SUCCESS
+                )
             }
         }
     }
@@ -533,7 +582,7 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
     private fun showTopAlertMessage(
         message: String,
         clickCommentAction: (() -> Any)? = null,
-        reservationType: ReservationType
+        reservationType: ReservationStatusType
     ) {
         binding.reservationStatusView.apply {
             show()
@@ -549,40 +598,80 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
             firebaseHelper.listenToReservationStatus(userId) { status ->
                 when (status) {
                     ReservationStatusType.NOT_EXIST -> {
-                        binding.layoutParkInfo.btnAddReservation.text = getString(R.string.add_reservation)
+                        shouldCancelReservation = false
+                        binding.layoutParkInfo.btnAddReservation.setTextColor(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.map_ocean_blue
+                            )
+                        )
+                        binding.layoutParkInfo.btnAddReservation.text =
+                            getString(R.string.add_reservation)
                         binding.reservationStatusView.hide()
                     }
 
                     ReservationStatusType.CANCELLED -> {
-                        binding.layoutParkInfo.btnAddReservation.text = getString(R.string.add_reservation)
+                        shouldCancelReservation = false
+                        binding.layoutParkInfo.btnAddReservation.setTextColor(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.map_ocean_blue
+                            )
+                        )
+                        binding.layoutParkInfo.btnAddReservation.text =
+                            getString(R.string.add_reservation)
                         showTopAlertMessage(
                             "Rezervasyon İptal Edildi",
-                            reservationType = ReservationType.ALERT
+                            reservationType = status
                         )
                         //Show toast message and remove user from database
                     }
 
                     ReservationStatusType.PENDING -> {
-                        binding.layoutParkInfo.btnAddReservation.text = getString(R.string.cancel_reservation)
+                        shouldCancelReservation = true
+                        binding.layoutParkInfo.btnAddReservation.setTextColor(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.red
+                            )
+                        )
+                        binding.layoutParkInfo.btnAddReservation.text =
+                            getString(R.string.cancel_reservation)
                         showTopAlertMessage(
                             "Rezervasyon Bekleniyor",
-                            reservationType = ReservationType.CONFIRMATION
+                            reservationType = status
                         )
                     }
 
                     ReservationStatusType.CONFIRMED -> {
-                        binding.layoutParkInfo.btnAddReservation.text = getString(R.string.cancel_reservation)
+                        shouldCancelReservation = false
+                        binding.layoutParkInfo.btnAddReservation.setTextColor(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.red
+                            )
+                        )
+                        binding.layoutParkInfo.btnAddReservation.text =
+                            getString(R.string.cancel_reservation)
                         showTopAlertMessage(
                             "Rezervasyon Onaylandı",
-                            reservationType = ReservationType.CONFIRMATION
+                            reservationType = status
                         )
                     }
 
-                    ReservationStatusType.ARRIVED -> {
-                        binding.layoutParkInfo.btnAddReservation.text = getString(R.string.add_reservation)
+                    ReservationStatusType.COMPLETED -> {
+                        shouldCancelReservation = false
+                        binding.layoutParkInfo.btnAddReservation.setTextColor(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.map_ocean_blue
+                            )
+                        )
+                        binding.layoutParkInfo.btnAddReservation.text =
+                            getString(R.string.add_reservation)
                         showTopAlertMessage(
                             "Rezervasyon Tamamlandı",
-                            reservationType = ReservationType.CONFIRMATION
+                            reservationType = status
                         )
                         //Show toast message and remove user from database
                     }
@@ -599,7 +688,7 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
         }
     }
 
-    private fun setReservationModel(park : GetAllParksUiModelItem){
+    private fun setReservationModel(park: GetAllParksUiModelItem) {
         ReservationModel.apply {
             userId = userID
             parkId = park.id!!

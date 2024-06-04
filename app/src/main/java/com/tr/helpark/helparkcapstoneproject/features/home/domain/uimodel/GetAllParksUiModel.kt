@@ -27,7 +27,7 @@ data class GetAllParksUiModelItem(
     val workHours: String?,
     val formattedPrices : androidx.collection.ArrayMap<String,String>?,
     val resTime: Int?,
-    val hire: Int?
+    val hire: Float?
 )
 
 data class ParkDetailUiModel(

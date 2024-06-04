@@ -44,7 +44,7 @@ data class GetAllParksResponseDtoItem(
     @SerializedName("resTime")
     val resTime: Int?,
     @SerializedName("hire")
-    val hire: Int?
+    val hire: Float?
 )
 
 data class ParkDetail(

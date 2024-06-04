@@ -5,7 +5,7 @@ enum class ReservationStatusType(val value: Int) {
     CANCELLED(-1),
     PENDING(0),
     CONFIRMED(1),
-    ARRIVED(2);
+    COMPLETED(2);
 
     companion object {
         fun fromValue(value: Int): ReservationStatusType {

@@ -39,4 +39,16 @@ class FirebaseHelper @Inject constructor(
             }
         })
     }
+
+    fun deleteReservationStatus(userId: String) {
+        val userRef = database.child("users").child(userId).child("reservation_status")
+
+        userRef.removeValue().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                println("Reservation status successfully deleted.")
+            } else {
+                println("Failed to delete reservation status: ${task.exception?.message}")
+            }
+        }
+    }
 }

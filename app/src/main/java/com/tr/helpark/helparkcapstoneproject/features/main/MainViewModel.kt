@@ -57,4 +57,16 @@ class MainViewModel @Inject constructor(
             firebaseHelper.addOrUpdateReservationStatus(userId, ReservationStatusType.PENDING.value)
         }
     }
+
+    fun cancelReservation() {
+        preferencesManager.getString(KEY_USER_ID)?.let { userId ->
+            firebaseHelper.addOrUpdateReservationStatus(userId, ReservationStatusType.CANCELLED.value)
+        }
+    }
+
+    fun removeReservationReference(){
+        preferencesManager.getString(KEY_USER_ID)?.let { userId ->
+            firebaseHelper.deleteReservationStatus(userId)
+        }
+    }
 }

@@ -3,11 +3,11 @@ package com.tr.helpark.helparkcapstoneproject.features.reservation.data.dto.resp
 import com.tr.helpark.helparkcapstoneproject.features.reservation.domain.uimodel.AddReservationUiModel
 
 data class AddReservationResponseDto(
-    val rezId : Int
+    val message : Int
 )
 
 fun AddReservationResponseDto.toDomain() : AddReservationUiModel {
     return AddReservationUiModel(
-        resId = rezId
+        resId = message
     )
 }

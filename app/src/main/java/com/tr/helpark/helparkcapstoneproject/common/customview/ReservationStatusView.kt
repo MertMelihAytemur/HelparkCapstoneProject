@@ -16,15 +16,13 @@ import androidx.core.content.ContextCompat
 import com.tr.helpark.helparkcapstoneproject.R
 import com.tr.helpark.helparkcapstoneproject.common.extensions.gone
 import com.tr.helpark.helparkcapstoneproject.databinding.ReservationViewBinding
+import com.tr.helpark.helparkcapstoneproject.features.reservation.presentation.model.ReservationStatusType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-enum class ReservationType {
-    ALERT,
-    CONFIRMATION
-}
+
 class ReservationStatusView @JvmOverloads constructor(
     context: Context,
     private val attributeSet: AttributeSet,
@@ -32,7 +30,7 @@ class ReservationStatusView @JvmOverloads constructor(
 ) : ConstraintLayout(context, attributeSet, defStyleAttr){
     private val binding: ReservationViewBinding
     private var hasSingleShown = false
-    var reservationType: ReservationType? = null
+    var reservationType: ReservationStatusType? = null
     var messageText: String? = ""
 
     init {
@@ -46,7 +44,7 @@ class ReservationStatusView @JvmOverloads constructor(
 
     private fun getXmlAttributes() {
         context.obtainStyledAttributes(attributeSet, R.styleable.ReservationView).apply {
-            reservationType = ReservationType.entries
+            reservationType = ReservationStatusType.entries
                 .getOrNull(getInt(R.styleable.MessageView_messageType, -1))
             messageText = getString(R.styleable.MessageView_message)
             recycle()
@@ -57,7 +55,7 @@ class ReservationStatusView @JvmOverloads constructor(
         binding.apply {
             clMessageView.setBackgroundColor(ContextCompat.getColor(context, R.color.light_red))
             iwWarning.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_warning))
-            //btnCloseAlert.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_delete_disabled))
+            setReservationStatusImageResource()
             messageText?.let { setTextWithBold(it) }
         }
     }
@@ -66,18 +64,34 @@ class ReservationStatusView @JvmOverloads constructor(
         binding.apply {
             clMessageView.setBackgroundColor(ContextCompat.getColor(context, R.color.light_green))
             iwWarning.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_task_alt_confirm))
-            //btnCloseAlert.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_delete__disabled))
+            setReservationStatusImageResource()
             messageText?.let { setTextWithBold(it) }
         }
     }
 
     fun build() {
         when (reservationType) {
-            ReservationType.ALERT -> makeAlertInit()
-            ReservationType.CONFIRMATION -> makeConfirmInit()
+            ReservationStatusType.CANCELLED -> {
+                makeAlertInit()
+            }
+
+            ReservationStatusType.PENDING -> {
+                makeConfirmInit()
+            }
+
+            ReservationStatusType.CONFIRMED -> {
+                makeConfirmInit()
+            }
+
+            ReservationStatusType.COMPLETED -> {
+                makeConfirmInit()
+            }
+
             null -> {
                 getXmlAttributes()
             }
+
+            else -> {}
         }
     }
 
@@ -104,22 +118,30 @@ class ReservationStatusView @JvmOverloads constructor(
         binding.txtCommentAlert.text = spannableStringBuilder
     }
 
-
     private fun initListeners() {
-        /*binding.btnCloseAlert.setOnClickListener {
-            hide()
-            closeButtonListener?.invoke()
-        }*/
-        binding.txtCommentAlert.setOnClickListener {
-            commentClickListener?.invoke()
+        binding.ivInfo.setOnClickListener {
+            when (reservationType) {
+                ReservationStatusType.CANCELLED, ReservationStatusType.COMPLETED -> {
+                    cancelOrCompletedCallBack?.invoke()
+                }
+                ReservationStatusType.PENDING, ReservationStatusType.CONFIRMED -> {
+                    pendingOrApprovedCallBack?.invoke()
+                }
+                else -> {}
+            }
         }
     }
 
+    private var cancelOrCompletedCallBack: (() -> Unit)? = null
 
-    private var closeButtonListener: (() -> Unit)? = null
+    fun setCancelOrCompletedCallBack(listener: () -> Unit) {
+        cancelOrCompletedCallBack = listener
+    }
 
-    fun setCloseButtonListener(listener: () -> Unit) {
-        closeButtonListener = listener
+    private var pendingOrApprovedCallBack: (() -> Unit)? = null
+
+    fun setPendingOrApprovedCallBack(listener: () -> Unit) {
+        pendingOrApprovedCallBack = listener
     }
 
     private var commentClickListener: (() -> Unit)? = null
@@ -180,5 +202,24 @@ class ReservationStatusView @JvmOverloads constructor(
         animation.start()
 
         hasSingleShown = true
+    }
+
+    private fun setReservationStatusImageResource(){
+        when(reservationType){
+            ReservationStatusType.CANCELLED -> {
+                binding.ivInfo.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_delete_disabled))
+            }
+            ReservationStatusType.PENDING -> {
+                binding.ivInfo.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_comment_bubble))
+            }
+            ReservationStatusType.CONFIRMED -> {
+                binding.ivInfo.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_comment_bubble))
+            }
+            ReservationStatusType.COMPLETED -> {
+                binding.ivInfo.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_delete_disabled))
+            }
+
+            else -> {}
+        }
     }
 }

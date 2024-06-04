@@ -111,6 +111,7 @@
     <string name="favorites">Favori Otoparklar</string>
     <string name="add_reservation">Rezervasyon Yap</string>
     <string name="cancel_reservation">Rezervasyonu İptal Et</string>
+    <string name="reservation_cancelled_success">Rezervasyon İptal Edildi.</string>
 
     <string name="reservation_alert_message">
         Önemli Bilgilendirme:

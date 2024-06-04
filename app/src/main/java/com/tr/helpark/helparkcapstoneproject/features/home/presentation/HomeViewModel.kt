@@ -18,8 +18,11 @@ import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.Get
 import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.GetProfileUiModel
 import com.tr.helpark.helparkcapstoneproject.features.profile.domain.usecase.GetProfileUseCase
 import com.tr.helpark.helparkcapstoneproject.features.reservation.data.dto.request.AddReservationRequestDto
+import com.tr.helpark.helparkcapstoneproject.features.reservation.data.dto.request.CancelReservationRequestDto
 import com.tr.helpark.helparkcapstoneproject.features.reservation.domain.uimodel.AddReservationApiState
+import com.tr.helpark.helparkcapstoneproject.features.reservation.domain.uimodel.CancelReservationApiState
 import com.tr.helpark.helparkcapstoneproject.features.reservation.domain.usecase.AddReservationUseCase
+import com.tr.helpark.helparkcapstoneproject.features.reservation.domain.usecase.CancelReservationUseCase
 import com.vmlmedia.core.presentation.CoreViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,7 +38,8 @@ class HomeViewModel @Inject constructor(
     private val getProfileUseCase: GetProfileUseCase,
     private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
     private val preferencesManager: PreferencesManager,
-    private val addReservationUseCase: AddReservationUseCase
+    private val addReservationUseCase: AddReservationUseCase,
+    private val cancelReservationUseCase: CancelReservationUseCase
 ) : CoreViewModel() {
 
     private var _pageStateFlow =
@@ -165,13 +169,34 @@ class HomeViewModel @Inject constructor(
         )
     }
 
+    fun cancelReservation(resId : Int){
+        launchRequest(
+            requestBody = {
+                cancelReservationUseCase(CancelReservationRequestDto(resId))
+            },
+            onSuccess = {
+                _pageStateFlow.value = _pageStateFlow.value.copy(
+                    pageEvent = PageEvent.CANCEL_RESERVATION_RESPONSE_RECEIVED,
+                    cancelReservationApiState = CancelReservationApiState.Success(it)
+                )
+            },
+            onError = {
+                _pageStateFlow.value = _pageStateFlow.value.copy(
+                    pageEvent = PageEvent.CANCEL_RESERVATION_RESPONSE_RECEIVED,
+                    cancelReservationApiState = CancelReservationApiState.Error(it)
+                )
+            }
+        )
+    }
+
     enum class PageEvent {
         INITIAL,
         GET_ALL_PARKS_RESPONSE_RECEIVED,
         GET_PROFILE_RESPONSE_RECEIVED,
         TOGGLE_FAVORITE_RESPONSE_RECEIVED,
         NAVIGATE_TO_NEXT_SCREEN,
-        RESERVATION_ADDED_RESPONSE_RECEIVED
+        RESERVATION_ADDED_RESPONSE_RECEIVED,
+        CANCEL_RESERVATION_RESPONSE_RECEIVED
     }
 
     data class PageState(
@@ -179,7 +204,8 @@ class HomeViewModel @Inject constructor(
         val registerApiState: GetAllParksApiState = GetAllParksApiState.Initial,
         val getProfileApiState: GetProfileApiState = GetProfileApiState.Initial,
         val toggleFavoriteApiState: ToggleFavoriteApiState = ToggleFavoriteApiState.Initial,
-        val addReservationApiState: AddReservationApiState = AddReservationApiState.Initial
+        val addReservationApiState: AddReservationApiState = AddReservationApiState.Initial,
+        val cancelReservationApiState : CancelReservationApiState = CancelReservationApiState.Initial
     )
 
 }
