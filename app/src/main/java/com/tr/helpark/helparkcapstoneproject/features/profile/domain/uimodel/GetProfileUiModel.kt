@@ -9,15 +9,16 @@ import tr.com.helpark.core.domain.UiModel
 @Parcelize
 data class GetProfileUiModel(
     val active: Int?,
-    val balance: Int?,
+    val balance: Float?,
     val carPlates: List<CarPlateUiModel>?,
     val card: List<CardUiModel>?,
-    val debt: Int?,
+    val debt: Float?,
     val email: String?,
     val id: Int?,
     val name: String?,
     val phoneNumber: String?,
-    val surname: String?
+    val surname: String?,
+    val favourite : List<FavouriteUiModel>?
 ) : UiModel, Parcelable
 
 @Parcelize
@@ -43,6 +44,11 @@ data class CardUiModel(
     val description: String?,
     val id: Int?,
     val userId: Int?
+) : Parcelable
+
+@Parcelize
+data class FavouriteUiModel(
+    val parkId: Int?
 ) : Parcelable
 
 sealed interface GetProfileApiState {

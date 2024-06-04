@@ -28,12 +28,12 @@
             android:layout_width="62dp"
             android:layout_height="62dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
             android:padding="2dp"
             android:scaleType="fitXY"
             android:src="@drawable/profile_photo"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/line"
             app:shapeAppearance="@style/ShapeAppearanceOverlay.ProfileImageViewStyle"
             app:strokeWidth="2dp" />
 
@@ -89,7 +89,7 @@
             android:layout_width="0dp"
             android:layout_height="2dp"
             android:background="@color/gray_primary_light"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="12dp"
             app:layout_constraintStart_toStartOf="@id/iv_profile"
             app:layout_constraintEnd_toEndOf="@id/clWallet"
             app:layout_constraintTop_toBottomOf="@id/tvPhoneNumber"/>
@@ -183,6 +183,38 @@
             android:padding="16dp"
             android:text="Çıkış Yap"
             android:textColor="@color/black"
+            android:textSize="14sp" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cvDeleteAccount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
+        android:elevation="0dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="0dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:strokeColor="@color/green"
+        app:strokeWidth="1dp"
+        android:backgroundTint="@color/coral_red"
+        android:layout_marginBottom="24dp"
+        tools:layout_editor_absoluteX="16dp">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawablePadding="8dp"
+            android:fontFamily="@font/montserrat_medium"
+            android:padding="16dp"
+            android:text="Hesabı Sil"
+            android:gravity="center"
+            android:textColor="@color/white"
             android:textSize="14sp" />
 
     </com.google.android.material.card.MaterialCardView>

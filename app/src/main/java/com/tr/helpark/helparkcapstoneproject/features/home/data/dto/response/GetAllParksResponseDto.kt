@@ -1,6 +1,7 @@
 package com.tr.helpark.helparkcapstoneproject.features.home.data.dto.response
 
 
+import androidx.collection.ArrayMap
 import com.google.gson.annotations.SerializedName
 import com.tr.helpark.helparkcapstoneproject.features.home.domain.uimodel.GetAllParksUiModel
 import com.tr.helpark.helparkcapstoneproject.features.home.domain.uimodel.GetAllParksUiModelItem
@@ -37,7 +38,13 @@ data class GetAllParksResponseDtoItem(
     @SerializedName("state")
     val state: Int?,
     @SerializedName("workHours")
-    val workHours: String?
+    val workHours: String?,
+    @SerializedName("formattedPrices")
+    val formattedPrices: String?,
+    @SerializedName("resTime")
+    val resTime: Int?,
+    @SerializedName("hire")
+    val hire: Float?
 )
 
 data class ParkDetail(
@@ -83,7 +90,10 @@ private fun GetAllParksResponseDtoItem.toDomain(): GetAllParksUiModelItem {
         parkPoint = this.parkPoint,
         parkType = this.parkType,
         state = this.state,
-        workHours = this.workHours
+        workHours = this.workHours,
+        formattedPrices = parseFeeScheduleToUiModel(this.formattedPrices ?: ""),
+        resTime = this.resTime,
+        hire = this.hire
     )
 }
 
@@ -99,4 +109,17 @@ private fun ParkDetail.toDomain(): ParkDetailUiModel {
         updateDate = this.updateDate,
         workHours = this.workHours
     )
+}
+
+fun parseFeeScheduleToUiModel(schedule : String) : ArrayMap<String, String> {
+    val scheduleMap = ArrayMap<String,String>()
+    val scheduleEntries = schedule.split(";")
+
+    scheduleEntries.forEach {entry ->
+        val parts = entry.split(":")
+        val hoursRange = parts[0].trim()
+        val price = parts[1].trim()
+        scheduleMap[hoursRange] = price
+    }
+    return scheduleMap
 }

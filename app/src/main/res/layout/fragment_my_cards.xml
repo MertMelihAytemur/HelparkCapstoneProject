@@ -56,7 +56,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Henüz Araç Eklemediniz"
+            android:text="@string/saved_card_not_found"
             app:layout_constraintTop_toBottomOf="@id/ivError"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -72,11 +72,10 @@
         style="@style/FloatingActionButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_margin="24dp"
         app:tint="@color/white"
-        app:fabCustomSize="48dp"
         android:src="@drawable/ic_add"
-        app:backgroundTint="@color/spotify_green"
+        app:backgroundTint="@color/map_ocean_blue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

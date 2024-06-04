@@ -4,6 +4,10 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
+import com.helpark.helpark.common.utils.preferences.PreferencesKeys.KEY_USER_ID
+import com.tr.helpark.helparkcapstoneproject.common.helper.FirebaseHelper
+import com.tr.helpark.helparkcapstoneproject.common.util.preferences.PreferencesManager
+import com.tr.helpark.helparkcapstoneproject.features.reservation.presentation.model.ReservationStatusType
 import com.vmlmedia.core.presentation.CoreViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -12,7 +16,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor() : CoreViewModel() {
+class MainViewModel @Inject constructor(
+    private val preferencesManager: PreferencesManager,
+    private val firebaseHelper: FirebaseHelper
+) : CoreViewModel() {
 
     var isLocationServicesEnabled: MutableLiveData<Boolean> = MutableLiveData(false)
 
@@ -42,6 +49,24 @@ class MainViewModel @Inject constructor() : CoreViewModel() {
     fun updateNetworkState(networkState: Boolean) {
         viewModelScope.launch {
             _networkStateLiveData.emit(networkState)
+        }
+    }
+
+    fun createReservation() {
+        preferencesManager.getString(KEY_USER_ID)?.let { userId ->
+            firebaseHelper.addOrUpdateReservationStatus(userId, ReservationStatusType.PENDING.value)
+        }
+    }
+
+    fun cancelReservation() {
+        preferencesManager.getString(KEY_USER_ID)?.let { userId ->
+            firebaseHelper.addOrUpdateReservationStatus(userId, ReservationStatusType.CANCELLED.value)
+        }
+    }
+
+    fun removeReservationReference(){
+        preferencesManager.getString(KEY_USER_ID)?.let { userId ->
+            firebaseHelper.deleteReservationStatus(userId)
         }
     }
 }

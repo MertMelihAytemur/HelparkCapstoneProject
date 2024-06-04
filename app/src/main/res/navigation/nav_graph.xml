@@ -93,6 +93,9 @@
         <action
             android:id="@+id/action_homeFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_myCarsFragment"
+            app:destination="@id/myCarsFragment" />
     </fragment>
 
     <fragment
@@ -111,6 +114,9 @@
         <action
             android:id="@+id/action_settingsFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_favoritesFragment"
+            app:destination="@id/favoritesFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -134,4 +140,17 @@
         android:name="com.tr.helpark.helparkcapstoneproject.features.mycars.presentation.MyCarsFragment"
         android:label="fragment_my_cars"
         tools:layout="@layout/fragment_my_cars" />
+    <fragment
+        android:id="@+id/favoritesFragment"
+        android:name="com.tr.helpark.helparkcapstoneproject.features.favorites.presentation.FavoritesFragment"
+        android:label="fragment_favorites"
+        tools:layout="@layout/fragment_favorites" >
+        <action
+            android:id="@+id/action_favoritesFragment_to_parkDetailFragment"
+            app:destination="@id/parkDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/parkDetailFragment"
+        android:name="com.tr.helpark.helparkcapstoneproject.features.parkdetail.presentation.ParkDetailFragment"
+        android:label="ParkDetailFragment" />
 </navigation>

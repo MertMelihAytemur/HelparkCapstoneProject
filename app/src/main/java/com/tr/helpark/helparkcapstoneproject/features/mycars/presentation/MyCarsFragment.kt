@@ -2,6 +2,7 @@ package com.tr.helpark.helparkcapstoneproject.features.mycars.presentation
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.helpark.helpark.common.utils.preferences.PreferencesKeys
@@ -9,8 +10,8 @@ import com.tr.helpark.helparkcapstoneproject.R
 import com.tr.helpark.helparkcapstoneproject.common.util.preferences.PreferencesManager
 import com.tr.helpark.helparkcapstoneproject.core.base.BaseFragment
 import com.tr.helpark.helparkcapstoneproject.databinding.FragmentMyCarsBinding
-import com.tr.helpark.helparkcapstoneproject.features.mycards.presentation.dialog.SavedCardsOptionBottomSheetDialog
-import com.tr.helpark.helparkcapstoneproject.features.mycards.presentation.dialog.SavedCardsOptionBottomSheetDialog.Companion.OPERATION_CAR
+import com.tr.helpark.helparkcapstoneproject.features.mycards.presentation.dialog.RemoveOptionBottomSheetDialog
+import com.tr.helpark.helparkcapstoneproject.features.mycards.presentation.dialog.RemoveOptionBottomSheetDialog.Companion.OPERATION_REMOVE_CAR
 import com.tr.helpark.helparkcapstoneproject.features.mycars.data.dto.request.AddNewCarRequestDto
 import com.tr.helpark.helparkcapstoneproject.features.mycars.data.dto.request.RemoveCarRequestDto
 import com.tr.helpark.helparkcapstoneproject.features.mycars.domain.uimodel.AddCarApiState
@@ -112,6 +113,8 @@ class MyCarsFragment : BaseFragment<MyCarsViewModel, FragmentMyCarsBinding>(
 
     private fun observeLiveData() {
         viewModel.carList.observe(viewLifecycleOwner) {
+            binding.rvMyCars.isVisible = it.isNotEmpty()
+            binding.clEmptyState.isVisible = it.isEmpty()
             adapter.submitList(it)
         }
     }
@@ -144,7 +147,7 @@ class MyCarsFragment : BaseFragment<MyCarsViewModel, FragmentMyCarsBinding>(
     }
 
     private fun onDeleteCarClickAction(plate: String) {
-        SavedCardsOptionBottomSheetDialog(OPERATION_CAR,onRemoveClick = {
+        RemoveOptionBottomSheetDialog(OPERATION_REMOVE_CAR,onRemoveClick = {
             viewModel.removeCar(RemoveCarRequestDto(plate.trim().lowercase()))
 
         }).show(childFragmentManager, "SavedCardsOptionBottomSheetDialog")

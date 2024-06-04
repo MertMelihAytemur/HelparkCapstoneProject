@@ -66,3 +66,7 @@ fun handleViewVisibilityWithTranslationYTop(vararg views: View, show: Boolean) {
             view.animate().translationY(-view.height.toFloat() - view.marginTop).duration = Constants.VIEW_TRANSLATION_DURATION
     }
 }
+
+fun View.animateAlpha(show: Boolean) {
+    this.animate().alpha(if (show) 1.0f else 0.0f).setDuration(Constants.VIEW_TRANSLATION_DURATION).start()
+}

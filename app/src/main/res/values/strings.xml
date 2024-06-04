@@ -100,5 +100,25 @@
     <string name="saved_cards">Kayıtlı Kartlarım</string>
     <string name="remove_card">Kartı Sil</string>
     <string name="remove_car">Aracı Sil</string>
+    <string name="profile_info">Profil Bilgilerim</string>
+    <string name="balance_added">Bakiye Hesabınıza Yüklendi</string>
+    <string name="account_deleted">Hesabınız Silindi</string>
+    <string name="remove_account">Hesabınızı silmek istediğinizden emin misiniz?</string>
+    <string name="add_card">Kart Ekle</string>
+    <string name="add_car">Araç Ekle</string>
+    <string name="btn_continue">Devam Et</string>
+    <string name="saved_card_not_found">Kayıtlı Kartınız Bulunmamaktadır</string>
+    <string name="favorites">Favori Otoparklar</string>
+    <string name="add_reservation">Rezervasyon Yap</string>
+    <string name="cancel_reservation">Rezervasyonu İptal Et</string>
+    <string name="reservation_cancelled_success">Rezervasyon İptal Edildi.</string>
+
+    <string name="reservation_alert_message">
+        Önemli Bilgilendirme:
+
+        Rezervasyon işleminizden sonraki ilk 10 dakika içinde yapılan iptallerde, tam para iadesi yapılacaktır. Ancak, rezervasyon işleminizin üzerinden 10 dakika geçtikten sonra yapılan iptallerde para iadesi yapılmamaktadır.
+
+        Rezervasyon yapmak istediğinizden emin misiniz?
+    </string>
 
 </resources>

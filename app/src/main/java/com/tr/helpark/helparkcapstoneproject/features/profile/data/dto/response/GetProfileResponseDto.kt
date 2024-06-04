@@ -4,19 +4,20 @@ package com.tr.helpark.helparkcapstoneproject.features.profile.data.dto.response
 import com.google.gson.annotations.SerializedName
 import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.CarPlateUiModel
 import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.CardUiModel
+import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.FavouriteUiModel
 import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.GetProfileUiModel
 
 data class GetProfileResponseDto(
     @SerializedName("active")
     val active: Int?,
     @SerializedName("balance")
-    val balance: Int?,
+    val balance: Float?,
     @SerializedName("carPlates")
     val carPlates: List<CarPlate>?,
     @SerializedName("card")
     val card: List<Card>?,
     @SerializedName("debt")
-    val debt: Int?,
+    val debt: Float?,
     @SerializedName("email")
     val email: String?,
     @SerializedName("id")
@@ -26,7 +27,9 @@ data class GetProfileResponseDto(
     @SerializedName("phoneNumber")
     val phoneNumber: String?,
     @SerializedName("surname")
-    val surname: String?
+    val surname: String?,
+    @SerializedName("favourite")
+    val favourite: List<Favourite>?
 )
 
 data class CarPlate(
@@ -69,6 +72,14 @@ data class Card(
     val userId: Int?
 )
 
+data class Favourite(
+    @SerializedName("parkId")
+    val parkId: Int?
+)
+
+fun Favourite.toDomain(): FavouriteUiModel {
+    return FavouriteUiModel(parkId = this.parkId)
+}
 // Extension function for GetProfileResponseDto
 fun GetProfileResponseDto.toDomain(): GetProfileUiModel {
     return GetProfileUiModel(
@@ -81,7 +92,8 @@ fun GetProfileResponseDto.toDomain(): GetProfileUiModel {
         id = this.id,
         name = this.name,
         phoneNumber = this.phoneNumber,
-        surname = this.surname
+        surname = this.surname,
+        favourite = this.favourite?.map { it.toDomain() }
     )
 }
 
