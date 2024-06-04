@@ -89,6 +89,7 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-crashlytics-ktx")
     implementation("com.google.firebase:firebase-config-ktx")
+    implementation("com.google.firebase:firebase-database:21.0.0")
 
     // Google Maps
     implementation("com.google.android.gms:play-services-maps:18.2.0")

@@ -39,7 +39,7 @@ class TimerWorker(context: Context, workerParams: WorkerParameters) : Worker(con
         val notification = NotificationCompat.Builder(applicationContext, "TIMER_CHANNEL")
             .setContentTitle(title)
             .setContentText(message)
-            .setSmallIcon(R.drawable.icon_close)
+            .setSmallIcon(R.drawable.helpark_logo)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .build()
 

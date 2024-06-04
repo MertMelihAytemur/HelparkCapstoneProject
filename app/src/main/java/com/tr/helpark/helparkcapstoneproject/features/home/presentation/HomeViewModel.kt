@@ -12,10 +12,14 @@ import com.tr.helpark.helparkcapstoneproject.features.home.domain.uimodel.Toggle
 import com.tr.helpark.helparkcapstoneproject.features.home.domain.usecase.GetAllParksUseCase
 import com.tr.helpark.helparkcapstoneproject.features.home.domain.usecase.ToggleFavoriteUseCase
 import com.tr.helpark.helparkcapstoneproject.features.profile.data.dto.request.GetProfileRequestDto
+import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.CarPlateUiModel
 import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.FavouriteUiModel
 import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.GetProfileApiState
 import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.GetProfileUiModel
 import com.tr.helpark.helparkcapstoneproject.features.profile.domain.usecase.GetProfileUseCase
+import com.tr.helpark.helparkcapstoneproject.features.reservation.data.dto.request.AddReservationRequestDto
+import com.tr.helpark.helparkcapstoneproject.features.reservation.domain.uimodel.AddReservationApiState
+import com.tr.helpark.helparkcapstoneproject.features.reservation.domain.usecase.AddReservationUseCase
 import com.vmlmedia.core.presentation.CoreViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,7 +34,8 @@ class HomeViewModel @Inject constructor(
     private val getAllParksUseCase: GetAllParksUseCase,
     private val getProfileUseCase: GetProfileUseCase,
     private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
-    private val preferencesManager: PreferencesManager
+    private val preferencesManager: PreferencesManager,
+    private val addReservationUseCase: AddReservationUseCase
 ) : CoreViewModel() {
 
     private var _pageStateFlow =
@@ -44,6 +49,22 @@ class HomeViewModel @Inject constructor(
     private var _favoriteParkList: MutableLiveData<List<FavouriteUiModel>> = MutableLiveData()
     val favoriteParkList: LiveData<List<FavouriteUiModel>>
         get() = _favoriteParkList
+
+    private var _carList: MutableLiveData<List<CarPlateUiModel>> = MutableLiveData()
+    val carList: LiveData<List<CarPlateUiModel>> get() = _carList
+
+    fun getUserCars() {
+        viewModelScope.launch {
+            val profile: GetProfileUiModel? = preferencesManager.getModel(
+                PreferencesKeys.KEY_USER_PROFILE,
+                typeOf<GetProfileUiModel>()
+            )
+
+            profile?.carPlates?.let {
+                _carList.value = it
+            }
+        }
+    }
 
     fun getAllParks() {
         launchRequest(
@@ -125,19 +146,40 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun addReservation(addReservationRequestDto: AddReservationRequestDto) {
+        launchRequest(
+            requestBody = {
+                addReservationUseCase(addReservationRequestDto)
+            },
+            onSuccess = {uiModel ->
+                _pageStateFlow.value = _pageStateFlow.value.copy(
+                    pageEvent = PageEvent.RESERVATION_ADDED_RESPONSE_RECEIVED,
+                    addReservationApiState = AddReservationApiState.Success(uiModel)
+                )
+            },
+            onError = {error ->
+                _pageStateFlow.value = _pageStateFlow.value.copy(
+                    addReservationApiState = AddReservationApiState.Error(error)
+                )
+            }
+        )
+    }
+
     enum class PageEvent {
         INITIAL,
         GET_ALL_PARKS_RESPONSE_RECEIVED,
         GET_PROFILE_RESPONSE_RECEIVED,
         TOGGLE_FAVORITE_RESPONSE_RECEIVED,
-        NAVIGATE_TO_NEXT_SCREEN
+        NAVIGATE_TO_NEXT_SCREEN,
+        RESERVATION_ADDED_RESPONSE_RECEIVED
     }
 
     data class PageState(
         val pageEvent: PageEvent = PageEvent.INITIAL,
         val registerApiState: GetAllParksApiState = GetAllParksApiState.Initial,
         val getProfileApiState: GetProfileApiState = GetProfileApiState.Initial,
-        val toggleFavoriteApiState: ToggleFavoriteApiState = ToggleFavoriteApiState.Initial
+        val toggleFavoriteApiState: ToggleFavoriteApiState = ToggleFavoriteApiState.Initial,
+        val addReservationApiState: AddReservationApiState = AddReservationApiState.Initial
     )
 
 }

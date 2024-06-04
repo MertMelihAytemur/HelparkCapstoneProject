@@ -87,7 +87,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     lateinit var mapActions: MapActions
 
-    private val viewModel: MainViewModel by viewModels()
+    val viewModel: MainViewModel by viewModels()
 
     @Inject
     lateinit var locationHelper: LocationHelper

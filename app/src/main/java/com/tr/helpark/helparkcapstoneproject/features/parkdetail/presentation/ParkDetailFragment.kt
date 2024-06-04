@@ -1,9 +1,14 @@
 package com.tr.helpark.helparkcapstoneproject.features.parkdetail.presentation
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
+import android.widget.TableRow
+import android.widget.TextView
+import androidx.collection.ArrayMap
 import androidx.fragment.app.viewModels
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -25,6 +30,7 @@ import com.tr.helpark.helparkcapstoneproject.common.util.ToastMessageType
 import com.tr.helpark.helparkcapstoneproject.core.base.BaseFragment
 import com.tr.helpark.helparkcapstoneproject.databinding.FragmentParkDetailBinding
 import com.tr.helpark.helparkcapstoneproject.features.favorites.domain.uimodel.GetFavoritesUiModelItem
+import com.tr.helpark.helparkcapstoneproject.features.home.domain.uimodel.GetAllParksUiModelItem
 
 class ParkDetailFragment : BaseFragment<ParkDetailViewModel, FragmentParkDetailBinding>(
     FragmentParkDetailBinding::inflate
@@ -151,6 +157,36 @@ class ParkDetailFragment : BaseFragment<ParkDetailViewModel, FragmentParkDetailB
             isCompassEnabled = false
             isMapToolbarEnabled = true
             setAllGesturesEnabled(false)
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun setParkSchedule(
+        parkDetail: GetAllParksUiModelItem,
+        schedule: ArrayMap<String, String>?
+    ) {
+        schedule?.let {parkSchedule ->
+            val sortedSchedule = parkSchedule.toSortedMap()
+            sortedSchedule.forEach {
+                val tableRow = LayoutInflater.from(requireContext())
+                    .inflate(R.layout.table_row_park_fee_detail_item, null) as TableRow
+
+                tableRow.findViewById<TextView>(R.id.tvRowDetailTitle).text = it.key
+                tableRow.findViewById<TextView>(R.id.tvRowDetailDesc).text = "${it.value} TL"
+
+                binding.tableLayoutSchedule.addView(tableRow)
+            }
+
+            if (parkDetail.parkDetail?.monthlyFee.toString().isNotEmpty()) {
+                val tableRowSubscription = LayoutInflater.from(requireContext())
+                    .inflate(R.layout.table_row_park_fee_detail_item, null) as TableRow
+
+                tableRowSubscription.findViewById<TextView>(R.id.tvRowDetailTitle).text =
+                    getString(R.string.monthly_subscription)
+                tableRowSubscription.findViewById<TextView>(R.id.tvRowDetailDesc).text =
+                    "${parkDetail.parkDetail?.monthlyFee} TL"
+                binding.tableLayoutSchedule.addView(tableRowSubscription)
+            }
         }
     }
 

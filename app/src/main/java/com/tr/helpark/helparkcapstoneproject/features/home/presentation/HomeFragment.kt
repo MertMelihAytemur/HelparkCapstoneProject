@@ -2,7 +2,11 @@ package com.tr.helpark.helparkcapstoneproject.features.home.presentation
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.widget.TableRow
+import android.widget.TextView
+import androidx.collection.ArrayMap
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -14,6 +18,8 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.helpark.helpark.common.utils.preferences.PreferencesKeys.KEY_USER_ID
 import com.tr.helpark.helparkcapstoneproject.R
+import com.tr.helpark.helparkcapstoneproject.common.customview.ReservationType
+import com.tr.helpark.helparkcapstoneproject.common.extensions.animateAlpha
 import com.tr.helpark.helparkcapstoneproject.common.extensions.handleViewVisibilityWithTranslationXEnd
 import com.tr.helpark.helparkcapstoneproject.common.extensions.handleViewVisibilityWithTranslationYTop
 import com.tr.helpark.helparkcapstoneproject.common.extensions.navigateWithAnimation
@@ -23,6 +29,7 @@ import com.tr.helpark.helparkcapstoneproject.common.extensions.setParkDensitySta
 import com.tr.helpark.helparkcapstoneproject.common.extensions.setParkIsOpenStatus
 import com.tr.helpark.helparkcapstoneproject.common.extensions.setTextViewAlphaAnimation
 import com.tr.helpark.helparkcapstoneproject.common.extensions.showToastMessage
+import com.tr.helpark.helparkcapstoneproject.common.helper.FirebaseHelper
 import com.tr.helpark.helparkcapstoneproject.common.util.MapActions
 import com.tr.helpark.helparkcapstoneproject.common.util.MapUtils
 import com.tr.helpark.helparkcapstoneproject.common.util.ToastMessageType
@@ -40,6 +47,13 @@ import com.tr.helpark.helparkcapstoneproject.features.main.MapsActivity
 import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.FavouriteUiModel
 import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.GetProfileApiState
 import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.GetProfileUiModel
+import com.tr.helpark.helparkcapstoneproject.features.reservation.data.dto.request.AddReservationRequestDto
+import com.tr.helpark.helparkcapstoneproject.features.reservation.domain.uimodel.AddReservationApiState
+import com.tr.helpark.helparkcapstoneproject.features.reservation.domain.uimodel.AddReservationUiModel
+import com.tr.helpark.helparkcapstoneproject.features.reservation.presentation.dialog.IAddReservationAction
+import com.tr.helpark.helparkcapstoneproject.features.reservation.presentation.dialog.selectcard.SelectCarBottomSheetDialog
+import com.tr.helpark.helparkcapstoneproject.features.reservation.presentation.model.ReservationModel
+import com.tr.helpark.helparkcapstoneproject.features.reservation.presentation.model.ReservationStatusType
 import com.tr.helpark.helparkcapstoneproject.features.search.presentation.SearchBottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -63,10 +77,14 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
     @Inject
     lateinit var preferencesManager: PreferencesManager
 
-    private var userId = -1
+    @Inject
+    lateinit var firebaseHelper: FirebaseHelper
+
+    private var userID = -1
 
     private var favoriteParkList = listOf<FavouriteUiModel>()
 
+    private lateinit var iAddReservationAction: IAddReservationAction
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -75,10 +93,13 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
         overrideHomeUiActions()
         initListeners()
         setUserId()
+        listenReservationStatus()
+        overrideAddReservationsActions()
 
         observeMarkerPosition()
         observeLiveData()
 
+        viewModel.getUserCars()
         preferencesManager.getString(KEY_USER_ID)?.let { userId ->
             viewModel.getProfile(userId)
         }
@@ -104,12 +125,16 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
                 HomeViewModel.PageEvent.NAVIGATE_TO_NEXT_SCREEN -> {
                     onGetProfileResponseReceived(it.getProfileApiState)
                 }
+
+                HomeViewModel.PageEvent.RESERVATION_ADDED_RESPONSE_RECEIVED -> {
+                    onReservationAddedResponseReceived(it.addReservationApiState)
+                }
             }
         }
     }
 
-    private fun observeLiveData(){
-        viewModel.favoriteParkList.observe(viewLifecycleOwner){ favoriteParks ->
+    private fun observeLiveData() {
+        viewModel.favoriteParkList.observe(viewLifecycleOwner) { favoriteParks ->
             favoriteParks?.let {
                 favoriteParkList = it
             }
@@ -156,6 +181,24 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
                 handleNetworkError(toggleFavoriteApiState.error)
             }
         }
+    }
+
+    private fun onReservationAddedResponseReceived(addReservationApiState: AddReservationApiState) {
+        when (addReservationApiState) {
+            is AddReservationApiState.Initial -> {}
+
+            is AddReservationApiState.Success -> {
+                onReservationAddedSuccess(addReservationApiState.uiModel)
+            }
+
+            is AddReservationApiState.Error -> {
+                handleNetworkError(addReservationApiState.error)
+            }
+        }
+    }
+
+    private fun onReservationAddedSuccess(uiModel: AddReservationUiModel?) {
+        (activity as? MapsActivity)?.viewModel?.createReservation()
     }
 
     private fun onToggleFavoriteSuccess(uiModel: ToggleFavoriteUiModel?) {
@@ -213,6 +256,23 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
 
             tbHomePage.ivProfile.setOnClickListener {
                 navigateWithAnimation(R.id.action_homeFragment_to_profileFragment)
+            }
+
+            layoutParkInfo.btnAddReservation.setOnClickListener {
+                lifecycleScope.launch {
+                    collapseBottomSheetDialog()
+
+                    delay(350)
+                    viewModel.carList.value?.let { carList ->
+                        SelectCarBottomSheetDialog(
+                            iAddReservationAction,
+                            carList
+                        ).show(
+                            childFragmentManager,
+                            "SelectCarBottomSheetDialog"
+                        )
+                    }
+                }
             }
         }
     }
@@ -286,7 +346,7 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
 
                 ivSaveCarPark.setOnClickListener {
                     isSaved = if (isSaved) {
-                        viewModel.toggleFavorite(ToggleFavoriteParkRequestDto(userId, park.id!!))
+                        viewModel.toggleFavorite(ToggleFavoriteParkRequestDto(userID, park.id!!))
                         false
                     } else {
                         showToastMessage(
@@ -294,15 +354,46 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
                             toastType = ToastMessageType.GENERAL_SUCCESS
                         )
 
-                        viewModel.toggleFavorite(ToggleFavoriteParkRequestDto(userId, park.id!!))
+                        viewModel.toggleFavorite(ToggleFavoriteParkRequestDto(userID, park.id!!))
                         true
                     }
 
                     ivSaveCarPark.setCarParkSavedStatus(isSaved)
                 }
             }
-            //setParkSchedule(parkDetail, parkDetail.parkDetail?.workHours)
+            setParkSchedule(park, park.formattedPrices)
+            setReservationModel(park)
             expandBottomSheetDialog()
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun setParkSchedule(
+        parkDetail: GetAllParksUiModelItem,
+        schedule: ArrayMap<String, String>?
+    ) {
+        schedule?.let { parkSchedule ->
+            val sortedSchedule = parkSchedule.toSortedMap()
+            sortedSchedule.forEach {
+                val tableRow = LayoutInflater.from(requireContext())
+                    .inflate(R.layout.table_row_park_fee_detail_item, null) as TableRow
+
+                tableRow.findViewById<TextView>(R.id.tvRowDetailTitle).text = it.key
+                tableRow.findViewById<TextView>(R.id.tvRowDetailDesc).text = "${it.value} TL"
+
+                binding.layoutParkInfo.tableLayoutSchedule.addView(tableRow)
+            }
+
+            if (parkDetail.parkDetail?.monthlyFee.toString().isNotEmpty()) {
+                val tableRowSubscription = LayoutInflater.from(requireContext())
+                    .inflate(R.layout.table_row_park_fee_detail_item, null) as TableRow
+
+                tableRowSubscription.findViewById<TextView>(R.id.tvRowDetailTitle).text =
+                    getString(R.string.monthly_subscription)
+                tableRowSubscription.findViewById<TextView>(R.id.tvRowDetailDesc).text =
+                    "${parkDetail.parkDetail?.monthlyFee} TL"
+                binding.layoutParkInfo.tableLayoutSchedule.addView(tableRowSubscription)
+            }
         }
     }
 
@@ -331,6 +422,8 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
             binding.tbHomePage.root,
             show = !scrolling
         )
+
+        binding.reservationStatusView.animateAlpha(!scrolling)
 
         val isKeyboardVisible = ViewCompat.getRootWindowInsets(requireActivity().window.decorView)
             ?.isVisible(WindowInsetsCompat.Type.ime()) ?: false
@@ -376,7 +469,6 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
         }
     }
 
-
     @SuppressLint("ClickableViewAccessibility")
     private fun setBottomSheetBehaviour() {
         bottomSheetBehavior = BottomSheetBehavior.from(binding.frameLayoutBottomSheet)
@@ -398,6 +490,13 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
                         binding.btnCurrentLocation,
                         show = newState in showStates
                     )
+
+                    handleViewVisibilityWithTranslationYTop(
+                        binding.tbHomePage.root,
+                        show = newState in showStates
+                    )
+
+                    binding.reservationStatusView.animateAlpha(newState in showStates)
                 }
 
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {
@@ -427,7 +526,85 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
 
     private fun setUserId() {
         preferencesManager.getString(KEY_USER_ID)?.let { userId ->
-            this.userId = userId.toInt()
+            this.userID = userId.toInt()
+        }
+    }
+
+    private fun showTopAlertMessage(
+        message: String,
+        clickCommentAction: (() -> Any)? = null,
+        reservationType: ReservationType
+    ) {
+        binding.reservationStatusView.apply {
+            show()
+            this.messageText = message
+            this.reservationType = reservationType
+            this.setCommentClickListener { clickCommentAction?.invoke() }
+            build()
+        }
+    }
+
+    private fun listenReservationStatus() {
+        preferencesManager.getString(KEY_USER_ID)?.let { userId ->
+            firebaseHelper.listenToReservationStatus(userId) { status ->
+                when (status) {
+                    ReservationStatusType.NOT_EXIST -> {
+                        binding.layoutParkInfo.btnAddReservation.text = getString(R.string.add_reservation)
+                        binding.reservationStatusView.hide()
+                    }
+
+                    ReservationStatusType.CANCELLED -> {
+                        binding.layoutParkInfo.btnAddReservation.text = getString(R.string.add_reservation)
+                        showTopAlertMessage(
+                            "Rezervasyon İptal Edildi",
+                            reservationType = ReservationType.ALERT
+                        )
+                        //Show toast message and remove user from database
+                    }
+
+                    ReservationStatusType.PENDING -> {
+                        binding.layoutParkInfo.btnAddReservation.text = getString(R.string.cancel_reservation)
+                        showTopAlertMessage(
+                            "Rezervasyon Bekleniyor",
+                            reservationType = ReservationType.CONFIRMATION
+                        )
+                    }
+
+                    ReservationStatusType.CONFIRMED -> {
+                        binding.layoutParkInfo.btnAddReservation.text = getString(R.string.cancel_reservation)
+                        showTopAlertMessage(
+                            "Rezervasyon Onaylandı",
+                            reservationType = ReservationType.CONFIRMATION
+                        )
+                    }
+
+                    ReservationStatusType.ARRIVED -> {
+                        binding.layoutParkInfo.btnAddReservation.text = getString(R.string.add_reservation)
+                        showTopAlertMessage(
+                            "Rezervasyon Tamamlandı",
+                            reservationType = ReservationType.CONFIRMATION
+                        )
+                        //Show toast message and remove user from database
+                    }
+                }
+            }
+        }
+    }
+
+    private fun overrideAddReservationsActions() {
+        iAddReservationAction = object : IAddReservationAction {
+            override fun addReservation(addReservationRequestDto: AddReservationRequestDto) {
+                viewModel.addReservation(addReservationRequestDto)
+            }
+        }
+    }
+
+    private fun setReservationModel(park : GetAllParksUiModelItem){
+        ReservationModel.apply {
+            userId = userID
+            parkId = park.id!!
+            resTime = park.resTime!!
+            hire = park.hire?.toFloat()!!
         }
     }
 
