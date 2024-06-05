@@ -4,6 +4,7 @@ package com.tr.helpark.helparkcapstoneproject.features.favorites.data.dto.respon
 import com.google.gson.annotations.SerializedName
 import com.tr.helpark.helparkcapstoneproject.features.favorites.domain.uimodel.GetFavoritesUiModel
 import com.tr.helpark.helparkcapstoneproject.features.favorites.domain.uimodel.GetFavoritesUiModelItem
+import com.tr.helpark.helparkcapstoneproject.features.home.data.dto.response.parseFeeScheduleToUiModel
 
 class FavoriteResponseDto : ArrayList<FavoriteResponseDtoItem>()
 
@@ -37,7 +38,9 @@ data class FavoriteResponseDtoItem(
     @SerializedName("state")
     val state: Int?,
     @SerializedName("workHours")
-    val workHours: String?
+    val workHours: String?,
+    @SerializedName("formattedPrices")
+    val formattedPrices: String?
 )
 
 
@@ -84,7 +87,8 @@ private fun FavoriteResponseDtoItem.toDomain(): GetFavoritesUiModelItem {
         parkPoint = this.parkPoint,
         parkType = this.parkType,
         state = this.state,
-        workHours = this.workHours
+        workHours = this.workHours,
+        formattedPrices = parseFeeScheduleToUiModel(this.formattedPrices)
     )
 }
 

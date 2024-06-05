@@ -10,6 +10,7 @@ import android.widget.TableRow
 import android.widget.TextView
 import androidx.collection.ArrayMap
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -30,7 +31,6 @@ import com.tr.helpark.helparkcapstoneproject.common.util.ToastMessageType
 import com.tr.helpark.helparkcapstoneproject.core.base.BaseFragment
 import com.tr.helpark.helparkcapstoneproject.databinding.FragmentParkDetailBinding
 import com.tr.helpark.helparkcapstoneproject.features.favorites.domain.uimodel.GetFavoritesUiModelItem
-import com.tr.helpark.helparkcapstoneproject.features.home.domain.uimodel.GetAllParksUiModelItem
 
 class ParkDetailFragment : BaseFragment<ParkDetailViewModel, FragmentParkDetailBinding>(
     FragmentParkDetailBinding::inflate
@@ -52,10 +52,6 @@ class ParkDetailFragment : BaseFragment<ParkDetailViewModel, FragmentParkDetailB
         initListeners()
         setLiveTextAlphaAnimation()
         initSupportMapFragment()
-
-        parkDetailItem?.let { park ->
-            showCarParkDetail(park)
-        }
     }
 
     private fun initListeners() {
@@ -69,6 +65,10 @@ class ParkDetailFragment : BaseFragment<ParkDetailViewModel, FragmentParkDetailB
                         )
                     )
                 }
+            }
+
+            toolbar.icBack.setOnClickListener {
+                findNavController().popBackStack()
             }
         }
     }
@@ -98,6 +98,7 @@ class ParkDetailFragment : BaseFragment<ParkDetailViewModel, FragmentParkDetailB
         carParkLocationLatLng = LatLng(park.lat?.toDouble() ?: 0.0, park.lng?.toDouble() ?: 0.0)
         carParkName = park.parkName.toString()
 
+        setParkSchedule(park, park.formattedPrices)
         showParkLocationOnMap(park)
         binding.apply {
             tvTransactionAmount.setParkDensityStatus(park)
@@ -150,6 +151,10 @@ class ParkDetailFragment : BaseFragment<ParkDetailViewModel, FragmentParkDetailB
         mMap.setMapStyle(mapStyle)
 
         setMapUiSettings()
+
+        parkDetailItem?.let { park ->
+            showCarParkDetail(park)
+        }
     }
 
     private fun setMapUiSettings() {
@@ -162,7 +167,7 @@ class ParkDetailFragment : BaseFragment<ParkDetailViewModel, FragmentParkDetailB
 
     @SuppressLint("SetTextI18n")
     private fun setParkSchedule(
-        parkDetail: GetAllParksUiModelItem,
+        parkDetail: GetFavoritesUiModelItem,
         schedule: ArrayMap<String, String>?
     ) {
         schedule?.let {parkSchedule ->

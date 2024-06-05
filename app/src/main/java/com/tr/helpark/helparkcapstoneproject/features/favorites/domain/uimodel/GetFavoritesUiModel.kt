@@ -3,6 +3,7 @@ package com.tr.helpark.helparkcapstoneproject.features.favorites.domain.uimodel
 import android.os.Parcelable
 import com.tr.helpark.helparkcapstoneproject.core.model.ApiErrorModel
 import kotlinx.parcelize.Parcelize
+import kotlinx.parcelize.RawValue
 import tr.com.helpark.core.domain.UiError
 import tr.com.helpark.core.domain.UiModel
 import java.util.UUID
@@ -28,7 +29,8 @@ data class GetFavoritesUiModelItem(
     val parkPoint: String?,
     val parkType: String?,
     val state: Int?,
-    val workHours: String?
+    val workHours: String?,
+    val formattedPrices: @RawValue androidx.collection.ArrayMap<String,String>?,
 ) : Parcelable
 
 @Parcelize

@@ -91,7 +91,7 @@ private fun GetAllParksResponseDtoItem.toDomain(): GetAllParksUiModelItem {
         parkType = this.parkType,
         state = this.state,
         workHours = this.workHours,
-        formattedPrices = parseFeeScheduleToUiModel(this.formattedPrices ?: ""),
+        formattedPrices = parseFeeScheduleToUiModel(this.formattedPrices),
         resTime = this.resTime,
         hire = this.hire
     )
@@ -111,7 +111,9 @@ private fun ParkDetail.toDomain(): ParkDetailUiModel {
     )
 }
 
-fun parseFeeScheduleToUiModel(schedule : String) : ArrayMap<String, String> {
+fun parseFeeScheduleToUiModel(schedule : String?) : ArrayMap<String, String>? {
+    if(schedule.isNullOrEmpty()) return null
+
     val scheduleMap = ArrayMap<String,String>()
     val scheduleEntries = schedule.split(";")
 

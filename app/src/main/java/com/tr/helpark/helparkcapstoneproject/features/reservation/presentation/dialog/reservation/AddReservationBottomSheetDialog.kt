@@ -57,6 +57,10 @@ class AddReservationBottomSheetDialog(
                 ))
                 dismiss()
             }
+
+            ivCloseDialog.setOnClickListener {
+                dismiss()
+            }
         }
     }
 }
