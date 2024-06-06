@@ -139,6 +139,16 @@ class ReservationStatusView @JvmOverloads constructor(
                 else -> {}
             }
         }
+
+        binding.root.setOnClickListener {
+            onRootClickListener?.invoke()
+        }
+    }
+
+    private var onRootClickListener: (() -> Unit)? = null
+
+    fun setOnClickListener(listener: () -> Unit) {
+        onRootClickListener = listener
     }
 
     private var cancelOrCompletedCallBack: (() -> Unit)? = null

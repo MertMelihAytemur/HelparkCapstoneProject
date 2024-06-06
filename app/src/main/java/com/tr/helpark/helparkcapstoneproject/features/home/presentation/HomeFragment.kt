@@ -14,6 +14,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -301,6 +302,10 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
                         )
                     }
                 }
+            }
+
+            reservationStatusView.setOnClickListener {
+                findNavController().navigate(R.id.reservationHistoryFragment)
             }
 
             reservationStatusView.setCancelOrCompletedCallBack {
