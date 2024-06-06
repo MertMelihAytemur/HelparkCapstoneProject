@@ -25,7 +25,7 @@ class MapManager private constructor(
 
     private var currentZoom = 13F
 
-    var radius : Double = 2000.0
+    var radius: Double = 2000.0
     fun setNearestMaviShops(stores: ArrayList<GetAllParksUiModelItem>) {
         stores.forEach { store ->
 
@@ -130,16 +130,19 @@ class MapManager private constructor(
      */
     private fun addMarkerToUserLocation(latLng: LatLng) {
         map.clear()
-        drawCircle(radius,latLng)
+        drawCircle(radius, latLng)
         map.addMarker(
-            MarkerOptions().position(latLng).title(context.getString(R.string.current_location_marker_title)
+            MarkerOptions().position(latLng).title(
+                context.getString(R.string.current_location_marker_title)
+            ).icon(
+                getMarkerIcon("#4395a1")
             )
         )?.apply {
             tag = -1
         }?.showInfoWindow()
     }
 
-    private fun drawCircle(radius : Double,center: LatLng) {
+    private fun drawCircle(radius: Double, center: LatLng) {
         val circleOptions = CircleOptions()
             .center(center)
             .radius(radius) // Radius in meters (4 km)

@@ -18,6 +18,8 @@ import com.tr.helpark.helparkcapstoneproject.R
 import com.tr.helpark.helparkcapstoneproject.common.util.calculateDensity
 import com.tr.helpark.helparkcapstoneproject.features.favorites.domain.uimodel.GetFavoritesUiModelItem
 import com.tr.helpark.helparkcapstoneproject.features.home.domain.uimodel.GetAllParksUiModelItem
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 fun TextView.addClickableLink(
     fullText: String,
@@ -142,4 +144,12 @@ fun TextView.setParkDensityStatus(park: GetAllParksUiModelItem) {
             }
         }
     }
+}
+
+fun TextView.setFormattedDate(dateString: String) {
+    val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.getDefault())
+    val outputFormat = SimpleDateFormat("d MMMM yyyy  HH:mm", Locale("tr"))
+
+    val date = inputFormat.parse(dateString)
+    this.text = outputFormat.format(date)
 }

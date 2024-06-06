@@ -117,6 +117,9 @@
         <action
             android:id="@+id/action_settingsFragment_to_favoritesFragment"
             app:destination="@id/favoritesFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_reservationHistoryFragment"
+            app:destination="@id/reservationHistoryFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -153,4 +156,9 @@
         android:id="@+id/parkDetailFragment"
         android:name="com.tr.helpark.helparkcapstoneproject.features.parkdetail.presentation.ParkDetailFragment"
         android:label="ParkDetailFragment" />
+    <fragment
+        android:id="@+id/reservationHistoryFragment"
+        android:name="com.tr.helpark.helparkcapstoneproject.features.reservationhistory.presentation.ReservationHistoryFragment"
+        android:label="fragment_reservation_history"
+        tools:layout="@layout/fragment_reservation_history" />
 </navigation>

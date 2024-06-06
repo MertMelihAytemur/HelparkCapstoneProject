@@ -114,13 +114,20 @@
     <string name="cancel_reservation">Aktif Rezervasyonu İptal Et</string>
     <string name="reservation_cancelled_success">Rezervasyon İptal Edildi.</string>
     <string name="show_results">Sonuçları Göster</string>
+    <string name="currency_value">₺</string>
 
     <string name="reservation_alert_message">
-        Önemli Bilgilendirme:
+    <![CDATA[
+    <b>Önemli Bilgilendirme:</b><br/><br/>
+    Rezervasyon işleminizden sonraki ilk 10 dakika içinde yapılan iptallerde, para iadesi yapılacaktır. Ancak, rezervasyon işleminizin üzerinden 10 dakika geçtikten sonra yapılan iptallerde para iadesi yapılmamaktadır.<br/><br/>
+    <b>Rezervasyon yapmak istediğinizden emin misiniz?</b>
+    ]]>
+</string>
 
-        Rezervasyon işleminizden sonraki ilk 10 dakika içinde yapılan iptallerde, tam para iadesi yapılacaktır. Ancak, rezervasyon işleminizin üzerinden 10 dakika geçtikten sonra yapılan iptallerde para iadesi yapılmamaktadır.
-
-        Rezervasyon yapmak istediğinizden emin misiniz?
-    </string>
+    <string name="tb_title_reservation_history">Geçmiş Rezervasyonlarım</string>
+    <string name="reservation_completed">Rezervasyon Tamamlandı</string>
+    <string name="reservation_confirmed">Rezervasyon Onaylandı</string>
+    <string name="reservation_pending">Rezervasyon Bekleniyor</string>
+    <string name="reservation_cancelled">Rezervasyon İptal Edildi</string>
 
 </resources>

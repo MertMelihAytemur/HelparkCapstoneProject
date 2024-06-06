@@ -58,7 +58,9 @@ class ProfileFragment : BaseFragment<ProfileViewModel, FragmentProfileBinding>(
         collectPageState(viewModel.pageStateFlow) {
             when (it.pageEvent) {
                 ProfileViewModel.PageEvent.INITIAL -> {
-
+                    preferencesManager.getString(PreferencesKeys.KEY_USER_ID)?.let { userId ->
+                        viewModel.getProfile(userId)
+                    }
                 }
 
                 ProfileViewModel.PageEvent.ADD_BALANCE_RESPONSE_RECEIVED -> {

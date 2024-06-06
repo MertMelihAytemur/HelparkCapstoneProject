@@ -15,7 +15,7 @@ data class RezervationHistoryItemDto(
     @SerializedName("carPlateId")
     val carPlateId: Int?,
     @SerializedName("hire")
-    val hire: Int?,
+    val hire: Float?,
     @SerializedName("id")
     val id: Int?,
     @SerializedName("parkId")
@@ -27,7 +27,13 @@ data class RezervationHistoryItemDto(
     @SerializedName("status")
     val status: Int?,
     @SerializedName("userId")
-    val userId: Int?
+    val userId: Int?,
+    @SerializedName("parkName")
+    val parkName : String? = null,
+    @SerializedName("lat")
+    val latitude : String? = null,
+    @SerializedName("lng")
+    val longitude : String? = null,
 )
 
 fun GetReservationHistoryResponseDto.toDomain() : GetReservationHistoryUiModel {
@@ -45,6 +51,9 @@ private fun RezervationHistoryItemDto.toDomain() : ReservationHistoryItemUiModel
         resDate = resDate,
         resTime = resTime,
         status = status,
-        userId = userId
+        userId = userId,
+        parkName = parkName,
+        latitude = latitude,
+        longitude = longitude
     )
 }

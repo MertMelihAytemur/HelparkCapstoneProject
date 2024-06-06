@@ -12,6 +12,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tr.helpark.helparkcapstoneproject.R
 import com.tr.helpark.helparkcapstoneproject.common.extensions.navigateWithAnimation
 import com.tr.helpark.helparkcapstoneproject.databinding.DialogBottomSheetSelectCarBinding
+import com.tr.helpark.helparkcapstoneproject.features.home.domain.uimodel.GetAllParksUiModelItem
 import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.CarPlateUiModel
 import com.tr.helpark.helparkcapstoneproject.features.reservation.presentation.adapter.SelectCarAdapter
 import com.tr.helpark.helparkcapstoneproject.features.reservation.presentation.dialog.IAddReservationAction
@@ -23,10 +24,11 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class SelectCarBottomSheetDialog(
     private val iAddReservationActions: IAddReservationAction,
-    private val userCarList: List<CarPlateUiModel>
-) : BottomSheetDialogFragment(){
+    private val userCarList: List<CarPlateUiModel>,
+    private val reservationDetail: GetAllParksUiModelItem
+) : BottomSheetDialogFragment() {
 
-    private lateinit var binding : DialogBottomSheetSelectCarBinding
+    private lateinit var binding: DialogBottomSheetSelectCarBinding
 
     private val adapter: SelectCarAdapter by lazy {
         SelectCarAdapter(::getSelectedCar)
@@ -82,7 +84,7 @@ class SelectCarBottomSheetDialog(
 
             btnContinue.setOnClickListener {
                 if (userCarList.isNotEmpty()) {
-                    AddReservationBottomSheetDialog(iAddReservationActions).show(
+                    AddReservationBottomSheetDialog(iAddReservationActions, reservationDetail).show(
                         parentFragmentManager,
                         AddReservationBottomSheetDialog::class.java.simpleName
                     )
