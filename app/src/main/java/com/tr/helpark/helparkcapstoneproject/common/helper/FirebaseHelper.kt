@@ -4,15 +4,18 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
+import com.helpark.helpark.common.utils.preferences.PreferencesKeys.KEY_USER_RESERVATION_ID
+import com.tr.helpark.helparkcapstoneproject.common.util.preferences.PreferencesManager
 import com.tr.helpark.helparkcapstoneproject.features.reservation.presentation.model.ReservationStatusType
 import javax.inject.Inject
 
 class FirebaseHelper @Inject constructor(
-    private val database: DatabaseReference
+    private val database: DatabaseReference,
+    private val preferencesManager: PreferencesManager
 ) {
 
-    fun addOrUpdateReservationStatus(userId: String, status: Int) {
-        val userRef = database.child("users").child(userId).child("reservation_status")
+    fun addOrUpdateReservationStatus(reservationId: String, status: Int) {
+        val userRef = database.child(reservationId).child("reservation_status")
 
         userRef.setValue(status).addOnCompleteListener { task ->
             if (task.isSuccessful) {
@@ -23,8 +26,8 @@ class FirebaseHelper @Inject constructor(
         }
     }
 
-    fun listenToReservationStatus(userId: String, statusListener: (ReservationStatusType) -> Unit) {
-        val userRef = database.child("users").child(userId).child("reservation_status")
+    fun listenToReservationStatus(reservationId: String, statusListener: (ReservationStatusType) -> Unit) {
+        val userRef = database.child(reservationId).child("reservation_status")
 
         userRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -40,12 +43,13 @@ class FirebaseHelper @Inject constructor(
         })
     }
 
-    fun deleteReservationStatus(userId: String) {
-        val userRef = database.child("users").child(userId).child("reservation_status")
+    fun deleteReservationStatus(reservationId: String) {
+        val userRef = database.child(reservationId).child("reservation_status")
 
         userRef.removeValue().addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 println("Reservation status successfully deleted.")
+                preferencesManager.putString(KEY_USER_RESERVATION_ID, null)
             } else {
                 println("Failed to delete reservation status: ${task.exception?.message}")
             }

@@ -4,7 +4,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
-import com.helpark.helpark.common.utils.preferences.PreferencesKeys.KEY_USER_ID
+import com.helpark.helpark.common.utils.preferences.PreferencesKeys.KEY_USER_RESERVATION_ID
 import com.tr.helpark.helparkcapstoneproject.common.helper.FirebaseHelper
 import com.tr.helpark.helparkcapstoneproject.common.util.preferences.PreferencesManager
 import com.tr.helpark.helparkcapstoneproject.features.reservation.presentation.model.ReservationStatusType
@@ -53,19 +53,19 @@ class MainViewModel @Inject constructor(
     }
 
     fun createReservation() {
-        preferencesManager.getString(KEY_USER_ID)?.let { userId ->
+        preferencesManager.getString(KEY_USER_RESERVATION_ID)?.let { userId ->
             firebaseHelper.addOrUpdateReservationStatus(userId, ReservationStatusType.PENDING.value)
         }
     }
 
     fun cancelReservation() {
-        preferencesManager.getString(KEY_USER_ID)?.let { userId ->
+        preferencesManager.getString(KEY_USER_RESERVATION_ID)?.let { userId ->
             firebaseHelper.addOrUpdateReservationStatus(userId, ReservationStatusType.CANCELLED.value)
         }
     }
 
     fun removeReservationReference(){
-        preferencesManager.getString(KEY_USER_ID)?.let { userId ->
+        preferencesManager.getString(KEY_USER_RESERVATION_ID)?.let { userId ->
             firebaseHelper.deleteReservationStatus(userId)
         }
     }

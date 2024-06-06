@@ -21,6 +21,8 @@ data class GetAllParksResponseDtoItem(
     val freeTime: Int?,
     @SerializedName("id")
     val id: Int?,
+    @SerializedName("isOpen")
+    val isOpen: Int?,
     @SerializedName("isOpened")
     val isOpened: Boolean?,
     @SerializedName("lat")
@@ -38,13 +40,7 @@ data class GetAllParksResponseDtoItem(
     @SerializedName("state")
     val state: Int?,
     @SerializedName("workHours")
-    val workHours: String?,
-    @SerializedName("formattedPrices")
-    val formattedPrices: String?,
-    @SerializedName("resTime")
-    val resTime: Int?,
-    @SerializedName("hire")
-    val hire: Float?
+    val workHours: String?
 )
 
 data class ParkDetail(
@@ -54,12 +50,16 @@ data class ParkDetail(
     val areaPolygon: String?,
     @SerializedName("district")
     val district: String?,
+    @SerializedName("hire")
+    val hire: Float?,
     @SerializedName("id")
     val id: Int?,
     @SerializedName("monthlyFee")
     val monthlyFee: Int?,
     @SerializedName("parkId")
     val parkId: Int?,
+    @SerializedName("resTime")
+    val resTime: Int?,
     @SerializedName("tariff")
     val tariff: String?,
     @SerializedName("updateDate")
@@ -75,13 +75,14 @@ fun GetAllParksResponseDto.toDomain(): GetAllParksUiModel {
     )
 }
 
-private fun GetAllParksResponseDtoItem.toDomain(): GetAllParksUiModelItem {
+fun GetAllParksResponseDtoItem.toDomain(): GetAllParksUiModelItem {
     return GetAllParksUiModelItem(
         capacity = this.capacity,
         district = this.district,
         emptyCapacity = this.emptyCapacity,
         freeTime = this.freeTime,
         id = this.id,
+        isOpen = this.isOpen,
         isOpened = this.isOpened,
         lat = this.lat,
         lng = this.lng,
@@ -90,38 +91,41 @@ private fun GetAllParksResponseDtoItem.toDomain(): GetAllParksUiModelItem {
         parkPoint = this.parkPoint,
         parkType = this.parkType,
         state = this.state,
-        workHours = this.workHours,
-        formattedPrices = parseFeeScheduleToUiModel(this.formattedPrices),
-        resTime = this.resTime,
-        hire = this.hire
+        workHours = this.workHours
     )
 }
 
-private fun ParkDetail.toDomain(): ParkDetailUiModel {
+fun ParkDetail.toDomain(): ParkDetailUiModel {
     return ParkDetailUiModel(
         address = this.address,
         areaPolygon = this.areaPolygon,
         district = this.district,
+        hire = this.hire,
         id = this.id,
         monthlyFee = this.monthlyFee,
         parkId = this.parkId,
-        tariff = this.tariff,
+        resTime = this.resTime,
+        tariff = parseFeeScheduleToUiModel(this.tariff),
         updateDate = this.updateDate,
         workHours = this.workHours
     )
 }
 
-fun parseFeeScheduleToUiModel(schedule : String?) : ArrayMap<String, String>? {
-    if(schedule.isNullOrEmpty()) return null
+fun parseFeeScheduleToUiModel(schedule: String?): ArrayMap<String, String>? {
+    if (schedule.isNullOrEmpty()) return null
 
-    val scheduleMap = ArrayMap<String,String>()
-    val scheduleEntries = schedule.split(";")
+    val scheduleMap = ArrayMap<String, String>()
+    // Split entries by ';' and handle possible spaces around it
+    val scheduleEntries = schedule.split(";").map { it.trim() }
 
-    scheduleEntries.forEach {entry ->
-        val parts = entry.split(":")
-        val hoursRange = parts[0].trim()
-        val price = parts[1].trim()
-        scheduleMap[hoursRange] = price
+    scheduleEntries.forEach { entry ->
+        // Split each entry by ':' and handle possible spaces around it
+        val parts = entry.split(":").map { it.trim() }
+        if (parts.size == 2) {
+            val hoursRange = parts[0]
+            val price = parts[1]
+            scheduleMap[hoursRange] = price
+        }
     }
     return scheduleMap
 }

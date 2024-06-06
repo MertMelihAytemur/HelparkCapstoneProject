@@ -56,7 +56,8 @@ import com.tr.helpark.helparkcapstoneproject.features.reservation.presentation.d
 import com.tr.helpark.helparkcapstoneproject.features.reservation.presentation.dialog.selectcard.SelectCarBottomSheetDialog
 import com.tr.helpark.helparkcapstoneproject.features.reservation.presentation.model.ReservationModel
 import com.tr.helpark.helparkcapstoneproject.features.reservation.presentation.model.ReservationStatusType
-import com.tr.helpark.helparkcapstoneproject.features.search.presentation.SearchBottomSheetDialogFragment
+import com.tr.helpark.helparkcapstoneproject.features.search.data.dto.request.GetParksBySearchRequestDto
+import com.tr.helpark.helparkcapstoneproject.features.search.presentation.dialog.SearchBottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -90,6 +91,10 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
 
     private var shouldCancelReservation = false
 
+    private var selectedDistricts: String = "empty"
+    private var selectedLatitude: String = ""
+    private var selectedLongitude: String = ""
+    private var selectedRadius: Double = 2.0
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -105,14 +110,14 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
         observeLiveData()
 
         viewModel.getUserCars()
-        preferencesManager.getString(KEY_USER_ID)?.let { userId ->
-            viewModel.getProfile(userId)
-        }
+
+        viewModel.getProfile(userID.toString())
+
 
         collectPageState(viewModel.pageStateFlow) {
             when (it.pageEvent) {
                 HomeViewModel.PageEvent.INITIAL -> {
-                    viewModel.getAllParks()
+                    viewModel.getDistricts()
                 }
 
                 HomeViewModel.PageEvent.GET_ALL_PARKS_RESPONSE_RECEIVED -> {
@@ -212,11 +217,12 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
 
             is CancelReservationApiState.Success -> {
                 collapseBottomSheetDialog()
+                viewModel.getProfile(userID.toString())
                 showToastMessage(
                     getString(R.string.reservation_cancelled_success),
                     toastType = ToastMessageType.GENERAL_SUCCESS
                 )
-                (activity as MapsActivity).viewModel.cancelReservation()
+                //(activity as MapsActivity).viewModel.cancelReservation()
             }
 
             is CancelReservationApiState.Error -> {
@@ -228,6 +234,7 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
     private fun onReservationAddedSuccess(uiModel: AddReservationUiModel?) {
         uiModel?.let {
             preferencesManager.putString(KEY_USER_RESERVATION_ID, it.resId.toString())
+            listenReservationStatus()
         }
 
         (activity as? MapsActivity)?.viewModel?.createReservation()
@@ -237,11 +244,10 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
         uiModel?.let {
             binding.layoutParkInfo.ivSaveCarPark.setCarParkSavedStatus(it.isFavorite)
 
-            preferencesManager.getString(KEY_USER_ID)?.let { userId ->
-                viewModel.getProfile(userId)
-            }
+            viewModel.getProfile(userID.toString())
         }
     }
+
 
     private fun onGetAllParksSuccess(uiModel: GetAllParksUiModel?) {
         uiModel.let {
@@ -274,13 +280,21 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
             btnCurrentLocation.setOnClickListener {
                 handleParksNotFoundViewState(isParkNotFoundState)
                 (activity as? MapsActivity)?.getCurrentLocationAndMoveCamera()
-                viewModel.getAllParks()
+
+                viewModel.getAllParks(
+                    GetParksBySearchRequestDto(
+                        selectedDistricts,
+                        selectedLatitude,
+                        selectedLongitude,
+                        selectedRadius
+                    )
+                )
 
                 (activity as MapsActivity).startTimer(20000)
             }
 
             btnSearch.setOnClickListener {
-                SearchBottomSheetDialogFragment().show(
+                SearchBottomSheetDialogFragment(viewModel.districtList).show(
                     childFragmentManager,
                     "SearchBottomSheetDialogFragment"
                 )
@@ -410,7 +424,7 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
                     ivSaveCarPark.setCarParkSavedStatus(isSaved)
                 }
             }
-            setParkSchedule(park, park.formattedPrices)
+            setParkSchedule(park, park.parkDetail?.tariff)
             setReservationModel(park)
             expandBottomSheetDialog()
         }
@@ -513,7 +527,17 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
                 if (it.latitude == 0.0 && it.longitude == 0.0)
                     return@collect
 
-                viewModel.getAllParks()
+                selectedLatitude = it.latitude.toString()
+                selectedLongitude = it.longitude.toString()
+
+                viewModel.getAllParks(
+                    GetParksBySearchRequestDto(
+                        selectedDistricts,
+                        selectedLatitude,
+                        selectedLongitude,
+                        selectedRadius
+                    )
+                )
             }
         }
     }
@@ -594,7 +618,7 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
     }
 
     private fun listenReservationStatus() {
-        preferencesManager.getString(KEY_USER_ID)?.let { userId ->
+        preferencesManager.getString(KEY_USER_RESERVATION_ID)?.let { userId ->
             firebaseHelper.listenToReservationStatus(userId) { status ->
                 when (status) {
                     ReservationStatusType.NOT_EXIST -> {
@@ -692,8 +716,8 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
         ReservationModel.apply {
             userId = userID
             parkId = park.id!!
-            resTime = park.resTime!!
-            hire = park.hire?.toFloat()!!
+            resTime = park.parkDetail?.resTime ?: 0
+            hire = park.parkDetail?.hire?.toFloat() ?: 0f
         }
     }
 

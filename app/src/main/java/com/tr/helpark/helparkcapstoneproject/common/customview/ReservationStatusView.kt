@@ -69,6 +69,15 @@ class ReservationStatusView @JvmOverloads constructor(
         }
     }
 
+    private fun makePendingInit() {
+        binding.apply {
+            clMessageView.setBackgroundColor(ContextCompat.getColor(context, R.color.white))
+            iwWarning.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_reservation_pending))
+            setReservationStatusImageResource()
+            messageText?.let { setTextWithBold(it) }
+        }
+    }
+
     fun build() {
         when (reservationType) {
             ReservationStatusType.CANCELLED -> {
@@ -76,7 +85,7 @@ class ReservationStatusView @JvmOverloads constructor(
             }
 
             ReservationStatusType.PENDING -> {
-                makeConfirmInit()
+                makePendingInit()
             }
 
             ReservationStatusType.CONFIRMED -> {

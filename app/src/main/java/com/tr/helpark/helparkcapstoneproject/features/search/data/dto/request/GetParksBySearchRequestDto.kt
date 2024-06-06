@@ -3,7 +3,8 @@ package com.tr.helpark.helparkcapstoneproject.features.search.data.dto.request
 import tr.com.helpark.core.domain.UseCaseParams
 
 data class GetParksBySearchRequestDto(
-    val latitude: Double,
-    val longitude: Double,
+    val district: String,
+    val latitude: String,
+    val longitude: String,
     val radius: Double
 ) : UseCaseParams

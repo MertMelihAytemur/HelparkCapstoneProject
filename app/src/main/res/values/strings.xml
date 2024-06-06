@@ -92,6 +92,7 @@
     <string name="share_car_park_title">Helpark iyi yolculuklar diler</string>
     <string name="share_car_park_link">%s %s</string>
     <string name="toolbar_title_search_location">Konum Ara</string>
+    <string name="toolbar_title_filter">Filtrele</string>
     <string name="tv_search_results">Sonuçlar</string>
     <string name="search_history">Geçmiş Aramalarım</string>
     <string name="register_success_message">Hesabınız Oluşturuldu</string>
@@ -110,8 +111,9 @@
     <string name="saved_card_not_found">Kayıtlı Kartınız Bulunmamaktadır</string>
     <string name="favorites">Favori Otoparklar</string>
     <string name="add_reservation">Rezervasyon Yap</string>
-    <string name="cancel_reservation">Rezervasyonu İptal Et</string>
+    <string name="cancel_reservation">Aktif Rezervasyonu İptal Et</string>
     <string name="reservation_cancelled_success">Rezervasyon İptal Edildi.</string>
+    <string name="show_results">Sonuçları Göster</string>
 
     <string name="reservation_alert_message">
         Önemli Bilgilendirme:
