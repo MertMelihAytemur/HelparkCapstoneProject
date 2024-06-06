@@ -7,18 +7,22 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tr.helpark.helparkcapstoneproject.R
 import com.tr.helpark.helparkcapstoneproject.databinding.DialogBottomSheetSearchFilterBinding
+import com.tr.helpark.helparkcapstoneproject.features.main.MapsActivity
 import com.tr.helpark.helparkcapstoneproject.features.search.domain.uimodel.GetDistrictsItemUiModel
 
 class SearchFilerBottomSheetDialog(
-    private val districtList : List<GetDistrictsItemUiModel>
+    private val districtList: List<GetDistrictsItemUiModel>
 ) : BottomSheetDialogFragment() {
 
     private lateinit var binding: DialogBottomSheetSearchFilterBinding
+
+    private var currentRadius: Double = 0.0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +56,30 @@ class SearchFilerBottomSheetDialog(
                 dismiss()
             }
 
-            setAdapter(binding.tvDistricts,districtList.map { it.district })
+            setAdapter(binding.tvDistricts, districtList.map { it.district })
+
+            btnAddReservation.setOnClickListener {
+                getSelectedDistrict { disctrict ->
+                    (activity as MapsActivity).apply {
+                        disctrict.district ?: "empty"
+                        updateRadius(currentRadius)
+                        isSearchFromFilter = true
+
+                        setCurrentLocationAndMoveCamera(
+                            LatLng(
+                                disctrict.lat?.toDouble() ?: 0.0,
+                                disctrict.lng?.toDouble() ?: 0.0
+                            )
+                        )
+                    }
+                }
+                dismiss()
+            }
+
+            rangeSlider.addOnChangeListener { slider, value, fromUser ->
+                tvRadius.text = "${value.toInt()} Km"
+                currentRadius = value.toDouble()
+            }
         }
     }
 
@@ -76,6 +103,13 @@ class SearchFilerBottomSheetDialog(
 
         autoCompleteTextView.setOnDismissListener {
             autoCompleteTextView.setBackgroundResource(R.drawable.arrow_down_spinner_layer)
+        }
+    }
+
+    private fun getSelectedDistrict(response: (GetDistrictsItemUiModel) -> Unit) {
+        val selectedDistrict = binding.tvDistricts.text.toString()
+        districtList.find { it.district == selectedDistrict }?.let {
+            response(it)
         }
     }
 

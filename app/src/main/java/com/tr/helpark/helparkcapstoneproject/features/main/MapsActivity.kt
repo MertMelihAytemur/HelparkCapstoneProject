@@ -92,7 +92,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     @Inject
     lateinit var locationHelper: LocationHelper
 
-    var radius : Double = 2.0
+    var isSearchFromFilter : Boolean = false
+    var selectedDistrict : String = "empty"
+    var selectedRadius : Double = 2.0
 
     private lateinit var locationPermissionNeededDialog: LocationPermissionNeededDialog
     private lateinit var turnOnLocationServicesDialog: TurnOnLocationServicesDialog
@@ -236,8 +238,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     //try again if location services opened
 
                     getCurrentLocationAndMoveCamera()
-                },
-                radius
+                }
             )
         }
     }
@@ -428,7 +429,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     fun updateRadius(radius: Double) {
-        mapManager.radius = radius
+        selectedRadius = radius
+        mapManager.radius = radius * 1000
+    }
+
+    fun resetRadius() {
+        selectedRadius = 2.0
+        mapManager.radius = 2000.0
     }
     override fun onResume() {
         super.onResume()

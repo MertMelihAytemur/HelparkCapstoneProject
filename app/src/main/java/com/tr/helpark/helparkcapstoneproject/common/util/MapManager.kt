@@ -60,8 +60,7 @@ class MapManager private constructor(
      */
     fun getUserLocationAndMoveCamera(
         onLocationSaved: (LatLng) -> Unit,
-        onLocationFailed: () -> Unit,
-        radius: Double
+        onLocationFailed: () -> Unit
     ) {
         locationHelper.getUserLocation(onLocationSaved = {
             addMarkerToUserLocation(it)

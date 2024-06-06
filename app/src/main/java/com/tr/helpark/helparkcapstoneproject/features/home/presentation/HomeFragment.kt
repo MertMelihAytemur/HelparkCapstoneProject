@@ -280,6 +280,7 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
             btnCurrentLocation.setOnClickListener {
                 handleParksNotFoundViewState(isParkNotFoundState)
                 (activity as? MapsActivity)?.getCurrentLocationAndMoveCamera()
+                (activity as? MapsActivity)?.resetRadius()
 
                 viewModel.getAllParks(
                     GetParksBySearchRequestDto(
@@ -290,14 +291,21 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
                     )
                 )
 
-                (activity as MapsActivity).startTimer(20000)
+                //(activity as MapsActivity).startTimer(20000)
             }
 
             btnSearch.setOnClickListener {
-                SearchBottomSheetDialogFragment(viewModel.districtList).show(
-                    childFragmentManager,
-                    "SearchBottomSheetDialogFragment"
-                )
+                lifecycleScope.launch {
+                    collapseBottomSheetDialog()
+                    delay(350)
+
+                    SearchBottomSheetDialogFragment(viewModel.districtList).show(
+                        childFragmentManager,
+                        "SearchBottomSheetDialogFragment"
+                    )
+
+                }
+
             }
 
             tbHomePage.ivProfile.setOnClickListener {
@@ -530,14 +538,29 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(
                 selectedLatitude = it.latitude.toString()
                 selectedLongitude = it.longitude.toString()
 
-                viewModel.getAllParks(
-                    GetParksBySearchRequestDto(
-                        selectedDistricts,
-                        selectedLatitude,
-                        selectedLongitude,
-                        selectedRadius
+                if((activity as MapsActivity).isSearchFromFilter){
+                    viewModel.getAllParks(
+                        GetParksBySearchRequestDto(
+                            (activity as MapsActivity).selectedDistrict,
+                            selectedLatitude,
+                            selectedLongitude,
+                            (activity as MapsActivity).selectedRadius
+                        )
                     )
-                )
+                }else{
+                    (activity as MapsActivity).apply {
+                        isSearchFromFilter = false
+                        resetRadius()
+                    }
+                    viewModel.getAllParks(
+                        GetParksBySearchRequestDto(
+                            selectedDistricts,
+                            selectedLatitude,
+                            selectedLongitude,
+                            selectedRadius
+                        )
+                    )
+                }
             }
         }
     }
