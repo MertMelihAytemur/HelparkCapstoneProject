@@ -52,7 +52,7 @@ class SettingsFragment : Fragment() {
             }
 
             cvReservationHistory.setOnClickListener {
-                //redirectStore(STORE_URL)
+                navigateWithAnimation(R.id.action_settingsFragment_to_reservationHistoryFragment)
             }
         }
     }

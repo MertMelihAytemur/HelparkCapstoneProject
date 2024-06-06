@@ -63,4 +63,5 @@
     <color name="text_color_date">#636A84</color>
     <color name="text_color_hint">#5B8290</color>
     <color name="lightGrey">#D1D2CE</color>
+    <color name="gray_soft">#F0F0F0</color>
 </resources>

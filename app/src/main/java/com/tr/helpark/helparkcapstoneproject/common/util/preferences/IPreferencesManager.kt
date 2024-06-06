@@ -33,7 +33,7 @@ interface IPreferencesManager {
     suspend fun <T: Any> getModel(key: String, type: KType, defaultValue: T? = null): T?
 
     fun putBoolean(key: String, value: Boolean)
-    fun putString(key: String, value: String)
+    fun putString(key: String, value: String?)
     fun putInt(key: String, value: Int)
     fun putStringSet(key: String, value: Set<String>)
     fun putLong(key: String, value: Long)

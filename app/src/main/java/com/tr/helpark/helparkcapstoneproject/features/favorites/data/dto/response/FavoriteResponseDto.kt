@@ -4,6 +4,7 @@ package com.tr.helpark.helparkcapstoneproject.features.favorites.data.dto.respon
 import com.google.gson.annotations.SerializedName
 import com.tr.helpark.helparkcapstoneproject.features.favorites.domain.uimodel.GetFavoritesUiModel
 import com.tr.helpark.helparkcapstoneproject.features.favorites.domain.uimodel.GetFavoritesUiModelItem
+import com.tr.helpark.helparkcapstoneproject.features.favorites.domain.uimodel.ParkDetailUiModel
 
 class FavoriteResponseDto : ArrayList<FavoriteResponseDtoItem>()
 
@@ -48,12 +49,16 @@ data class ParkDetail(
     val areaPolygon: String?,
     @SerializedName("district")
     val district: String?,
+    @SerializedName("hire")
+    val hire: Double?,
     @SerializedName("id")
     val id: Int?,
     @SerializedName("monthlyFee")
     val monthlyFee: Int?,
     @SerializedName("parkId")
     val parkId: Int?,
+    @SerializedName("resTime")
+    val resTime: Int?,
     @SerializedName("tariff")
     val tariff: String?,
     @SerializedName("updateDate")
@@ -63,19 +68,32 @@ data class ParkDetail(
 )
 
 
-fun FavoriteResponseDto.toDomain(): GetFavoritesUiModel {
-    return GetFavoritesUiModel(
-        parks = this.map { it.toDomain() }
+// ParkDetail to ParkDetailUiModel conversion
+fun ParkDetail.toDomain(): ParkDetailUiModel {
+    return ParkDetailUiModel(
+        address = this.address,
+        areaPolygon = this.areaPolygon,
+        district = this.district,
+        hire = this.hire,
+        id = this.id,
+        monthlyFee = this.monthlyFee,
+        parkId = this.parkId,
+        resTime = this.resTime,
+        tariff = this.tariff,
+        updateDate = this.updateDate,
+        workHours = this.workHours
     )
 }
 
-private fun FavoriteResponseDtoItem.toDomain(): GetFavoritesUiModelItem {
+// FavoriteResponseDtoItem to GetFavoritesUiModelItem conversion
+fun FavoriteResponseDtoItem.toDomain(): GetFavoritesUiModelItem {
     return GetFavoritesUiModelItem(
         capacity = this.capacity,
         district = this.district,
         emptyCapacity = this.emptyCapacity,
         freeTime = this.freeTime,
         id = this.id,
+        isOpen = this.isOpen,
         isOpened = this.isOpened,
         lat = this.lat,
         lng = this.lng,
@@ -88,16 +106,9 @@ private fun FavoriteResponseDtoItem.toDomain(): GetFavoritesUiModelItem {
     )
 }
 
-private fun ParkDetail.toDomain(): com.tr.helpark.helparkcapstoneproject.features.favorites.domain.uimodel.ParkDetailUiModel {
-    return com.tr.helpark.helparkcapstoneproject.features.favorites.domain.uimodel.ParkDetailUiModel(
-        address = this.address,
-        areaPolygon = this.areaPolygon,
-        district = this.district,
-        id = this.id,
-        monthlyFee = this.monthlyFee,
-        parkId = this.parkId,
-        tariff = this.tariff,
-        updateDate = this.updateDate,
-        workHours = this.workHours
+// FavoriteResponseDto to GetFavoritesUiModel conversion
+fun FavoriteResponseDto.toDomain(): GetFavoritesUiModel {
+    return GetFavoritesUiModel(
+        parks = this.map { it.toDomain() }
     )
 }

@@ -47,6 +47,10 @@ class RemoveOptionBottomSheetDialog(
             OPERATION_REMOVE_ACCOUNT -> {
                 binding.tvTitle.text = getString(R.string.remove_account)
             }
+            OPERATION_CANCEL_RESERVATION -> {
+                binding.tvTitle.text = getString(R.string.cancel_reservation)
+                binding.btnRemove.text = getString(R.string.cancel)
+            }
         }
     }
 
@@ -61,5 +65,6 @@ class RemoveOptionBottomSheetDialog(
         const val OPERATION_REMOVE_CARD = 1
         const val OPERATION_REMOVE_CAR = 2
         const val OPERATION_REMOVE_ACCOUNT = 3
+        const val OPERATION_CANCEL_RESERVATION = 4
     }
 }

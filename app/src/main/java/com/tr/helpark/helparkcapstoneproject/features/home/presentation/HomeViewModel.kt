@@ -9,7 +9,6 @@ import com.tr.helpark.helparkcapstoneproject.features.home.data.dto.request.Togg
 import com.tr.helpark.helparkcapstoneproject.features.home.domain.uimodel.GetAllParksApiState
 import com.tr.helpark.helparkcapstoneproject.features.home.domain.uimodel.GetAllParksUiModelItem
 import com.tr.helpark.helparkcapstoneproject.features.home.domain.uimodel.ToggleFavoriteApiState
-import com.tr.helpark.helparkcapstoneproject.features.home.domain.usecase.GetAllParksUseCase
 import com.tr.helpark.helparkcapstoneproject.features.home.domain.usecase.ToggleFavoriteUseCase
 import com.tr.helpark.helparkcapstoneproject.features.profile.data.dto.request.GetProfileRequestDto
 import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.CarPlateUiModel
@@ -18,11 +17,12 @@ import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.Get
 import com.tr.helpark.helparkcapstoneproject.features.profile.domain.uimodel.GetProfileUiModel
 import com.tr.helpark.helparkcapstoneproject.features.profile.domain.usecase.GetProfileUseCase
 import com.tr.helpark.helparkcapstoneproject.features.reservation.data.dto.request.AddReservationRequestDto
-import com.tr.helpark.helparkcapstoneproject.features.reservation.data.dto.request.CancelReservationRequestDto
 import com.tr.helpark.helparkcapstoneproject.features.reservation.domain.uimodel.AddReservationApiState
-import com.tr.helpark.helparkcapstoneproject.features.reservation.domain.uimodel.CancelReservationApiState
 import com.tr.helpark.helparkcapstoneproject.features.reservation.domain.usecase.AddReservationUseCase
-import com.tr.helpark.helparkcapstoneproject.features.reservation.domain.usecase.CancelReservationUseCase
+import com.tr.helpark.helparkcapstoneproject.features.search.data.dto.request.GetParksBySearchRequestDto
+import com.tr.helpark.helparkcapstoneproject.features.search.domain.uimodel.GetDistrictsItemUiModel
+import com.tr.helpark.helparkcapstoneproject.features.search.domain.usecase.GetDistrictsUseCase
+import com.tr.helpark.helparkcapstoneproject.features.search.domain.usecase.GetParksBySearchUseCase
 import com.vmlmedia.core.presentation.CoreViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,12 +34,12 @@ import kotlin.reflect.typeOf
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val getAllParksUseCase: GetAllParksUseCase,
     private val getProfileUseCase: GetProfileUseCase,
     private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
     private val preferencesManager: PreferencesManager,
     private val addReservationUseCase: AddReservationUseCase,
-    private val cancelReservationUseCase: CancelReservationUseCase
+    private val getParksBySearchUseCase: GetParksBySearchUseCase,
+    private val getDistrictsUseCase: GetDistrictsUseCase
 ) : CoreViewModel() {
 
     private var _pageStateFlow =
@@ -57,6 +57,8 @@ class HomeViewModel @Inject constructor(
     private var _carList: MutableLiveData<List<CarPlateUiModel>> = MutableLiveData()
     val carList: LiveData<List<CarPlateUiModel>> get() = _carList
 
+    var districtList: List<GetDistrictsItemUiModel> = listOf()
+
     fun getUserCars() {
         viewModelScope.launch {
             val profile: GetProfileUiModel? = preferencesManager.getModel(
@@ -70,10 +72,10 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getAllParks() {
+    fun getAllParks(getParksBySearchRequestDto: GetParksBySearchRequestDto) {
         launchRequest(
             requestBody = {
-                getAllParksUseCase()
+                getParksBySearchUseCase(getParksBySearchRequestDto)
             },
             onSuccess = {
                 _pageStateFlow.value = _pageStateFlow.value.copy(
@@ -111,7 +113,7 @@ class HomeViewModel @Inject constructor(
         )
     }
 
-    fun toggleFavorite(toggleFavoriteParkRequestDto: ToggleFavoriteParkRequestDto){
+    fun toggleFavorite(toggleFavoriteParkRequestDto: ToggleFavoriteParkRequestDto) {
         launchRequest(
             requestBody = {
                 toggleFavoriteUseCase(toggleFavoriteParkRequestDto)
@@ -127,7 +129,7 @@ class HomeViewModel @Inject constructor(
                     pageEvent = PageEvent.TOGGLE_FAVORITE_RESPONSE_RECEIVED,
                     toggleFavoriteApiState = ToggleFavoriteApiState.Error(it)
                 )
-            },showLoading = false
+            }, showLoading = false
         )
     }
 
@@ -155,13 +157,13 @@ class HomeViewModel @Inject constructor(
             requestBody = {
                 addReservationUseCase(addReservationRequestDto)
             },
-            onSuccess = {uiModel ->
+            onSuccess = { uiModel ->
                 _pageStateFlow.value = _pageStateFlow.value.copy(
                     pageEvent = PageEvent.RESERVATION_ADDED_RESPONSE_RECEIVED,
                     addReservationApiState = AddReservationApiState.Success(uiModel)
                 )
             },
-            onError = {error ->
+            onError = { error ->
                 _pageStateFlow.value = _pageStateFlow.value.copy(
                     addReservationApiState = AddReservationApiState.Error(error)
                 )
@@ -169,22 +171,19 @@ class HomeViewModel @Inject constructor(
         )
     }
 
-    fun cancelReservation(resId : Int){
+    fun getDistricts() {
         launchRequest(
             requestBody = {
-                cancelReservationUseCase(CancelReservationRequestDto(resId))
+                getDistrictsUseCase()
             },
-            onSuccess = {
-                _pageStateFlow.value = _pageStateFlow.value.copy(
-                    pageEvent = PageEvent.CANCEL_RESERVATION_RESPONSE_RECEIVED,
-                    cancelReservationApiState = CancelReservationApiState.Success(it)
-                )
+            onSuccess = { uiModel ->
+                uiModel?.let {
+                    districtList = it.districts ?: emptyList()
+                }
+
             },
             onError = {
-                _pageStateFlow.value = _pageStateFlow.value.copy(
-                    pageEvent = PageEvent.CANCEL_RESERVATION_RESPONSE_RECEIVED,
-                    cancelReservationApiState = CancelReservationApiState.Error(it)
-                )
+                districtList = emptyList()
             }
         )
     }
@@ -195,8 +194,7 @@ class HomeViewModel @Inject constructor(
         GET_PROFILE_RESPONSE_RECEIVED,
         TOGGLE_FAVORITE_RESPONSE_RECEIVED,
         NAVIGATE_TO_NEXT_SCREEN,
-        RESERVATION_ADDED_RESPONSE_RECEIVED,
-        CANCEL_RESERVATION_RESPONSE_RECEIVED
+        RESERVATION_ADDED_RESPONSE_RECEIVED
     }
 
     data class PageState(
@@ -205,7 +203,6 @@ class HomeViewModel @Inject constructor(
         val getProfileApiState: GetProfileApiState = GetProfileApiState.Initial,
         val toggleFavoriteApiState: ToggleFavoriteApiState = ToggleFavoriteApiState.Initial,
         val addReservationApiState: AddReservationApiState = AddReservationApiState.Initial,
-        val cancelReservationApiState : CancelReservationApiState = CancelReservationApiState.Initial
     )
 
 }

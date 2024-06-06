@@ -92,6 +92,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     @Inject
     lateinit var locationHelper: LocationHelper
 
+    var isSearchFromFilter : Boolean = false
+    var selectedDistrict : String = "empty"
+    var selectedRadius : Double = 2.0
+
     private lateinit var locationPermissionNeededDialog: LocationPermissionNeededDialog
     private lateinit var turnOnLocationServicesDialog: TurnOnLocationServicesDialog
     private lateinit var exitApplicationDialog: ExitApplicationDialog
@@ -424,6 +428,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         WorkManager.getInstance(this).enqueue(timerWorkRequest)
     }
 
+    fun updateRadius(radius: Double) {
+        selectedRadius = radius
+        mapManager.radius = radius * 1000
+    }
+
+    fun resetRadius() {
+        selectedRadius = 2.0
+        mapManager.radius = 2000.0
+    }
     override fun onResume() {
         super.onResume()
         observeLiveData()

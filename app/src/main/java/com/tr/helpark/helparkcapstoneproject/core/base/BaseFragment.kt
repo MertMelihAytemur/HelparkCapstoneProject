@@ -42,10 +42,6 @@ abstract class BaseFragment<VM : CoreViewModel, VB : ViewBinding>(
         return _binding?.root
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
 
     fun handleNetworkError(
         error: UiError<ApiErrorModel>,

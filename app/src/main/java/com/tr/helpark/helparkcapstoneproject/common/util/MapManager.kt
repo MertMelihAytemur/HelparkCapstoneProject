@@ -7,6 +7,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.tr.helpark.helparkcapstoneproject.R
@@ -24,6 +25,7 @@ class MapManager private constructor(
 
     private var currentZoom = 13F
 
+    var radius: Double = 2000.0
     fun setNearestMaviShops(stores: ArrayList<GetAllParksUiModelItem>) {
         stores.forEach { store ->
 
@@ -70,6 +72,7 @@ class MapManager private constructor(
 
     fun moveCameraToLocation(userPosition: LatLng) {
         locationHelper.userLocation = userPosition
+        addMarkerToUserLocation(userPosition)
         currentZoom = 12F
         map.animateCamera(CameraUpdateFactory.newLatLngZoom(userPosition, currentZoom))
     }
@@ -104,10 +107,6 @@ class MapManager private constructor(
         currentZoom = map.cameraPosition.zoom
     }
 
-    fun clearMap() {
-        map.clear()
-    }
-
     fun setMapUiSettingsForLoading(isLoading: Boolean) {
         map.uiSettings.apply {
             isCompassEnabled = !isLoading
@@ -131,12 +130,28 @@ class MapManager private constructor(
      */
     private fun addMarkerToUserLocation(latLng: LatLng) {
         map.clear()
+        drawCircle(radius, latLng)
         map.addMarker(
-            MarkerOptions().position(latLng).title(context.getString(R.string.current_location_marker_title)
+            MarkerOptions().position(latLng).title(
+                context.getString(R.string.current_location_marker_title)
+            ).icon(
+                getMarkerIcon("#4395a1")
             )
         )?.apply {
             tag = -1
         }?.showInfoWindow()
+    }
+
+    private fun drawCircle(radius: Double, center: LatLng) {
+        val circleOptions = CircleOptions()
+            .center(center)
+            .radius(radius) // Radius in meters (4 km)
+            .strokeWidth(3f)
+            .strokeColor(Color.parseColor("#1E90FF")) // Standard blue for stroke
+            // Lighter blue for fill, with 70 alpha for transparency
+            .fillColor(Color.argb(70, 135, 206, 250)) // Sky Blue color
+
+        map.addCircle(circleOptions)
     }
 
     class MapManagerFactory {

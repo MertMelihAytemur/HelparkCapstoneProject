@@ -1,14 +1,19 @@
 package com.tr.helpark.helparkcapstoneproject.common.extensions
 
 import android.graphics.Color
+import android.graphics.Typeface
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.marginEnd
 import androidx.core.view.marginTop
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.material.chip.Chip
+import com.tr.helpark.helparkcapstoneproject.R
 import com.tr.helpark.helparkcapstoneproject.common.customview.CustomToastMessageView
 import com.tr.helpark.helparkcapstoneproject.common.util.Constants
+import com.tr.helpark.helparkcapstoneproject.features.reservation.presentation.model.ReservationStatusType
 
 /**
  *Created by Mert Melih Aytemur on 1/19/2024.
@@ -69,4 +74,38 @@ fun handleViewVisibilityWithTranslationYTop(vararg views: View, show: Boolean) {
 
 fun View.animateAlpha(show: Boolean) {
     this.animate().alpha(if (show) 1.0f else 0.0f).setDuration(Constants.VIEW_TRANSLATION_DURATION).start()
+}
+
+fun Chip.setTransactionStatus(status: ReservationStatusType?) {
+    this.typeface =
+        Typeface.create(ResourcesCompat.getFont(context, R.font.montserrat_medium), Typeface.BOLD)
+    status?.let {
+        when (it) {
+            ReservationStatusType.CANCELLED -> {
+                this.setChipBackgroundColorResource(R.color.spanish_pink)
+                this.setChipIconResource(R.drawable.ic_checkout_fail)
+                this.text = this.context.getString(R.string.reservation_cancelled)
+            }
+
+            ReservationStatusType.PENDING -> {
+                this.setChipBackgroundColorResource(R.color.unbleached_silk)
+                this.setChipIconResource(R.drawable.ic_checkout_pending)
+                this.text = this.context.getString(R.string.reservation_pending)
+            }
+
+            ReservationStatusType.CONFIRMED-> {
+                this.setChipBackgroundColorResource(R.color.unbleached_silk)
+                this.setChipIconResource(R.drawable.ic_checkout_success)
+                this.text = this.context.getString(R.string.reservation_confirmed)
+            }
+
+            ReservationStatusType.COMPLETED-> {
+                this.setChipBackgroundColorResource(R.color.green)
+                this.setChipIconResource(R.drawable.ic_checkout_success)
+                this.text = this.context.getString(R.string.reservation_completed)
+            }
+
+            else -> {}
+        }
+    }
 }

@@ -87,7 +87,7 @@ class PreferencesManager @Inject constructor(
     override fun putBoolean(key: String, value: Boolean) =
         edit.putBoolean(key, value).apply()
 
-    override fun putString(key: String, value: String) =
+    override fun putString(key: String, value: String?) =
         edit.putString(key, value).apply()
 
 

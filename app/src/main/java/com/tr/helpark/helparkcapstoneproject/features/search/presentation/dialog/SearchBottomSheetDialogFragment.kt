@@ -1,4 +1,4 @@
-package com.tr.helpark.helparkcapstoneproject.features.search.presentation
+package com.tr.helpark.helparkcapstoneproject.features.search.presentation.dialog
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,12 +15,16 @@ import com.tr.helpark.helparkcapstoneproject.common.extensions.visible
 import com.tr.helpark.helparkcapstoneproject.databinding.FragmentBottomSheetDialogSearchBinding
 import com.tr.helpark.helparkcapstoneproject.features.main.MapsActivity
 import com.tr.helpark.helparkcapstoneproject.features.search.data.model.PlacePredictionModel
+import com.tr.helpark.helparkcapstoneproject.features.search.domain.uimodel.GetDistrictsItemUiModel
+import com.tr.helpark.helparkcapstoneproject.features.search.presentation.SearchViewModel
 import com.tr.helpark.helparkcapstoneproject.features.search.presentation.adapter.SearchLocationResultsAdapter
 
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class SearchBottomSheetDialogFragment : BottomSheetDialogFragment() {
+class SearchBottomSheetDialogFragment(
+    private val districtList: List<GetDistrictsItemUiModel>
+) : BottomSheetDialogFragment() {
 
     private lateinit var binding: FragmentBottomSheetDialogSearchBinding
 
@@ -30,7 +34,7 @@ class SearchBottomSheetDialogFragment : BottomSheetDialogFragment() {
         SearchLocationResultsAdapter(::getLocationFromSelectedSearchResult)
     }
 
-   private var searchHistoryList: List<PlacePredictionModel> = listOf()
+    private var searchHistoryList: List<PlacePredictionModel> = listOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,7 +80,7 @@ class SearchBottomSheetDialogFragment : BottomSheetDialogFragment() {
                 setTextChangeListener { searchKey ->
                     if (searchKey.isNotEmpty()) {
                         viewModel.findAutocompletePredictions(searchKey)
-                    }else{
+                    } else {
                         viewModel.cancelSearchJob()
                         showSearchHistory()
                     }
@@ -84,6 +88,16 @@ class SearchBottomSheetDialogFragment : BottomSheetDialogFragment() {
 
                 setCloseButtonActionListener {
                     viewModel.searchHistoryResultsLiveData.value?.let { showSearchHistory() }
+                }
+            }
+
+            ivFilter.setOnClickListener {
+                if(districtList.isNotEmpty()){
+                    SearchFilerBottomSheetDialog(districtList).show(
+                        parentFragmentManager,
+                        SearchFilerBottomSheetDialog::class.java.simpleName
+                    )
+                    dismiss()
                 }
             }
         }
